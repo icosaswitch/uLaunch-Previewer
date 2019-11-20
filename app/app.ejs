@@ -1,0 +1,144 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link type="text/css" rel="stylesheet" href="./switch/joystick.css">
+    <link type="text/css" rel="stylesheet" href="./switch/style.css">
+    <link type="text/css" rel="stylesheet" href="./ulaunch/style.css">
+    <script src="./ui.js"></script>
+  </head>
+  <body>
+    <div id="switch">
+      <input type="button" class="switchback"/>
+      <div id="jl">
+        <input type="button" class="lbtn" id="l"/>
+        <input type="button" class="joyconl"/>
+        <input type="button" class="minus" id="minus"/>
+        <div id="ljoystick" style="position:fixed;top:125;left:85.5;width:160;height:160">
+          <input type="button" class="joystickbg"/>
+          <div id="ljoybutton" style="position:relative;top:20;left:-20">
+            <input type="button" class="joystick"/>
+            <input type="button" class="joysticks"/>
+            <input type="button" class="barleft"/>
+            <input type="button" class="barright"/>
+            <input type="button" class="bartop"/>
+            <input type="button" class="barbottom"/>
+          </div>
+          <input type="button" class="top" id="ltop"/>
+          <input type="button" class="topleft" id="ltopleft"/>
+          <input type="button" class="left" id="lleft"/>
+          <input type="button" class="leftbottom" id="lleftbottom"/>
+          <input type="button" class="bottom" id="lbottom"/>
+          <input type="button" class="bottomright" id="lbottomright"/>
+          <input type="button" class="right" id="lright"/>
+          <input type="button" class="righttop" id="lrighttop"/>
+        </div>
+        <div id="arrowupdiv" style="position:fixed;top:330;left:95.5;width:60;height:60">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="34pt" viewBox="0 0 36 34" version="1.1" class="arrowup">
+            <g transform="rotate(180 12.25 12.25)">
+              <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+            </g>
+          </svg>
+          <input type="button" class="btnround"/>
+          <input type="button" class="transparentbtnround" id="arrowup"/>
+        </div>
+        <div id="arrowleftdiv" style="position:fixed;top:385;left:40.5;width:60;height:60">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="34pt" viewBox="0 0 36 34" version="1.1" class="arrowleft">
+            <g transform="rotate(90 12.25 12.25)">
+              <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+            </g>
+          </svg>
+          <input type="button" class="btnround"/>
+          <input type="button" class="transparentbtnround" id="arrowleft"/>
+        </div>
+        <div id="arrowbottomdiv" style="position:fixed;top:440;left:95.5;width:60;height:60">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="34pt" viewBox="0 0 36 34" version="1.1" class="arrowbottom">
+            <g transform="rotate(1 12.25 12.25)">
+              <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+            </g>
+          </svg>
+          <input type="button" class="btnround"/>
+          <input type="button" class="transparentbtnround" id="arrowdown"/>
+        </div>
+        <div id="arrowrightdiv" style="position:fixed;top:385;left:150.5;width:60;height:60">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="34pt" viewBox="0 0 36 34" version="1.1" class="arrowright">
+            <g transform="rotate(270 12.25 12.25)">
+              <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+            </g>
+          </svg>
+          <input type="button" class="btnround"/>
+          <input type="button" class="transparentbtnround" id="arrowright"/>
+        </div>
+        <div id="capture" style="position:fixed;top:540;left:150;width:42;height:42">
+          <input type"button" class="capturebg" id="capturebg" disabled/>
+          <input type"button" class="capture" id="capture" disabled/>
+        </div>
+      </div>
+      <div id="jr">
+        <input type="button" class="rbtn" id="r"/>
+        <input type="button" class="joyconr"/>
+        <div id="dplus" style="position:fixed;top:50;left:1605">
+          <input type="button" class="plus" id="plus"/>
+          <input type="button" class="pluss" id="pluss"/>
+          <input type="button" class="plusss" id="plusss"/>
+        </div>
+        <div id="rjoystick" style="position:fixed;top:335;left:1642.5;width:160;height:160">
+          <input type="button" class="joystickbg"/>
+          <div id="rjoybutton" style="position:relative;top:20;left:-20">
+            <input type="button" class="joystick"/>
+            <input type="button" class="joysticks"/>
+            <input type="button" class="barleft"/>
+            <input type="button" class="barright"/>
+            <input type="button" class="bartop"/>
+            <input type="button" class="barbottom"/>
+          </div>
+          <input type="button" class="top" id="rtop"/>
+          <input type="button" class="topleft" id="rtopleft"/>
+          <input type="button" class="left" id="rleft"/>
+          <input type="button" class="leftbottom" id="rleftbottom"/>
+          <input type="button" class="bottom" id="rbottom"/>
+          <input type="button" class="bottomright" id="rbottomright"/>
+          <input type="button" class="right" id="rright"/>
+          <input type="button" class="righttop" id="rrighttop"/>
+        </div>
+        <div id="x" style="position:fixed;top:120;left:1652.5;width:60;height:60">
+          <input type="text" class="xtxt" value="X" disabled/>
+          <input type="button" class="btnround" id="x"/>
+        </div>
+        <div id="b" style="position:fixed;top:230;left:1652.5;width:60;height:60">
+          <input type="text" class="btxt" value="B" disabled/>
+          <input type="button" class="btnround" id="b"/>
+        </div>
+        <div id="y" style="position:fixed;top:175;left:1597.5;width:60;height:60">
+          <input type="text" class="ytxt" value="Y" disabled/>
+          <input type="button" class="btnround" id="y"/>
+        </div>
+        <div id="a" style="position:fixed;top:175;left:1707.5;width:60;height:60">
+          <input type="text" class="atxt" value="A" disabled/>
+          <input type="button" class="btnround" id="a"/>
+        </div>
+        <div id="home" style="position:fixed;top:540;left:1618;width:42;height:42">
+          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24pt" height="12pt" viewBox="0 0 24 12" version="1.1" class="homesvg">
+            <g>
+              <path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 16.0625 8.402344 L 1.9375 8.402344 L 9 1.859375 "/>
+            </g>
+          </svg>
+          <input type"button" class="home"/>
+          <input type"button" class="homebar"/>
+          <input type"button" class="homebars"/>
+          <input type"button" class="homebarss"/>
+          <input type"button" class="homebg" id="home"/>
+        </div>
+        <div id="volume" style="position:fixed;top:5;left:302.5;width:90;height:5">
+          <input type="button" class="volp" id="volp">
+          <input type="button" class="volbar">
+          <input type="button" class="volm" id="volm">
+        </div>
+        <input type="button" class="power" id="power">
+      </div>
+    </div>
+    <div class="center">
+      <div id="switchcontainer"></div>
+    </div>
+    <div class="drag"></div>
+  </body>
+</html>

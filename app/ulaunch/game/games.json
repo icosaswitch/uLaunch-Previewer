@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Super Mario Odyssey",
+    "id": "0100000000010000",
+    "author": "Nintendo",
+    "version": "1.3.0",
+    "icon": "supermarioodyssey.jfif"
+  },
+  {
+    "name": "The Legend of Zelda: Breath of the Wild",
+    "id": "01007EF00011E000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "zeldabreathofthewild.jfif"
+  },
+  {
+    "name": "Mario Kart 8 Deluxe",
+    "id": "0100152000022000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "mariokart8deluxe.jfif"
+  },
+  {
+    "name": "Super Mario Maker 2",
+    "id": "01009B90006DC000",
+    "author": "Nintendo",
+    "version": "1.0.1",
+    "icon": "supermariomaker2.jfif"
+  },
+  {
+    "name": "The Legend of Zelda: Link's Awakening",
+    "id": "01006BB00C6F0000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "zeldalinksawakening.jfif"
+  },
+  {
+    "name": "Luigi's Mansion 3",
+    "id": "0100DCA0064A6000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "luigimansion3.jfif"
+  },
+  {
+    "name": "Pokémon Sword",
+    "id": "0100ABF008968000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "pokemonsword.jfif"
+  },
+  {
+    "name": "Pokémon Shield",
+    "id": "01008DB008C2C000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "pokemonshield.jfif"
+  },
+  {
+    "name": "Hollow Knight",
+    "id": "0100633007D48000",
+    "author": "Team Cherry",
+    "version": "1.0.0",
+    "icon": "hollowknight.jfif"
+  },
+  {
+    "name": "INSIDE",
+    "id": "0100D2D009028000",
+    "author": "Playdead",
+    "version": "1.0.0",
+    "icon": "inside.jfif"
+  },
+  {
+    "name": "Super Mario Party",
+    "id": "010036B0034E4000",
+    "author": "Nintendo",
+    "version": "1.0.0",
+    "icon": "supermarioparty.jfif"
+  },
+  {
+    "name": "UNDERTALE",
+    "id": "010080B00AD66000",
+    "author": "8-4",
+    "version": "1.0.0",
+    "icon": "undertale.jfif"
+  }
+]

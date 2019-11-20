@@ -1,0 +1,26 @@
+{
+  "name": "ulaunch-previewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Pharuxtan",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "ejs-electron": "^2.0.3",
+    "fs": "0.0.1-security",
+    "html2canvas": "^1.0.0-rc.5",
+    "https-proxy-agent": "^3.0.1",
+    "jquery": "^3.4.1",
+    "node-fetch": "^2.6.0",
+    "path": "^0.12.7",
+    "platform-folders": "^0.4.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "electron": "^7.0.0",
+    "electron-builder": "^21.2.0"
+  }
+}

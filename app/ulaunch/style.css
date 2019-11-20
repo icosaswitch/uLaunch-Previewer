@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'Default';
+    font-style: normal;
+    font-weight: 700;
+    src: url('./ulaunch/romFs/default/ui/Font.ttf');
+}
+
+input {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #6e6e6e;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #505050;
+}
+
+p {
+  user-select:none;
+}
+
+.bubble {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  top: 550;
+  width: auto;
+  text-align: center;
+  color: #e1e1e1;
+  z-index: 2;
+  height: 45;
+  font-size: 20;
+  padding: 10 32.5;
+  border: none;
+  border-radius: 32.5px;
+  background-color: #1e1e1e;
+  opacity: 0.78431372549019607843137254901961;
+}

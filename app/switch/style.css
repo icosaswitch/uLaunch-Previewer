@@ -1,0 +1,394 @@
+.drag {
+  width: 1340;
+  height: 30;
+  position: absolute;
+  top: 10;
+  left: 235;
+  -webkit-app-region: drag;
+}
+
+.center {
+  margin: auto;
+  position: fixed;
+  background-color: #181818;
+  width: 1280;
+  height: 720;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.switchback {
+  background-color: #323538;
+  border: 0px;
+  position: absolute;
+  top: 10;
+  left: 10;
+  border-radius: 100px;
+  outline: none;
+  width: 1790;
+  height: 780;
+}
+
+.joyconr {
+  background-color: #ff4554;
+  border: 0px;
+  position: absolute;
+  top: 10;
+  right: 10;
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+  outline: none;
+  width: 225;
+  height: 780;
+}
+
+.joyconl {
+  background-color: #00c3e3;
+  border: 0px;
+  position: absolute;
+  top: 10;
+  left: 10;
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+  outline: none;
+  width: 225;
+  height: 780;
+}
+
+.minus {
+  position: absolute;
+  top: 65;
+  left: 159;
+  background-color: #464646;
+  border-color: #262626;
+  width: 46;
+  outline: none;
+  border-radius: 1px;
+  height: 16;
+}
+
+.plus {
+  position: absolute;
+  top: 15;
+  left: 0;
+  background-color: #464646;
+  border-color: #262626;
+  outline: none;
+  width: 46;
+  border-radius: 1px;
+  height: 16;
+}
+
+.pluss {
+  position: absolute;
+  top: 0;
+  left: 15;
+  background-color: #464646;
+  border-color: #262626;
+  outline: none;
+  border-radius: 1px;
+  width: 16;
+  height: 46;
+}
+
+.plusss {
+  position: absolute;
+  top: 17;
+  left: 15;
+  outline: none;
+  background-color: #464646;
+  border: none;
+  width: 16;
+  height: 12;
+}
+
+.btnround {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  outline: none;
+  background-color: #464646;
+  border: 2.5px solid;
+  border-color: #262626;
+  border-radius: 100%;
+  width: 60;
+  height: 60;
+}
+
+.transparentbtnround {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  outline: none;
+  background-color: transparent;
+  border: none;
+  border-radius: 100%;
+  width: 60;
+  height: 60;
+}
+
+.arrowup {
+  position: absolute;
+  top: 8.5;
+  left: 12.5;
+}
+
+.arrowleft {
+  position: absolute;
+  top: 15.25;
+  left: 7.5;
+}
+
+.arrowbottom {
+  position: absolute;
+  top: 19.5;
+  left: 15.5;
+}
+
+.arrowright {
+  position: absolute;
+  top: 11.5;
+  left: 20;
+}
+
+.capturebg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  outline: none;
+  background-color: #464646;
+  border: 2.5px solid;
+  border-color: #262626;
+  cursor: default;
+  border-radius: 8.5px;
+  width: 42;
+  height: 42;
+}
+
+.capture {
+  position: absolute;
+  top: 7;
+  left: 7;
+  cursor: default;
+  outline: none;
+  background-color: #464646;
+  border: 1.5px solid;
+  border-color: #262626;
+  border-radius: 8.5px;
+  width: 28;
+  height: 28;
+}
+
+.lbtn {
+  position: absolute;
+  top: 2.5;
+  left: 12.5;
+  outline: none;
+  background-color: #464646;
+  border: 2px solid;
+  border-color: #262626;
+  border-radius: 20px;
+  border-top-left-radius: 260px;
+  width: 180;
+  height: 75;
+}
+
+.xtxt {
+  position: absolute;
+  outline: none;
+  border: none;
+  top: 7.5;
+  left: 16.5;
+  cursor: default;
+  color: #fff;
+  font-size: 40;
+  font-weight: 400;
+  background-color: transparent;
+}
+
+.btxt {
+  position: absolute;
+  outline: none;
+  border: none;
+  top: 7.5;
+  left: 18;
+  cursor: default;
+  color: #fff;
+  font-size: 40;
+  font-weight: 400;
+  background-color: transparent;
+}
+
+.ytxt {
+  position: absolute;
+  outline: none;
+  border: none;
+  top: 7.5;
+  left: 17;
+  cursor: default;
+  color: #fff;
+  font-size: 40;
+  font-weight: 400;
+  background-color: transparent;
+}
+
+.atxt {
+  position: absolute;
+  outline: none;
+  border: none;
+  top: 7.5;
+  left: 17;
+  cursor: default;
+  color: #fff;
+  font-size: 40;
+  font-weight: 400;
+  background-color: transparent;
+}
+
+.homebg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  outline: none;
+  background-color: #646464;
+  border: 2px solid;
+  border-color: #262626;
+  border-radius: 42px;
+  width: 42;
+  height: 42;
+}
+
+.home {
+  position: absolute;
+  top: 7;
+  left: 7;
+  outline: none;
+  background-color: #464646;
+  border: 1px solid;
+  border-color: #262626;
+  border-radius: 28px;
+  width: 28;
+  height: 28;
+}
+
+.homesvg {
+  position: absolute;
+  z-index: 1;
+  top: 8.5;
+  left: 8.5;
+}
+
+.homebar {
+  position: absolute;
+  top: 20;
+  left: 14;
+  outline: none;
+  background-color: #000;
+  border: none;
+  width: 5;
+  height: 9;
+}
+
+.homebars {
+  position: absolute;
+  top: 20;
+  left: 23;
+  outline: none;
+  background-color: #000;
+  border: none;
+  width: 5;
+  height: 9;
+}
+
+.homebarss {
+  position: absolute;
+  top: 25;
+  left: 18;
+  outline: none;
+  background-color: #000;
+  border: none;
+  width: 9;
+  height: 4;
+}
+
+.rbtn {
+  position: absolute;
+  top: 2.5;
+  left: 1616.5;
+  outline: none;
+  background-color: #464646;
+  border: 2px solid;
+  border-color: #262626;
+  border-radius: 20px;
+  border-top-right-radius: 260px;
+  width: 180;
+  height: 75;
+}
+
+.volp {
+  position: absolute;
+  outline: none;
+  border: none;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-color: #262626;
+  border-top-left-radius: 2px;
+  background-color: #595959;
+  top: 0;
+  left: 0;
+  height: 5;
+  width: 30;
+}
+
+.volbar {
+  position: absolute;
+  outline: none;
+  border: none;
+  border-top: 2px solid;
+  border-color: #262626;
+  background-color: #595959;
+  top: 1;
+  left: 30;
+  height: 1;
+  width: 30;
+}
+
+.volm {
+  position: absolute;
+  outline: none;
+  border: none;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-color: #262626;
+  border-top-right-radius: 2px;
+  background-color: #595959;
+  top: 0;
+  left: 60;
+  height: 5;
+  width: 30;
+}
+
+.power {
+  position: absolute;
+  outline: none;
+  border: none;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  border-right: 2px solid;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  border-color: #262626;
+  background-color: #595959;
+  top: 6;
+  left: 265;
+  height: 2.5;
+  width: 30;
+}
