@@ -19,6 +19,7 @@ app.on("ready", () => {
     resizable: false,
     maximizable: false,
     fullscreen: false,
+    icon: getPlatformIcon('icon'),
     webPreferences: {
         nodeIntegration: true
     }
@@ -36,3 +37,17 @@ app.on("ready", () => {
     frame = null;
   });
 });
+
+function getPlatformIcon(filename) {
+    const os = process.platform;
+    if(os === 'darwin') {
+        filename = filename + '.icns';
+    }
+    else if(os === 'win32') {
+        filename = filename + '.ico';
+    }
+    else {
+        filename = filename + '.png';
+    }
+    return path.join(__dirname, 'build', filename);
+}

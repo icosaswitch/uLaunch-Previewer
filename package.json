@@ -1,10 +1,13 @@
 {
   "name": "ulaunch-previewer",
   "version": "1.0.0",
-  "description": "",
+  "description": "uLaunch Previewer",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux",
+    "dist:darwin": "electron-builder --mac"
   },
   "author": "Pharuxtan",
   "dependencies": {
@@ -21,7 +24,58 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "electron": "^7.0.0",
+    "electron": "^7.1.2",
     "electron-builder": "^21.2.0"
+  },
+  "build": {
+    "appId": "ulaunch-previewer",
+    "productName": "uLaunch Previewer",
+    "artifactName": "${productName}-${version}.${ext}",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities",
+      "icon": "build/icon.icns"
+    },
+    "dmg": {
+      "backgroundColor": "#2f3640",
+      "icon": "build/icon.icns",
+      "window": {
+        "width": 550,
+        "height": 400
+      }
+    },
+    "linux": {
+      "target": "AppImage",
+      "maintainer": "Pharuxtan",
+      "vendor": "uLaunch Previewer",
+      "synopsis": "uLaunch Previewer",
+      "description": "uLaunch Previewer",
+      "category": "Utility"
+    },
+    "files": [
+      "!{dist,dev-app-update.yml,ulaunch,package-lock.json,README.md,.gitignore}"
+    ],
+    "compression": "maximum",
+    "asar": true
   }
 }

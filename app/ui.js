@@ -253,10 +253,10 @@ let margin = "-5px 1px";
 let sound;
 
 async function init(){
-  if(!fs.existsSync(path.join(documents, "uLaunch-Tester"))){
-    fs.mkdirSync(path.join(documents, "uLaunch-Tester"));
+  if(!fs.existsSync(path.join(documents, "uLaunch-Previewer"))){
+    fs.mkdirSync(path.join(documents, "uLaunch-Previewer"));
   }
-  let ulaunchtester = path.join(documents, "uLaunch-Tester");
+  let ulaunchtester = path.join(documents, "uLaunch-Previewer");
   if(!fs.existsSync(path.join(ulaunchtester, "sdmc"))){
     fs.mkdirSync(path.join(ulaunchtester, "sdmc"));
   } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch"))){
@@ -275,18 +275,26 @@ async function init(){
     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"volume":1,"currenttheme":"default","lang":"en","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.0.0","consolename":"uLaunchTester","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False"}, null, 2), function(err){if(err) throw err;});
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "menuitems.json"))){
     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify({"folders":{},"hb":[]}, null, 2), function(err){if(err) throw err;});
+  } if(!fs.existsSync(path.join(ulaunchtester, "screenshot"))){
+    fs.mkdirSync(path.join(ulaunchtester, "screenshot"));
   }
   switchem.on("capture", () => {
     html2canvas(document.getElementById("switchcontainer"), {
         width: 1280,
         height: 720
     }).then(canvas => {
-      canvas.setAttribute("style", "width:1280;height:720;visiblity: hidden;");
+      canvas.setAttribute("style", "width:1280;height:720;display: none;");
       document.body.appendChild(canvas);
       let img = $("canvas").get(0).toDataURL();
       let data = img.replace(/^data:image\/\w+;base64,/, "");
       let buf = Buffer.from(data, 'base64');
-      fs.writeFileSync(path.join(__dirname, "screenshot.png"), buf, (err) => {if(err) throw err});
+      let date = new Date();
+      let nums = [];
+      for(var i=1; i<61; i++){
+        nums.push((i.toString().length == 1) ? `0${i}` : `${i}`);
+      }
+      let filename = `${date.getFullYear()}-${nums[date.getMonth()]}-${nums[date.getDay()]} ${nums[date.getHours()]}-${nums[date.getMinutes()]}-${nums[date.getSeconds()]}.png`;
+      fs.writeFileSync(path.join(ulaunchtester, "screenshot", filename), buf, (err) => {if(err) throw err});
       document.body.removeChild(canvas);
     });
   });
