@@ -339,10 +339,10 @@
   border-left: 2px solid;
   border-right: 2px solid;
   border-color: #262626;
-  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
   background-color: #595959;
   top: 0;
-  left: 0;
+  left: 60;
   height: 5;
   width: 30;
 }
@@ -368,10 +368,10 @@
   border-left: 2px solid;
   border-right: 2px solid;
   border-color: #262626;
-  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
   background-color: #595959;
   top: 0;
-  left: 60;
+  left: 0;
   height: 5;
   width: 30;
 }

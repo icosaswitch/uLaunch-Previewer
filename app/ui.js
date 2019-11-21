@@ -3,6 +3,7 @@ const fs = require('fs');
 const ejs = require('ejs');
 const path = require('path');
 const url = require('url');
+const {Howler} = require('howler');
 const platformFolder = require("platform-folders");
 const {getCurrentWindow} = require("electron").remote;
 let documents = platformFolder.getDocumentsFolder();
@@ -56,6 +57,12 @@ $(function() {
       e.preventDefault();
     } if(e.which === 39){
       arrowright();
+      e.preventDefault();
+    } if(e.which === 107){
+      volp();
+      e.preventDefault();
+    } if(e.which === 109){
+      volm();
       e.preventDefault();
     }
     $(this).on('keyup', function() {
@@ -243,6 +250,7 @@ $(function() {
 })
 
 let margin = "-5px 1px";
+let sound;
 
 async function init(){
   if(!fs.existsSync(path.join(documents, "uLaunch-Tester"))){
@@ -264,7 +272,7 @@ async function init(){
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "users.json"))){
     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "users.json"), JSON.stringify([{"username": "Default User", "usericon": "default", "password": false}], null, 2), function(err){if(err) throw err;});
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"))){
-    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"currenttheme":"default","lang":"en","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.0.0","consolename":"uLaunchTester","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False"}, null, 2), function(err){if(err) throw err;});
+    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"volume":1,"currenttheme":"default","lang":"en","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.0.0","consolename":"uLaunchTester","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False"}, null, 2), function(err){if(err) throw err;});
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "menuitems.json"))){
     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify({"folders":{},"hb":[]}, null, 2), function(err){if(err) throw err;});
   }
@@ -286,7 +294,109 @@ async function init(){
   let testersettings = require(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
   let currenttheme = testersettings.currenttheme;
   let user;
-  let defaultui = (currenttheme === "default") ? path.join(__dirname, "ulaunch", "romFs", "default", "ui") : path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "ui");
+  let timeout = null;
+  document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width:300`, `width:${testersettings.volume*300}`));
+  let vnum = 15;
+  switchem.on("volp", () => {
+    clearTimeout(timeout);
+    let HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
+    if(HTMLvolume/300 >= 1){
+      $("#vol").fadeTo(100, 1, function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          $("#vol").fadeTo(100, 0);
+        }, 3000);
+      });
+      Howler.volume(1);
+      testersettings.volume = 1;
+      fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+    } else {
+      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}px`, `width: ${HTMLvolume+vnum}px`));
+      $("#vol").fadeTo(100, 1, function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          $("#vol").fadeTo(100, 0);
+        }, 3000);
+      });
+      Howler.volume((HTMLvolume+vnum)/300);
+      testersettings.volume = (HTMLvolume+vnum)/300;
+      fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+    }
+  });
+  switchem.on("volm", () => {
+    clearTimeout(timeout);
+    let HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
+    if(HTMLvolume/300 <= 0){
+      $("#vol").fadeTo(100, 1, function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          $("#vol").fadeTo(100, 0);
+        }, 3000);
+      });
+      Howler.volume(0);
+      testersettings.volume = 0;
+      fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+    } else {
+      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}px`, `width: ${HTMLvolume-vnum}px`));
+      $("#vol").fadeTo(100, 1, function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          $("#vol").fadeTo(100, 0);
+        }, 3000);
+      });
+      Howler.volume((HTMLvolume-vnum)/300);
+      testersettings.volume = (HTMLvolume-vnum)/300;
+      fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+    }
+  });
+  let defaultui;
+  if(currenttheme !== "default"){
+    if(fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme))){
+      defaultui = path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "ui");
+      if(fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "sound", "BGM.mp3"))){
+        let bgm;
+        let defbgm = require(path.join(__dirname, "ulaunch", "romFs", "default", "sound", "BGM.json"));
+        if(fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "sound", "BGM.json"))){
+          bgm = require(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "sound", "BGM.json"));
+          if(bgm.loop === undefined){
+            bgm.loop = defbgm.loop;
+          } if(bgm.fade_in_ms === undefined){
+            bgm.fade_in_ms = defbgm.fade_in_ms;
+          } if(bgm.fade_out_ms === undefined){
+            bgm.fade_out_ms = defbgm.fade_out_ms;
+          }
+        } else {
+          bgm = defbgm;
+        }
+        sound = new Howl({
+          src: [path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "sound", "BGM.mp3")],
+          autoplay: true,
+          loop: bgm.loop
+        });
+        sound.on('load', () => {
+          Howler.volume(testersettings.volume);
+          fade(sound.duration());
+        });
+        function fade(duration){
+          sound.fade(0,1,bgm.fade_in_ms);
+          setTimeout(() => {
+            sound.fade(1,0,bgm.fade_out_ms);
+            setTimeout(() => {
+              if(bgm.loop){
+                fade(duration);
+              }
+            }, bgm.fade_out_ms);
+          }, duration*1000-bgm.fade_out_ms);
+        }
+      }
+    } else {
+      defaultui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
+      testersettings.currenttheme = "default";
+      fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+    }
+  } else {
+    defaultui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
+  }
   let romfsui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
   let lang = require(path.join(__dirname, "ulaunch", "romFs", "LangDefault.json"));
   let uijson = InitializeUIJson(require(path.join(defaultui, "UI.json")));
@@ -1737,6 +1847,7 @@ async function power(){
     istounpower = true
     $('#switchcontainer').find('input, textarea, button, select').prop('disabled', true);
     $("#switchcontainer").fadeTo(300, 0, function(){
+      sound.pause();
       istounpower = false;
       ispower = false;
       if(ispowerpressed){
@@ -1747,6 +1858,7 @@ async function power(){
   }
   function onpower(){
     if(istopower) return;
+    sound.play();
     ispowerpressed = false;
     istopower = true
     $("#switchcontainer").fadeTo(300, 1, function(){
