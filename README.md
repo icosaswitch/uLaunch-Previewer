@@ -1,6 +1,6 @@
 # uLaunch-Previewer
 
-Comming Soon...
+Coming Soon...
 
 ## Credits
 
