@@ -2,7 +2,7 @@
 
 Coming Soon...
 
-## What is missing ?
+## What is missing (before first release) ?
 
  - ~Dialog~
  - Languages
