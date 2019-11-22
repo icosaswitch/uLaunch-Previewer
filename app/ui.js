@@ -673,9 +673,9 @@ async function init(){
         });
         function click(id){
           if(ress) return;
-          let input = document.getElementById(id);
-          let before = document.getElementById(selected);
-          if(input === null) return;
+          let input = $(`#dialog #${id}`).get(0);
+          let before = $(`#dialog #${selected}`).get(0);
+          if(input === undefined) return;
           input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
           before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
           selected = parseInt(id);
@@ -1773,7 +1773,7 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
       let rx = elx + ((elemw + 20) * i);
       let ry = ely;
       let rr = (elemh / 2);
-      let dclr = `#${nr}${ng}${nb}ff`;
+      let dclr = `#${nr}${ng}${nb}${(n == 0) ? "FF" : "00"}`;
       html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:18;font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-20};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px 20px;" value="${txt}" id="${n}"/>`
     }
     html += "</div>";
