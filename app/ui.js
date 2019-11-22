@@ -687,6 +687,58 @@ async function init(){
           $("#dialog").remove();
         }
       });
+      $("#user").click(async () => {
+        if(res) return;
+        res = true;
+        let ress = false;
+        let dialog = await createDialog(lang["user_settings"], `${lang["user_selected"]}: ${user.username}<br>${lang["user_option"]}`, [`${(user.password) ? lang["user_pass_ch"] : lang["user_pass_reg"]}`, lang["user_view_page"], lang["user_logoff"], lang["cancel"]], false, usericon);
+        $("#ulaunchscreen").append(dialog);
+        let inputs = $("#dialog :input");
+        let selected = 0;
+        let max = inputs.length;
+        inputs.click((e) => {
+          click(e.currentTarget.id);
+        });
+        switchem.on("arrowright", () => {
+          click(selected+1);
+        });
+        switchem.on("lrightstart", () => {
+          click(selected+1);
+        });
+        switchem.on("rrightstart", () => {
+          click(selected+1);
+        });
+        switchem.on("arrowleft", () => {
+          click(selected-1);
+        });
+        switchem.on("lleftstart", () => {
+          click(selected-1);
+        });
+        switchem.on("rleftstart", () => {
+          click(selected-1);
+        });
+        switchem.on("a", () => {
+          dblclick(selected);
+        });
+        inputs.dblclick((e) => {
+          dblclick(e.currentTarget.id);
+        });
+        function click(id){
+          if(ress) return;
+          let input = $(`#dialog #${id}`).get(0);
+          let before = $(`#dialog #${selected}`).get(0);
+          if(input === undefined) return;
+          before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+          input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+          selected = parseInt(id);
+        }
+        function dblclick(id){
+          if(ress) return;
+          ress = true;
+          res = false;
+          $("#dialog").remove();
+        }
+      });
       function menuitems(){
         return new Promise(async function(resolve, reject) {
           let ress = false;
