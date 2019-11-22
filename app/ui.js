@@ -406,8 +406,8 @@ async function init(){
   }
   let romfsui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
   let lang = require(path.join(__dirname, "ulaunch", "romFs", "LangDefault.json"));
-  let uijson = InitializeUIJson(require(path.join(defaultui, "UI.json")));
-  $(document.head).append("<style>@font-face {font-family: 'Font';font-style: normal;src: url('"+path.join(defaultui, "Font.ttf").replace(/\\/g, "/")+"');}</style>");
+  let uijson = InitializeUIJson(require(existsUI("UI.json", defaultui, romfsui)));
+  $(document.head).append("<style>@font-face {font-family: 'Font';font-style: normal;src: url('"+existsUI("Font.ttf", defaultui, romfsui).replace(/\\/g, "/")+"');}</style>");
   let defaulticon = {
     albumicon: existsUI("AlbumIcon.png", defaultui, romfsui),
     background: existsUI("Background.png", defaultui, romfsui),
@@ -476,7 +476,6 @@ async function init(){
     usericon: {w: 50,h: 50},
     webicon: {w: 50,h: 50},
   }, defaulticon, uijson);
-  console.log(path.join(__dirname, "ulaunch", "romFs", "default" , "ui", "Font.ttf"))
   function startup(){
     return new Promise(function(resolve, reject) {
       let res = false;
