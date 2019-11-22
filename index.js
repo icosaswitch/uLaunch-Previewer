@@ -18,14 +18,13 @@ app.on("ready", () => {
     transparent: true,
     resizable: false,
     maximizable: false,
+    backgroundColor: "#00FFFFFF",
     fullscreen: false,
     icon: getPlatformIcon('icon'),
     webPreferences: {
         nodeIntegration: true
     }
   });
-
-  //frame.webContents.on("devtools-opened", () => {frame.webContents.closeDevTools();});
 
   frame.loadURL(url.format({
     pathname: path.join(__dirname, 'app', 'app.ejs'),

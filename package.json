@@ -4,7 +4,7 @@
   "description": "uLaunch Previewer",
   "main": "index.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron --enable-transparent-visuals --disable-gpu .",
     "dist:win": "electron-builder --win",
     "dist:linux": "electron-builder --linux",
     "dist:darwin": "electron-builder --mac"

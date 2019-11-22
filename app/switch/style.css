@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'OpenSans';
+  font-style: normal;
+  src: url('./OpenSans.ttf');
+}
+
 .drag {
   width: 1340;
   height: 30;
@@ -198,55 +204,18 @@
   height: 75;
 }
 
-.xtxt {
+.switchbtntxt {
   position: absolute;
-  outline: none;
-  border: none;
-  top: 7.5;
-  left: 16.5;
+  top: 50%;
+  user-select: none;
+  margin: 0px 0px;
+  padding: 0px;
+  left: 50%;
+  transform: translate(-50%,-50%);
   cursor: default;
   color: #fff;
-  font-size: 40;
-  font-weight: 400;
-  background-color: transparent;
-}
-
-.btxt {
-  position: absolute;
-  outline: none;
-  border: none;
-  top: 7.5;
-  left: 18;
-  cursor: default;
-  color: #fff;
-  font-size: 40;
-  font-weight: 400;
-  background-color: transparent;
-}
-
-.ytxt {
-  position: absolute;
-  outline: none;
-  border: none;
-  top: 7.5;
-  left: 17;
-  cursor: default;
-  color: #fff;
-  font-size: 40;
-  font-weight: 400;
-  background-color: transparent;
-}
-
-.atxt {
-  position: absolute;
-  outline: none;
-  border: none;
-  top: 7.5;
-  left: 17;
-  cursor: default;
-  color: #fff;
-  font-size: 40;
-  font-weight: 400;
+  font-size: 42.5;
+  font-family: 'OpenSans';
   background-color: transparent;
 }
 

@@ -249,7 +249,6 @@ $(function() {
   init();
 })
 
-let margin = "-5px 1px";
 let sound;
 
 async function init(){
@@ -596,7 +595,7 @@ async function init(){
       let gameimg = path.join(__dirname, "ulaunch", "game.png");
       let usericon = (user.usericon === "default") ? path.join(__dirname, "ulaunch", "User.png") : user.usericon;
       let games = require(path.join(__dirname, "ulaunch", "game", "games.json"));
-      document.getElementById("ulaunchscreen").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "main.ejs"), "utf8"), {defaulticon, margin, games, testersettings, uijson, logo, size, usericon, gameimg});
+      document.getElementById("ulaunchscreen").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "main.ejs"), "utf8"), {defaulticon, games, testersettings, uijson, logo, size, usericon, gameimg});
       document.getElementById("in").innerHTML = games[0].name;
       document.getElementById("ia").innerHTML = games[0].author;
       document.getElementById("iv").innerHTML = "v"+games[0].version;
@@ -1116,7 +1115,7 @@ async function init(){
       let themes = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "themes")).filter(n => n.indexOf("Manifest") !== -1);
       themes = themes.map(n => {
         return {
-          path: n.split("/")[1],
+          path: n.split("sdmc/ulaunch/themes/")[1].split("/")[0],
           manifest: require(n)
         }
       });
@@ -1207,6 +1206,7 @@ async function init(){
         } else if(testersettings.currenttheme === tpath){
           return ShowNotification(lang["theme_active_this"]);
         }
+        console.log(tpath);
         testersettings.currenttheme = tpath;
         testersettings.isthemerestart = true;
         fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
@@ -1629,9 +1629,6 @@ function InitializeSize(size, defaulticon, uijson){
     let k = sizeKeys[i];
     let img = fs.readFileSync(defaulticon[k]);
     img = {w: img.readUInt32BE(16),h: img.readUInt32BE(20)}
-    if(size["topmenu"].w !== img.w && size["topmenu"].h !== img.h && k === "topmenu"){
-      margin = "0px 0px";
-    }
     size[k] = img;
   }
   return size;

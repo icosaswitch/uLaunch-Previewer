@@ -2,16 +2,18 @@
 <img width="<%- (size.bannertheme.w) %>" height="<%- (size.bannertheme.h) %>" style="position: absolute;top: <%- (uijson["themes_menu"]["banner_image"]["y"] ) %>; left: <%- (uijson["themes_menu"]["banner_image"]["x"] ) %>;visibility: <%- uijson["themes_menu"]["banner_image"]["visible"] %>;" src="<%- defaulticon.bannertheme %>">
 <div style="position: relative;top: <%- uijson["themes_menu"]["themes_menu_item"]["y"] %>; left: <%- uijson["themes_menu"]["themes_menu_item"]["x"] %>;width: 880;height:500;overflow-x: hidden;overflow-y: auto;margin: 0px 0px;padding: 0px;visibility: <%- uijson["themes_menu"]["themes_menu_item"]["visible"] %>;" type="button" id="themes">
   <% let n = 0 %>
-  <img width="100" height="100" style="position:absolute;top: <%- n*100 %>;z-index: 1; left: 25" src="<%- path.join(__dirname, "ulaunch", "romFs", "Logo.png") %>">
-  <p style="position: absolute;top: <%- n*100+32.5 %>;z-index: 1; left: 140;margin: 0px 0px;border: 0;font-family: 'Font'; font-size: 25; background-color: transparent; border: 0; color: <%- uijson["text_color"] %>;"><%- lang["theme_reset"] %></p>
-  <input type="button" style="position:absolute;top:<%- n*100 %>;left:0;z-index: 0;width: 880;height:100;outline:none;border: none;background-color:<%- (n == 0) ? uijson["menu_focus_color"] : uijson["menu_bg_color"] %>;" id="<%- n %>g"/>
-  <input type="button" style="position:absolute;top:<%- n*100 %>;left:0;z-index: 2;outline: none;width: 880;height:100;border: none;background-color:transparent" id="<%- n %>" alt="default"/>
+  <div style="position:absolute;top:0;left:0;width:880;height:100">
+    <img width="100" height="100" style="position:absolute;top: 0;z-index: 1; left: 25" src="<%- path.join(__dirname, "ulaunch", "romFs", "Logo.png") %>">
+    <p style="position: absolute;top: 50%;transform:translate(0, -50%);z-index: 1; left: 140;margin: 0px 0px;border: 0;font-family: 'Font'; font-size: 25; background-color: transparent; border: 0; color: <%- uijson["text_color"] %>;"><%- lang["theme_reset"] %></p>
+    <input type="button" style="position:absolute;top:0;left:0;z-index: 0;width: 880;height:100;outline:none;border: none;background-color:<%- (n == 0) ? uijson["menu_focus_color"] : uijson["menu_bg_color"] %>;" id="<%- n %>g"/>
+    <input type="button" style="position:absolute;top:0;left:0;z-index: 2;outline: none;width: 880;height:100;border: none;background-color:transparent" id="<%- n %>" alt="default"/>
+  </div>
   <%
     let num = undefined;
     let themess = themes.map((theme) => {
       let exist = fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", theme.path, "theme", "Icon.png"));
       n += 1
-      return `${(exist) ? `<img width="100" height="100" style="position:absolute;top: ${eval(n*100)};z-index: 1; left: 25" src="${path.join(ulaunchtester, "sdmc", "ulaunch", "themes", theme.path, "theme", "Icon.png")}"/>` : ""}<p style="position: absolute;top: ${eval(n*100+32.5)};z-index: 1; left: ${(exist) ? 140 : 25};margin: 0px 0px;border: 0;font-family: 'Font'; font-size: 25; background-color: transparent; border: 0; color: ${uijson["text_color"]};">${theme.manifest.name} (v${theme.manifest.release}, ${lang["theme_by"]} ${theme.manifest.author})</p><input type="button" style="position:absolute;top:${eval(n*100)};left:0;z-index: 0;width: 880;height:100;outline:none;border: none;background-color:${(n == 0) ? uijson["menu_focus_color"] : uijson["menu_bg_color"]};" id="${eval(n)}g"/><input type="button" style="position:absolute;top:${eval(n*100)};left:0;z-index: 2;outline: none;width: 880;height:100;border: none;background-color:transparent" id="${eval(n)}" alt="${theme.path}"/>`
+      return `<div style="position:absolute;top:${eval(n*100)};left:0;width:880;height:100">${(exist) ? `<img width="100" height="100" style="position:absolute;top: 0;z-index: 1; left: 25" src="${path.join(ulaunchtester, "sdmc", "ulaunch", "themes", theme.path, "theme", "Icon.png")}"/>` : ""}<p style="position: absolute;top: 50%;transform:translate(0, -50%);z-index: 1; left: ${(exist) ? 140 : 25};margin: 0px 0px;border: 0;font-family: 'Font'; font-size: 25; background-color: transparent; border: 0; color: ${uijson["text_color"]};">${theme.manifest.name} (v${theme.manifest.release}, ${lang["theme_by"]} ${theme.manifest.author})</p><input type="button" style="position:absolute;top:0;left:0;z-index: 0;width: 880;height:100;outline:none;border: none;background-color:${(n == 0) ? uijson["menu_focus_color"] : uijson["menu_bg_color"]};" id="${eval(n)}g"/><input type="button" style="position:absolute;top:0;left:0;z-index: 2;outline: none;width: 880;height:100;border: none;background-color:transparent" id="${eval(n)}" alt="${theme.path}"/></div>`
     }).join("");
   %>
   <%-
