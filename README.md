@@ -4,7 +4,7 @@ Coming Soon...
 
 ## What is missing ?
 
- - Dialog
+ - ~Dialog~
  - Languages
  - Multiselect
  - Suspended
