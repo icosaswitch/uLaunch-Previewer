@@ -442,7 +442,7 @@ async function init(){
     usericon: existsUI("UserIcon.png", defaultui, romfsui),
     webicon: existsUI("WebIcon.png", defaultui, romfsui),
   }
-  let size = InitializeSize({
+  let size = await InitializeSize({
     albumicon: {w: 50,h: 50},
     background: {w: 1280,h: 720},
     bannerfolder: {w: 1280,h: 135},
@@ -487,7 +487,7 @@ async function init(){
         if(testersettings.isthemerestart) {
           testersettings.isthemerestart = false;
           fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
-          ShowNotification(lang["theme_changed"]);
+          ShowNotification(lang["theme_changed"], uijson);
         }
         user = users[0];
         console.log(user);
@@ -587,7 +587,7 @@ async function init(){
     });
   }
   function mainmenu(){
-    return new Promise(function(resolve, reject) {
+    return new Promise(async function(resolve, reject) {
       let res = false;
       let interval = null;
       let logo = path.join(__dirname, "ulaunch", "romFs", "Logo.png");
@@ -634,6 +634,58 @@ async function init(){
         settings();
         res = true;
         resolve();
+      });
+      $("#logo").click(async () => {
+        if(res) return;
+        res = true;
+        let ress = false;
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}<br><br>${lang["ulaunch_contribute"]}:<br>https://github.com/XorTroll/uLaunch`, ["Ok"], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        $("#ulaunchscreen").append(dialog);
+        let inputs = $("#dialog :input");
+        let selected = 0;
+        let max = inputs.length;
+        inputs.click((e) => {
+          click(e.currentTarget.id);
+        });
+        switchem.on("arrowright", () => {
+          click(selected+1);
+        });
+        switchem.on("lrightstart", () => {
+          click(selected+1);
+        });
+        switchem.on("rrightstart", () => {
+          click(selected+1);
+        });
+        switchem.on("arrowleft", () => {
+          click(selected-1);
+        });
+        switchem.on("lleftstart", () => {
+          click(selected-1);
+        });
+        switchem.on("rleftstart", () => {
+          click(selected-1);
+        });
+        switchem.on("a", () => {
+          dblclick(selected);
+        });
+        inputs.dblclick((e) => {
+          dblclick(e.currentTarget.id);
+        });
+        function click(id){
+          if(ress) return;
+          let input = document.getElementById(id);
+          let before = document.getElementById(selected);
+          if(input === null) return;
+          input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+          before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+          selected = parseInt(id);
+        }
+        function dblclick(id){
+          if(ress) return;
+          ress = true;
+          res = false;
+          $("#dialog").remove();
+        }
       });
       function menuitems(){
         return new Promise(async function(resolve, reject) {
@@ -712,7 +764,6 @@ async function init(){
           let max = 0;
           let selected = 0;
           let inputs = $("#items :input");
-          console.log(inputs)
           max = inputs.length;
           let right;
           inputs.click((e) => {
@@ -1004,7 +1055,6 @@ async function init(){
             n += 1;
             return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent" type="button" id="${n}" alt="${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
           });
-          console.log(hbi);
           items = items.concat(hbi);
           items.push(`<img width="${size.cursor.w}" height="${size.cursor.h}" style="position: absolute;top: ${cursor}; left: ${98-(size.cursor.w-256)/2}" src="${defaulticon.cursor}" id="cursor"/>`)
           items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+256+86}"/>`)
@@ -1013,7 +1063,6 @@ async function init(){
           let max = 0;
           let selected = 0;
           let inputs = $("#items :input");
-          console.log(inputs)
           max = inputs.length;
           let right;
           inputs.click((e) => {
@@ -1201,9 +1250,9 @@ async function init(){
         let input = document.getElementById(id);
         let tpath = input.getAttribute("alt");
         if(testersettings.currenttheme === "default" && tpath === "default"){
-          return ShowNotification(lang["theme_no_custom"]);
+          return ShowNotification(lang["theme_no_custom"], uijson);
         } else if(testersettings.currenttheme === tpath){
-          return ShowNotification(lang["theme_active_this"]);
+          return ShowNotification(lang["theme_active_this"], uijson);
         }
         console.log(tpath);
         testersettings.currenttheme = tpath;
@@ -1234,7 +1283,7 @@ async function init(){
           "id": 0
         },
         {
-          "value": `${lang["set_console_timezone"]}: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+          "value": `${lang["set_console_timezone"]}: "${Intl.DateTimeFormat().resolvedOptions().timeZone}"`,
           "id": -1
         },
         {
@@ -1469,17 +1518,23 @@ async function init(){
   startup();
 }
 
-function makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+function getTextWH(fontSize, text, width = "auto", height = "auto"){
+   var id = '';
+   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
    var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   for ( var i = 0; i < 25; i++ ) {
+      id += characters.charAt(Math.floor(Math.random() * charactersLength));
    }
-   return result;
+   $(document.body).append(`<p id="${id}" style="font-family: 'Font';font-size:${fontSize};width:${width};height:${height};position:absolute;top:0;left:0;opacity:0;margin:0px 0px;padding: 0px"><span style="word-break: break-all;">${text}</span></p>`)
+   var test = document.getElementById(id);
+   let textw = test.clientWidth;
+   let texth = test.clientHeight;
+   let ret = [test.clientWidth, test.clientHeight];
+   $(`#${id}`).remove();
+   return ret;
 }
 
-async function ShowNotification(text, ms = 1500){
+async function ShowNotification(text, uijson, ms = 1500){
   if(document.getElementById("notification") !== null){
     await new Promise(function(resolve, reject) {
       let interval = null;
@@ -1494,17 +1549,15 @@ async function ShowNotification(text, ms = 1500){
       }
     });
   }
-  let id = makeid(20);
-  $(document.body).append(`<p id="${id}" style="font-family: 'Font';font-size:20;position:absolute;top:0;left:0;opacity:0;margin:0px 0px;padding: 0px">${text}</p>`)
-  var test = document.getElementById(id);
-  let textw = test.clientWidth;
-  let texth = test.clientHeight;
-  let toastw = textw + (texth * 4);
-  let toasth = texth * 3;
+  let wh = getTextWH(20, text);
+  let toastw = wh[0] + (wh[1] * 4);
+  let toasth = wh[1] * 3;
   console.log(toastw);
   console.log(toasth);
   $("#"+id).remove();
-  $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(1280 - toastw) / 2};top: 550;width: ${toastw};text-align: center;color: #e1e1e1;z-index: 2;height: ${toasth};font-size: 20;padding: 10 32.5;border: none;border-radius: 32.5px;background-color: #1e1e1e;opacity:0;" value="${text}"/>=`);
+  console.log(uijson["toast_base_color"]);
+  console.log(uijson["toast_text_color"]);
+  $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(1280 - toastw) / 2};top: 550;width: ${toastw};text-align: center;color: ${uijson["toast_text_color"]};z-index: 2;height: ${toasth};font-size: 20;padding: 10 32.5;border: none;border-radius: 32.5px;background-color: ${uijson["toast_base_color"]};opacity:0;" value="${text}"/>`);
   $("#notification").fadeTo(350, 200/255, function(){
     setTimeout(() => {
       $("#notification").fadeTo(350, 0, function(){
@@ -1527,6 +1580,8 @@ function InitializeUIJson(uijson){
   uijson["menu_focus_color"] = ApplyConfigForElement(uijson, "menu_focus_color");
   uijson["menu_bg_color"] = ApplyConfigForElement(uijson, "menu_bg_color");
   uijson["text_color"] = ApplyConfigForElement(uijson, "text_color");
+  uijson["toast_text_color"] = ApplyConfigForElement(uijson, "toast_text_color");
+  uijson["toast_base_color"] = ApplyConfigForElement(uijson, "toast_base_color");
   uijson["menu_folder_text_x"] = ApplyConfigForElement(uijson, "menu_folder_text_x");
   uijson["menu_folder_text_y"] = ApplyConfigForElement(uijson, "menu_folder_text_y");
   uijson["menu_folder_text_size"] = ApplyConfigForElement(uijson, "menu_folder_text_size");
@@ -1621,16 +1676,110 @@ function ApplyConfigForElement(json, obj1, obj2){
   }
 }
 
-function InitializeSize(size, defaulticon, uijson){
+async function InitializeSize(size, defaulticon, uijson){
   let sizeKeys = Object.keys(size);
   for(var i=0; i<sizeKeys.length; i++){
-    let s = size[i];
-    let k = sizeKeys[i];
-    let img = fs.readFileSync(defaulticon[k]);
-    img = {w: img.readUInt32BE(16),h: img.readUInt32BE(20)}
-    size[k] = img;
+    await new Promise(function(resolve, reject) {
+      let s = size[i];
+      let k = sizeKeys[i];
+      let img = new Image();
+      img.onload = () => {
+        size[k] = {w: img.width,h: img.height}
+        resolve();
+      };
+      img.src = defaulticon[k];
+    });
   }
   return size;
+}
+
+async function createDialog(title, content, opts, hasCancel = false, icon){
+  let html = `<div style="background-color: #0000007F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="dialog">`;
+  if(hasCancel) opts.push("Cancel");
+  if(opts.length !== 0){
+    let dw = (20 * (opts.length - 1)) + 250;
+    for(var i = 0; i < opts.length; i++){
+        let tw = getTextWH(18, opts[i])[0];
+        dw += tw + 20;
+    }
+    if(dw > 1280) dw = 1280;
+    let icm = 30;
+    let elemh = 60;
+    let tdw = getTextWH(20, content)[0] + 157.5;
+    console.log(tdw-90);
+    if(tdw > dw) dw = tdw;
+    tdw = getTextWH(30, title)[0] + 157.5;
+    console.log(tdw-90);
+    if(tdw > dw) dw = tdw;
+    let ely = getTextWH(20, content)[1] + getTextWH(30, title)[1] + 140;
+    if(icon){
+      await new Promise(function(resolve, reject) {
+        let img = new Image();
+        img.onload = () => {
+          let tely = img.height + icm + 25;
+          if(tely > ely) ely = tely;
+          tdw = getTextWH(20, content)[0] + 90 + img.width + 20;
+          if(tdw > dw) dw = tdw;
+          tdw = getTextWH(30, title)[0] + 90 + img.width + 20;
+          if(tdw > dw) dw = tdw;
+          resolve();
+        }
+        img.src = icon;
+      });
+    }
+    if(dw > 1280) dw = 1280;
+    let dh = ely + elemh + 30;
+    if(dh > 720) dh = 720;
+    let dx = (1280 - dw) / 2;
+    let dy = (720 - dh) / 2;
+    ely += dy;
+    let elemw = ((dw - (20 * (opts.length + 1))) / opts.length);
+    let elx = dx + ((dw - ((elemw * opts.length) + (20 * (opts.length - 1)))) / 2);
+    let r = 35;
+    let nr = "B4";
+    let ng = "B4";
+    let nb = "C8";
+    let end = false;
+    let initfact = 0;
+    let bw = dw;
+    let bh = dh;
+    let fw = bw - (r * 2);
+    let fh = bh - (r * 2);
+    let clr = "#e1e1e1";
+    html += `<div style="background-color:transparent;width:${bw};height:${bh};position:absolute;overflow:hidden;top:${dy};left:${dx};"><input type="button" style="z-index:-1;outline:none;border:none;width:${bw};height:${bh};position:absolute;top:0;left:0;border-radius:${r}px;background-color:${clr};" disabled/>`
+    let iconwidth = 0;
+    if(icon){
+      await new Promise(function(resolve, reject) {
+        let img = new Image();
+        img.onload = () => {
+          let icw = img.width;
+          let icx = (dw - (icw + icm));
+          let icy = icm;
+          iconwidth = icw+(bw-(icx+icw))-20;
+          html += `<img style="position:absolute;top:${icy};left:${icx}" src="${icon}"/>`;
+          resolve();
+        }
+        img.src = icon;
+      });
+    }
+    html += `<div style="background-color:transparent;position:absolute;top:0;left:45;width:${bw-90-iconwidth};height:${bh};"><p style="user-select:none;margin:0px 0px;padding: 0px;font-size:30;font-family: 'Font';position:relative;top:55;left:0"><span style="word-break: break-all;">${title}</span></p><p style="user-select:none;margin:0px 0px;padding: 0px;font-size:20;font-family: 'Font';position:relative;top:110;left:0"><span style="word-break: break-all;">${content}</span></p></div>`
+    for(var i=0; i<opts.length; i++){
+      let n = i;
+      let txt = opts[n];
+      let tw = getTextWH(18, txt)[0];
+      let th = getTextWH(18, txt)[1];
+      let tx = elx + ((elemw - tw) / 2) + ((elemw + 20) * i);
+      let ty = ely + ((elemh - th) / 2);
+      let rx = elx + ((elemw + 20) * i);
+      let ry = ely;
+      let rr = (elemh / 2);
+      let dclr = `#${nr}${ng}${nb}ff`;
+      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:18;font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-20};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px 20px;" value="${txt}" id="${n}"/>`
+    }
+    html += "</div>";
+  };
+  html += "</div>";
+  return html;
 }
 
 function visibility(visible){

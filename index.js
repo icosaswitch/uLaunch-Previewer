@@ -26,6 +26,8 @@ app.on("ready", () => {
     }
   });
 
+  //frame.webContents.openDevTools({mode: "detach"});
+
   frame.loadURL(url.format({
     pathname: path.join(__dirname, 'app', 'app.ejs'),
     protocol: 'file:',

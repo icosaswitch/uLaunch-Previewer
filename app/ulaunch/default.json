@@ -3,6 +3,8 @@
   "menu_focus_color": "#5ebcffff",
   "menu_bg_color": "#0094ffff",
   "text_color": "#e1e1e1ff",
+  "toast_text_color": "#e1e1e1ff",
+  "toast_base_color": "#282828ff",
   "menu_folder_text_x": 30,
   "menu_folder_text_y": 200,
   "menu_folder_text_size": 25,
