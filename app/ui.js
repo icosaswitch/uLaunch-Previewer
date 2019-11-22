@@ -676,8 +676,8 @@ async function init(){
           let input = $(`#dialog #${id}`).get(0);
           let before = $(`#dialog #${selected}`).get(0);
           if(input === undefined) return;
-          input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
           before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+          input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
           selected = parseInt(id);
         }
         function dblclick(id){
