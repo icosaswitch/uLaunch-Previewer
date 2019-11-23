@@ -12,6 +12,7 @@ let ui = path.join(__dirname, "theme", "ui");
 let manifest;
 let emitter = require('events').EventEmitter;
 let switchem = new emitter();
+let istyping = false;
 $(function() {
   $.fn.ctrlCmd = function(key) {
     var allowDefault = true;
@@ -42,7 +43,7 @@ $(function() {
   };
   let keysdown = {};
   $(document).keydown(function(e){
-    if(keysdown[e.which]) return;
+    if(keysdown[e.which] || istyping) return;
     keysdown[e.which] = true;
     if(e.which === 80){
       power();
@@ -308,7 +309,7 @@ async function init(){
   let vnum = 15;
   switchem.on("volp", () => {
     clearTimeout(timeout);
-    let HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
+    var HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
     if(HTMLvolume/300 >= 1){
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
@@ -320,7 +321,7 @@ async function init(){
       testersettings.volume = 1;
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     } else {
-      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}px`, `width: ${HTMLvolume+vnum}px`));
+      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}`, `width: ${HTMLvolume+vnum}`).replace(`width:${HTMLvolume}`, `width:${HTMLvolume+vnum}`));
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
         timeout = setTimeout(() => {
@@ -334,7 +335,7 @@ async function init(){
   });
   switchem.on("volm", () => {
     clearTimeout(timeout);
-    let HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
+    var HTMLvolume = parseInt(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
     if(HTMLvolume/300 <= 0){
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
@@ -346,7 +347,7 @@ async function init(){
       testersettings.volume = 0;
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     } else {
-      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}px`, `width: ${HTMLvolume-vnum}px`));
+      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}`, `width: ${HTMLvolume-vnum}`).replace(`width:${HTMLvolume}`, `width:${HTMLvolume-vnum}`));
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
         timeout = setTimeout(() => {
@@ -607,6 +608,7 @@ async function init(){
   }
   function mainmenu(){
     return new Promise(async function(resolve, reject) {
+      let multiselect = [];
       let res = false;
       let interval = null;
       let logo = path.join(__dirname, "ulaunch", "romFs", "Logo.png");
@@ -642,7 +644,6 @@ async function init(){
           document.getElementById("time").innerHTML = times;
         }, 1);
       }
-      $(':not(input,select,textarea)').disableSelection();
       $("#theme").click(() => {
         if(res) return;
         clearInterval(interval);
@@ -761,7 +762,7 @@ async function init(){
           $("#dialog").remove();
         }
       });
-      function menuitems(){
+      function lmenuitems(){
         return new Promise(async function(resolve, reject) {
           let ress = false;
           document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
@@ -825,17 +826,24 @@ async function init(){
               if(folders[f].includes(file)) ret = true;
             });
             if(ret) return "";
-            file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
-            let content = require(file);
-            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
-            left += 276;
-            n += 1;
-            return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
+            if(file === "hbmenu"){
+              left += 276;
+              n += 1;
+              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
+            } else {
+              let filename = file;
+              file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
+              let content = require(file);
+              if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
+              left += 276;
+              n += 1;
+              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
+            }
           });
           items = items.concat(hbi);
           items.push(`<img width="${size.suspended.w}" height="${size.suspended.h}" style="position: absolute;top: ${suspendedd}; left: ${98-(size.suspended.w-256)/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
+          items.push(`<div id="multiselect" style="position:absolute;top:${multiselectt};left:0;width:1280;height:${height-multiselectt*2};background-color: transparent;pointer-events:none;"></div>`)
           items.push(`<img width="${size.cursor.w}" height="${size.cursor.h}" style="position: absolute;top: ${cursor}; left: ${98-(size.cursor.w-256)/2}" src="${defaulticon.cursor}" id="cursor"/>`)
-          items.push(`<div id="multiselect" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color: transparent;pointer-events:none;"></div>`)
           items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+256+86}"/>`)
           items = items.join("");
           document.getElementById("items").innerHTML = items;
@@ -851,6 +859,441 @@ async function init(){
           let selected = 0;
           let inputs = $("#items :input");
           max = inputs.length;
+          switchem.on("y", () => {
+            if(res || ress) return;
+            ress = true;
+            return new Promise(function(resolve, reject) {
+              let mid = multiselect.length;
+              multiselect.push(true);
+              let div = $("#multiselect");
+              div.show();
+              div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(size.cursor.w-256)/2-(size.multiselect.w-256)/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
+              inputs.click((e) => {
+                click(e.currentTarget.id);
+              });
+              switchem.on("arrowright", () => {
+                click(selected+1);
+              });
+              switchem.on("lrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("rrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("arrowleft", () => {
+                click(selected-1);
+              });
+              switchem.on("lleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("rleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("a", () => {
+                dblclick(selected);
+              });
+              switchem.on("b", () => {
+                if(res || !multiselect[mid]) return;
+                multiselect[mid] = false;
+                $("#multiselect").hide();
+                document.getElementById("multiselect").innerHTML = "";
+                ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                ress = false;
+                res = false;
+                resolve();
+              });
+              inputs.dblclick((e) => {
+                dblclick(e.currentTarget.id);
+              });
+              function click(id){
+                if(res || !multiselect[mid]) return;
+                let input = document.getElementById(id);
+                if(input === null) return;
+                let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
+                let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
+                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                selected = parseInt(id);
+                if($(`#multiselect #${id}`).get(0) === undefined){
+                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                }
+                document.getElementById("cursor").setAttribute("style", `position: absolute;top: 0; left: ${leftcursor}`);
+                let alt = input.getAttribute("alt");
+                if(alt.startsWith("game")){
+                  let game = games.find(g => g.id === alt.split("/")[1]);
+                  document.getElementById("in").innerHTML = game.name;
+                  document.getElementById("ia").innerHTML = game.author;
+                  document.getElementById("iv").innerHTML = "v"+game.version;
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                } else if(alt.startsWith("folder")){
+                  let name = alt.split("/")[2];
+                  let entry = alt.split("/")[1];
+                  document.getElementById("in").innerHTML = name;
+                  document.getElementById("ia").innerHTML = entry;
+                  document.getElementById("iv").innerHTML = "";
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                } else if(alt.startsWith("homebrew")){
+                  alt = alt.split("/");
+                  document.getElementById("in").innerHTML = alt[1];
+                  document.getElementById("ia").innerHTML = alt[2];
+                  document.getElementById("iv").innerHTML = alt[3];
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                }
+                let scroll = document.getElementById("items").scrollLeft;
+                if(selected*276 > scroll){
+                  if(selected*276-276*3 < scroll) return;
+                  $(`#items`).animate({
+                      scrollLeft: selected*276-276*3
+                  }, 0);
+                } else {
+                  $(`#items`).animate({
+                      scrollLeft: selected*276
+                  }, 0);
+                }
+              }
+              async function dblclick(){
+                if(res || !multiselect[mid]) return;
+                let resss = false;
+                res = true;
+                let imgs = $("#multiselect img");
+                let onlyfolder = true;
+                for(var i=0; i<imgs.length; i++){
+                  if($(`#items #${imgs.get(i).id}`).get(0).getAttribute("alt").startsWith("game") || $(`#items #${imgs.get(i).id}`).get(0).getAttribute("alt").startsWith("homebrew")) onlyfolder = false;
+                }
+                if(onlyfolder === false){
+                  let dialog = await createDialog(lang["menu_multiselect"], lang["menu_move_to_folder"], [lang["menu_move_new_folder"], lang["menu_move_existing_folder"], lang["no"]]);
+                  $("#ulaunchscreen").append(dialog);
+                  let inputs = $("#dialog :input");
+                  selected = 0;
+                  let max = inputs.length;
+                  inputs.click((e) => {
+                    click(e.currentTarget.id);
+                  });
+                  switchem.on("arrowright", () => {
+                    click(selected+1);
+                  });
+                  switchem.on("lrightstart", () => {
+                    click(selected+1);
+                  });
+                  switchem.on("rrightstart", () => {
+                    click(selected+1);
+                  });
+                  switchem.on("arrowleft", () => {
+                    click(selected-1);
+                  });
+                  switchem.on("lleftstart", () => {
+                    click(selected-1);
+                  });
+                  switchem.on("rleftstart", () => {
+                    click(selected-1);
+                  });
+                  switchem.on("a", () => {
+                    dblclick(selected);
+                  });
+                  inputs.dblclick((e) => {
+                    dblclick(e.currentTarget.id);
+                  });
+                  function click(id){
+                    if(resss) return;
+                    let input = $(`#dialog #${id}`).get(0);
+                    let before = $(`#dialog #${selected}`).get(0);
+                    if(input === undefined) return;
+                    before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+                    input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+                    selected = parseInt(id);
+                  }
+                  function dblclick(id){
+                    if(resss) return;
+                    if(id == 0){
+                      resss = true;
+                      let finish = false;
+                      istyping = true;
+                      $("#ulaunchscreen").append(`<div style="background-color: #0000007F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="foldername"><div style="background-color: #e1e1e1;width:300;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:22.5;" id="namep">Enter the folder name</p><input style="width:250;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
+                      $('#name').bind("enterKey",function(e){
+                        if(finish) return;
+                        let foldername = $(e.currentTarget).val();
+                        if(foldername == ""){
+                          alert("The folder name is empty!");
+                        } else {
+                          istyping = false;
+                          $("#foldername").remove();
+                          let imgs = $("#multiselect img");
+                          let folder = [];
+                          for(var i=0; i<imgs.length; i++){
+                            let img = imgs.get(i);
+                            let title = $(`#items #${img.id}`).get(0);
+                            let titlealt = title.getAttribute("alt");
+                            if(titlealt.startsWith("game")){
+                              folder.push(titlealt.split("/")[1]);
+                            } else if(titlealt.startsWith("homebrew")){
+                              folder.push(titlealt.split("/")[4]);
+                            } else if(titlealt.startsWith("folder")){
+                              folder = folder.concat(menuitems.folders[titlealt.split("/")[2]]);
+                              delete menuitems.folders[titlealt.split("/")[2]];
+                            }
+                          }
+                          menuitems.folders[foldername] = folder;
+                          fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify(menuitems, null, 2), (err) => {if(err) throw err});
+                          multiselect[mid] = false;
+                          $("#multiselect").hide();
+                          document.getElementById("multiselect").innerHTML = "";
+                          resss = true;
+                          ress = true;
+                          res = false;
+                          $("#dialog").remove();
+                          if(multiselect.filter(n => n == true)[0]){
+                            multiselect = multiselect.map(n => false);
+                            $("#multiselect").hide();
+                            document.getElementById("multiselect").innerHTML = "";
+                            ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                          }
+                          $(`#items`).animate({
+                            scrollLeft: 0
+                          }, 0);
+                          lmenuitems();
+                          resolve();
+                        }
+                      });
+                      $('#name').keyup(function(e){if(e.keyCode == 13){$(this).trigger("enterKey");}});
+                    } else if(id == 1) {
+                      resss = true;
+                      let ressss = false;
+                      $("#dialog").remove();
+                      ShowNotification(lang["menu_move_select_folder"], uijson);
+                      let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
+                      let leftcursor = 98-(size.cursor.w-256)/2;
+                      document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
+                      $(`#items`).animate({
+                        scrollLeft: 0
+                      }, 0);
+                      selected = 0;
+                      inputs.click((e) => {
+                        click(e.currentTarget.id);
+                      });
+                      switchem.on("arrowright", () => {
+                        click(selected+1);
+                      });
+                      switchem.on("lrightstart", () => {
+                        click(selected+1);
+                      });
+                      switchem.on("rrightstart", () => {
+                        click(selected+1);
+                      });
+                      switchem.on("arrowleft", () => {
+                        click(selected-1);
+                      });
+                      switchem.on("lleftstart", () => {
+                        click(selected-1);
+                      });
+                      switchem.on("rleftstart", () => {
+                        click(selected-1);
+                      });
+                      switchem.on("a", () => {
+                        dblclick(selected);
+                      });
+                      switchem.on("b", () => {
+                        if(ressss) return;
+                        multiselect[mid] = false;
+                        $("#multiselect").hide();
+                        document.getElementById("multiselect").innerHTML = "";
+                        ShowNotification(lang["menu_move_select_folder_cancel"], uijson)
+                        ressss = true;
+                        resss = true;
+                        selected = 0;
+                        ress = false;
+                        res = false;
+                        resolve();
+                      });
+                      inputs.dblclick((e) => {
+                        dblclick(e.currentTarget.id);
+                      });
+                      function click(id){
+                        if(ressss) return;
+                        let input = document.getElementById(id);
+                        console.log(input);
+                        if(input === null) return;
+                        let alt = input.getAttribute("alt");
+                        if(alt.startsWith("game")){
+                          return;
+                        } else if(alt.startsWith("folder")){
+                          let name = alt.split("/")[2];
+                          let entry = alt.split("/")[1];
+                          document.getElementById("in").innerHTML = name;
+                          document.getElementById("ia").innerHTML = entry;
+                          document.getElementById("iv").innerHTML = "";
+                          document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                          document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                          document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                        } else if(alt.startsWith("homebrew")){
+                          return;
+                        }
+                        let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
+                        let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                        selected = parseInt(id);
+                        document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
+                        let scroll = document.getElementById("items").scrollLeft;
+                        if(selected*276 > scroll){
+                          if(selected*276-276*3 < scroll) return;
+                          $(`#items`).animate({
+                              scrollLeft: selected*276-276*3
+                          }, 0);
+                        } else {
+                          $(`#items`).animate({
+                              scrollLeft: selected*276
+                          }, 0);
+                        }
+                      }
+                      function dblclick(id){
+                        if(ressss) return;
+                        let alt = document.getElementById(id).getAttribute("alt");
+                        let name = alt.split("/")[2];
+                        let imgs = $("#multiselect img");
+                        let folder = [];
+                        for(var i=0; i<imgs.length; i++){
+                          let img = imgs.get(i);
+                          let title = $(`#items #${img.id}`).get(0);
+                          let titlealt = title.getAttribute("alt");
+                          if(titlealt.startsWith("game")){
+                            folder.push(titlealt.split("/")[1]);
+                          } else if(titlealt.startsWith("homebrew")){
+                            folder.push(titlealt.split("/")[4]);
+                          } else if(titlealt.startsWith("folder")){
+                            if(titlealt.split("/")[2] !== name){
+                              folder = folder.concat(menuitems.folders[titlealt.split("/")[2]]);
+                              delete menuitems.folders[titlealt.split("/")[2]];
+                            }
+                          }
+                        }
+                        menuitems.folders[name] = menuitems.folders[name].concat(folder);
+                        fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify(menuitems, null, 2), (err) => {if(err) throw err});
+                        multiselect[mid] = false;
+                        $("#multiselect").hide();
+                        document.getElementById("multiselect").innerHTML = "";
+                        ressss = true;
+                        resss = true;
+                        selected = 0;
+                        ress = true;
+                        res = false;
+                        if(multiselect.filter(n => n == true)[0]){
+                          multiselect = multiselect.map(n => false);
+                          $("#multiselect").hide();
+                          document.getElementById("multiselect").innerHTML = "";
+                          ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                        }
+                        $(`#items`).animate({
+                          scrollLeft: 0
+                        }, 0);
+                        lmenuitems();
+                        resolve();
+                      }
+                    } else {
+                      multiselect[mid] = false;
+                      $("#multiselect").hide();
+                      document.getElementById("multiselect").innerHTML = "";
+                      ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                      resss = true;
+                      ress = false;
+                      res = false;
+                      $("#dialog").remove();
+                      resolve();
+                    }
+                  }
+                } else {
+                  let dialog = await createDialog(lang["menu_multiselect"], lang["menu_move_from_folder"], [lang["yes"], lang["no"]]);
+                  $("#ulaunchscreen").append(dialog);
+                  let inputs = $("#dialog :input");
+                  selected = 0;
+                  let max = inputs.length;
+                  inputs.click((e) => {
+                    click(e.currentTarget.id);
+                  });
+                  switchem.on("arrowright", () => {
+                    click(selected+1);
+                  });
+                  switchem.on("lrightstart", () => {
+                    click(selected+1);
+                  });
+                  switchem.on("rrightstart", () => {
+                    click(selected+1);
+                  });
+                  switchem.on("arrowleft", () => {
+                    click(selected-1);
+                  });
+                  switchem.on("lleftstart", () => {
+                    click(selected-1);
+                  });
+                  switchem.on("rleftstart", () => {
+                    click(selected-1);
+                  });
+                  switchem.on("a", () => {
+                    dblclick(selected);
+                  });
+                  inputs.dblclick((e) => {
+                    dblclick(e.currentTarget.id);
+                  });
+                  function click(id){
+                    if(resss) return;
+                    let input = $(`#dialog #${id}`).get(0);
+                    let before = $(`#dialog #${selected}`).get(0);
+                    if(input === undefined) return;
+                    before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+                    input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+                    selected = parseInt(id);
+                  }
+                  function dblclick(id){
+                    if(resss) return;
+                    if(id == 0){
+                      let imgs = $("#multiselect img");
+                      let folders = [];
+                      for(var i=0; i<imgs.length; i++){
+                        let img = imgs.get(i);
+                        let title = $(`#items #${img.id}`).get(0);
+                        let titlealt = title.getAttribute("alt");
+                        let name = titlealt.split("/")[2];
+                        folders.push(name);
+                        delete menuitems.folders[name];
+                      }
+                      fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify(menuitems, null, 2), (err) => {if(err) throw err});
+                      multiselect[mid] = false;
+                      $("#dialog").remove();
+                      $("#multiselect").hide();
+                      document.getElementById("multiselect").innerHTML = "";
+                      resss = true;
+                      selected = 0;
+                      ress = true;
+                      res = false;
+                      if(multiselect.filter(n => n == true)[0]){
+                        multiselect = multiselect.map(n => false);
+                        $("#multiselect").hide();
+                        document.getElementById("multiselect").innerHTML = "";
+                        ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                      }
+                      $(`#items`).animate({
+                        scrollLeft: 0
+                      }, 0);
+                      lmenuitems();
+                      resolve();
+                    } else {
+                      multiselect[mid] = false;
+                      $("#multiselect").hide();
+                      document.getElementById("multiselect").innerHTML = "";
+                      resss = true;
+                      ress = false;
+                      res = false;
+                      $("#dialog").remove();
+                      resolve();
+                    }
+                  }
+                }
+              }
+            });
+          });
           inputs.click((e) => {
             click(e.currentTarget.id);
           });
@@ -910,7 +1353,7 @@ async function init(){
               dblclick(e.currentTarget.id);
             });
             function click(id){
-              if(ress) return;
+              if(resss) return;
               let input = $(`#dialog #${id}`).get(0);
               let before = $(`#dialog #${selected}`).get(0);
               if(input === undefined) return;
@@ -928,12 +1371,10 @@ async function init(){
                 resss = true;
                 res = false;
                 $("#dialog").remove();
-                resolve();
               } else {
                 resss = true;
                 res = false;
                 $("#dialog").remove();
-                resolve();
               }
             }
           });
@@ -948,7 +1389,7 @@ async function init(){
             let input = document.getElementById(id);
             if(input === null) return;
             let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-            let leftcursor = 98+276*parseInt(id)-20;
+            let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
             selected = parseInt(id);
             document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
             let alt = input.getAttribute("alt");
@@ -1247,17 +1688,23 @@ async function init(){
             hbmenu();
           });
           function hbmenu(){
-            if(ress || res) return;
+            if((ress || res) && !multiselect[0]) return;
             if(menutoggle !== undefined){
               if(menutoggle.playing()) menutoggle.stop();
               menutoggle.play();
+            }
+            if(multiselect.filter(n => n == true)[0]){
+              multiselect = multiselect.map(n => false);
+              $("#multiselect").hide();
+              document.getElementById("multiselect").innerHTML = "";
+              ShowNotification(lang["menu_multiselect_cancel"], uijson);
             }
             ress = true;
             hbitems();
           }
         });
       }
-      function folderitems(name){
+      function folderitems(fname){
         return new Promise(function(resolve, reject) {
           let ress = false;
           document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
@@ -1267,7 +1714,8 @@ async function init(){
           let top = (height-256)/2;
           let left = 98;
           let n = -1;
-          let folders = require(path.join(ulaunchtester, "testersettings", "menuitems.json")).folders[name];
+          let menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          let folders = menuitems.folders[fname];
           let items = games.filter((game) => {
             if(folders.includes(game.id)){
               folders = folders.filter(f => f !== game.id);
@@ -1287,12 +1735,19 @@ async function init(){
             }
           });
           let hb = folders.map(file => {
-            file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
-            let content = require(file);
-            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
-            left += 276;
-            n += 1;
-            return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
+            if(file === "hbmenu"){
+              left += 276;
+              n += 1;
+              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
+            } else {
+              let filename = file;
+              file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
+              let content = require(file);
+              if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
+              left += 276;
+              n += 1;
+              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
+            }
           });
           items = items.concat(hb);
           let cursor = (height-size.cursor.h)/2;
@@ -1317,6 +1772,206 @@ async function init(){
           let inputs = $("#items :input");
           console.log(inputs)
           max = inputs.length;
+          switchem.on("y", () => {
+            if(res || ress) return;
+            ress = true;
+            return new Promise(function(resolve, reject) {
+              let mid = multiselect.length;
+              multiselect.push(true);
+              let div = $("#multiselect");
+              div.show();
+              div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(size.cursor.w-256)/2-(size.multiselect.w-256)/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
+              inputs.click((e) => {
+                click(e.currentTarget.id);
+              });
+              switchem.on("arrowright", () => {
+                click(selected+1);
+              });
+              switchem.on("lrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("rrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("arrowleft", () => {
+                click(selected-1);
+              });
+              switchem.on("lleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("rleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("a", () => {
+                dblclick(selected);
+              });
+              switchem.on("b", () => {
+                if(res || !multiselect[mid]) return;
+                multiselect[mid] = false;
+                $("#multiselect").hide();
+                document.getElementById("multiselect").innerHTML = "";
+                ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                ress = false;
+                res = false;
+                resolve();
+              });
+              inputs.dblclick((e) => {
+                dblclick(e.currentTarget.id);
+              });
+              function click(id){
+                if(res || !multiselect[mid]) return;
+                let input = document.getElementById(id);
+                if(input === null) return;
+                let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
+                let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
+                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                selected = parseInt(id);
+                if($(`#multiselect #${id}`).get(0) === undefined){
+                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                }
+                document.getElementById("cursor").setAttribute("style", `position: absolute;top: 0; left: ${leftcursor}`);
+                let alt = input.getAttribute("alt");
+                if(alt.startsWith("game")){
+                  let game = games.find(g => g.id === alt.split("/")[1]);
+                  document.getElementById("in").innerHTML = game.name;
+                  document.getElementById("ia").innerHTML = game.author;
+                  document.getElementById("iv").innerHTML = "v"+game.version;
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                } else if(alt.startsWith("folder")){
+                  let name = alt.split("/")[2];
+                  let entry = alt.split("/")[1];
+                  document.getElementById("in").innerHTML = name;
+                  document.getElementById("ia").innerHTML = entry;
+                  document.getElementById("iv").innerHTML = "";
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                } else if(alt.startsWith("homebrew")){
+                  alt = alt.split("/");
+                  document.getElementById("in").innerHTML = alt[1];
+                  document.getElementById("ia").innerHTML = alt[2];
+                  document.getElementById("iv").innerHTML = alt[3];
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                }
+                let scroll = document.getElementById("items").scrollLeft;
+                if(selected*276 > scroll){
+                  if(selected*276-276*3 < scroll) return;
+                  $(`#items`).animate({
+                      scrollLeft: selected*276-276*3
+                  }, 0);
+                } else {
+                  $(`#items`).animate({
+                      scrollLeft: selected*276
+                  }, 0);
+                }
+              }
+              async function dblclick(){
+                if(res || !multiselect[mid]) return;
+                let resss = false;
+                res = true;
+                let dialog = await createDialog(lang["menu_multiselect"], lang["menu_move_from_folder"], [lang["yes"], lang["no"]]);
+                $("#ulaunchscreen").append(dialog);
+                let inputs = $("#dialog :input");
+                selected = 0;
+                let max = inputs.length;
+                inputs.click((e) => {
+                  click(e.currentTarget.id);
+                });
+                switchem.on("arrowright", () => {
+                  click(selected+1);
+                });
+                switchem.on("lrightstart", () => {
+                  click(selected+1);
+                });
+                switchem.on("rrightstart", () => {
+                  click(selected+1);
+                });
+                switchem.on("arrowleft", () => {
+                  click(selected-1);
+                });
+                switchem.on("lleftstart", () => {
+                  click(selected-1);
+                });
+                switchem.on("rleftstart", () => {
+                  click(selected-1);
+                });
+                switchem.on("a", () => {
+                  dblclick(selected);
+                });
+                inputs.dblclick((e) => {
+                  dblclick(e.currentTarget.id);
+                });
+                function click(id){
+                  if(resss) return;
+                  let input = $(`#dialog #${id}`).get(0);
+                  let before = $(`#dialog #${selected}`).get(0);
+                  if(input === undefined) return;
+                  before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+                  input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+                  selected = parseInt(id);
+                }
+                function dblclick(id){
+                  if(resss) return;
+                  if(id == 0){
+                    let imgs = $("#multiselect img");
+                    for(var i=0; i<imgs.length; i++){
+                      let img = imgs.get(i);
+                      let title = $(`#items #${img.id}`).get(0);
+                      let titlealt = title.getAttribute("alt");
+                      let name;
+                      if(titlealt.startsWith("game")){
+                        name = titlealt.split("/")[1];
+                      } else if(titlealt.startsWith("homebrew")){
+                        name = titlealt.split("/")[4];
+                      }
+                      menuitems.folders[fname] = menuitems.folders[fname].filter(i => i !== name);
+                    }
+                    if(`${menuitems.folders[fname]}`.length == 0){
+                      delete menuitems.folders[fname];
+                    }
+                    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify(menuitems, null, 2), (err) => {if(err) throw err});
+                    multiselect[mid] = false;
+                    $("#dialog").remove();
+                    $("#multiselect").hide();
+                    document.getElementById("multiselect").innerHTML = "";
+                    resss = true;
+                    selected = 0;
+                    ress = true;
+                    res = false;
+                    if(multiselect.filter(n => n == true)[0]){
+                      multiselect = multiselect.map(n => false);
+                      $("#multiselect").hide();
+                      document.getElementById("multiselect").innerHTML = "";
+                      ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                    }
+                    $(`#items`).animate({
+                      scrollLeft: 0
+                    }, 0);
+                    if(menuitems.folders[fname] == undefined){
+                      lmenuitems();
+                    } else {
+                      folderitems(fname);
+                    }
+                    resolve();
+                  } else {
+                    multiselect[mid] = false;
+                    $("#multiselect").hide();
+                    document.getElementById("multiselect").innerHTML = "";
+                    resss = true;
+                    ress = false;
+                    res = false;
+                    $("#dialog").remove();
+                    resolve();
+                  }
+                }
+              }
+            });
+          });
           inputs.click((e) => {
             click(e.currentTarget.id);
           });
@@ -1409,7 +2064,7 @@ async function init(){
           switchem.on("b", () => {
             if(ress || res) return;
             ress = true;
-            menuitems();
+            lmenuitems();
           });
           inputs.dblclick((e) => {
             dblclick(e.currentTarget.id);
@@ -1419,7 +2074,7 @@ async function init(){
             let input = document.getElementById(id);
             if(input === null) return;
             let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-            let leftcursor = 98+276*parseInt(id)-20;
+            let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
             selected = parseInt(id);
             document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
             let alt = input.getAttribute("alt");
@@ -1646,6 +2301,12 @@ async function init(){
               if(menutoggle.playing()) menutoggle.stop();
               menutoggle.play();
             }
+            if(multiselect.filter(n => n == true)[0]){
+              multiselect = multiselect.map(n => false);
+              $("#multiselect").hide();
+              document.getElementById("multiselect").innerHTML = "";
+              ShowNotification(lang["menu_multiselect_cancel"], uijson);
+            }
             ress = true;
             hbitems();
           }
@@ -1657,28 +2318,28 @@ async function init(){
           document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
           document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
           document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
-          document.getElementById("in").innerHTML = "Launch hbmenu";
+          document.getElementById("in").innerHTML = lang["hbmenu_launch"];
           document.getElementById("ia").innerHTML = "";
           document.getElementById("iv").innerHTML = "";
           let height = [size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0];
           let top = (height-256)/2;
-          let menuhb = require(path.join(ulaunchtester, "testersettings", "menuitems.json")).hb;
+          let menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          let menuhb = menuitems.hb;
           let jsonsfiles = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
           let left = 98;
           let n = 0;
           let items = [];
-          items.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="${lang["hbmenu_launch"]}//"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="Launch hbmenu//"/>`)
+          items.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`)
           let cursor = (height-size.cursor.h)/2;
           let suspendedd = (height-size.suspended.h)/2;
           let multiselectt = (height-size.multiselect.h)/2;
           let hbi = jsonsfiles.map(file => {
             if(!file.endsWith(".json")) return "";
-            if(menuhb.includes(path.basename(file))) return "";
             let content = require(file);
             if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
             left += 276;
             n += 1;
-            return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
+            return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/>`;
           });
           items = items.concat(hbi);
           items.push(`<img width="${size.suspended.w}" height="${size.suspended.h}" style="position: absolute;top: ${suspendedd}; left: ${98-(size.suspended.w-256)/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
@@ -1699,6 +2360,197 @@ async function init(){
           let selected = 0;
           let inputs = $("#items :input");
           max = inputs.length;
+          switchem.on("y", () => {
+            if(res || ress) return;
+            ress = true;
+            return new Promise(function(resolve, reject) {
+              let mid = multiselect.length;
+              multiselect.push(true);
+              let div = $("#multiselect");
+              div.show();
+              div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(size.cursor.w-256)/2-(size.multiselect.w-256)/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
+              inputs.click((e) => {
+                click(e.currentTarget.id);
+              });
+              switchem.on("arrowright", () => {
+                click(selected+1);
+              });
+              switchem.on("lrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("rrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("arrowleft", () => {
+                click(selected-1);
+              });
+              switchem.on("lleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("rleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("a", () => {
+                dblclick(selected);
+              });
+              switchem.on("b", () => {
+                if(res || !multiselect[mid]) return;
+                multiselect[mid] = false;
+                $("#multiselect").hide();
+                document.getElementById("multiselect").innerHTML = "";
+                ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                ress = false;
+                res = false;
+                resolve();
+              });
+              inputs.dblclick((e) => {
+                dblclick(e.currentTarget.id);
+              });
+              function click(id){
+                if(res || !multiselect[mid]) return;
+                let input = document.getElementById(id);
+                if(input === null) return;
+                let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
+                let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
+                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                selected = parseInt(id);
+                if($(`#multiselect #${id}`).get(0) === undefined){
+                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                }
+                document.getElementById("cursor").setAttribute("style", `position: absolute;top: 0; left: ${leftcursor}`);
+                let alt = input.getAttribute("alt");
+                if(alt.startsWith("game")){
+                  let game = games.find(g => g.id === alt.split("/")[1]);
+                  document.getElementById("in").innerHTML = game.name;
+                  document.getElementById("ia").innerHTML = game.author;
+                  document.getElementById("iv").innerHTML = "v"+game.version;
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                } else if(alt.startsWith("folder")){
+                  let name = alt.split("/")[2];
+                  let entry = alt.split("/")[1];
+                  document.getElementById("in").innerHTML = name;
+                  document.getElementById("ia").innerHTML = entry;
+                  document.getElementById("iv").innerHTML = "";
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
+                } else if(alt.startsWith("homebrew")){
+                  alt = alt.split("/");
+                  document.getElementById("in").innerHTML = alt[1];
+                  document.getElementById("ia").innerHTML = alt[2];
+                  document.getElementById("iv").innerHTML = alt[3];
+                  document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                  document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                  document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                }
+                let scroll = document.getElementById("items").scrollLeft;
+                if(selected*276 > scroll){
+                  if(selected*276-276*3 < scroll) return;
+                  $(`#items`).animate({
+                      scrollLeft: selected*276-276*3
+                  }, 0);
+                } else {
+                  $(`#items`).animate({
+                      scrollLeft: selected*276
+                  }, 0);
+                }
+              }
+              async function dblclick(){
+                if(res || !multiselect[mid]) return;
+                let resss = false;
+                res = true;
+                let dialog = await createDialog(lang["menu_multiselect"], lang["hb_mode_entries_add"], [lang["yes"], lang["no"]]);
+                $("#ulaunchscreen").append(dialog);
+                let inputs = $("#dialog :input");
+                selected = 0;
+                let max = inputs.length;
+                inputs.click((e) => {
+                  click(e.currentTarget.id);
+                });
+                switchem.on("arrowright", () => {
+                  click(selected+1);
+                });
+                switchem.on("lrightstart", () => {
+                  click(selected+1);
+                });
+                switchem.on("rrightstart", () => {
+                  click(selected+1);
+                });
+                switchem.on("arrowleft", () => {
+                  click(selected-1);
+                });
+                switchem.on("lleftstart", () => {
+                  click(selected-1);
+                });
+                switchem.on("rleftstart", () => {
+                  click(selected-1);
+                });
+                switchem.on("a", () => {
+                  dblclick(selected);
+                });
+                inputs.dblclick((e) => {
+                  dblclick(e.currentTarget.id);
+                });
+                function click(id){
+                  if(resss) return;
+                  let input = $(`#dialog #${id}`).get(0);
+                  let before = $(`#dialog #${selected}`).get(0);
+                  if(input === undefined) return;
+                  before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+                  input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+                  selected = parseInt(id);
+                }
+                function dblclick(id){
+                  if(resss) return;
+                  if(id == 0){
+                    let imgs = $("#multiselect img");
+                    let hb = [];
+                    for(var i=0; i<imgs.length; i++){
+                      let img = imgs.get(i);
+                      let title = $(`#items #${img.id}`).get(0);
+                      let titlealt = title.getAttribute("alt");
+                      hb.push(titlealt.split("/")[4]);
+                    }
+                    hb = menuitems.hb.concat(hb);
+                    menuitems.hb = menuitems.hb.concat(hb).filter((v,i) => hb.indexOf(v) === i)
+                    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify(menuitems, null, 2), (err) => {if(err) throw err});
+                    multiselect[mid] = false;
+                    $("#dialog").remove();
+                    $("#multiselect").hide();
+                    document.getElementById("multiselect").innerHTML = "";
+                    resss = true;
+                    selected = 0;
+                    ress = true;
+                    res = false;
+                    if(multiselect.filter(n => n == true)[0]){
+                      multiselect = multiselect.map(n => false);
+                      $("#multiselect").hide();
+                      document.getElementById("multiselect").innerHTML = "";
+                      ShowNotification(lang["menu_multiselect_cancel"], uijson);
+                    }
+                    $(`#items`).animate({
+                      scrollLeft: 0
+                    }, 0);
+                    ShowNotification(lang["hb_mode_entries_added"], uijson);
+                    hbitems();
+                    resolve();
+                  } else {
+                    multiselect[mid] = false;
+                    $("#multiselect").hide();
+                    document.getElementById("multiselect").innerHTML = "";
+                    resss = true;
+                    ress = false;
+                    res = false;
+                    $("#dialog").remove();
+                    resolve();
+                  }
+                }
+              }
+            });
+          });
           inputs.click((e) => {
             click(e.currentTarget.id);
           });
@@ -1796,13 +2648,13 @@ async function init(){
             let input = document.getElementById(id);
             if(input === null) return;
             let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-            let leftcursor = 98+276*parseInt(id)-20;
+            let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
             selected = parseInt(id);
             document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
             let alt = input.getAttribute("alt").split("/");
-            document.getElementById("in").innerHTML = alt[0];
-            document.getElementById("ia").innerHTML = alt[1];
-            document.getElementById("iv").innerHTML = alt[2];
+            document.getElementById("in").innerHTML = alt[1];
+            document.getElementById("ia").innerHTML = alt[2];
+            document.getElementById("iv").innerHTML = alt[3];
             let scroll = document.getElementById("items").scrollLeft;
             if(selected*276 > scroll){
               if(selected*276-276*3 < scroll) return;
@@ -1987,12 +2839,18 @@ async function init(){
               if(menutoggle.playing()) menutoggle.stop();
               menutoggle.play();
             }
+            if(multiselect.filter(n => n == true)[0]){
+              multiselect = multiselect.map(n => false);
+              $("#multiselect").hide();
+              document.getElementById("multiselect").innerHTML = "";
+              ShowNotification(lang["menu_multiselect_cancel"], uijson);
+            }
             ress = true;
-            menuitems();
+            lmenuitems();
           }
         });
       }
-      menuitems();
+      lmenuitems();
     });
   }
   function theme(){
@@ -2397,11 +3255,6 @@ async function ShowNotification(text, uijson, ms = 1500){
   let wh = getTextWH(20, text);
   let toastw = wh[0] + (wh[1] * 4);
   let toasth = wh[1] * 3;
-  console.log(toastw);
-  console.log(toasth);
-  $("#"+id).remove();
-  console.log(uijson["toast_base_color"]);
-  console.log(uijson["toast_text_color"]);
   $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(1280 - toastw) / 2};top: 550;width: ${toastw};text-align: center;color: ${uijson["toast_text_color"]};z-index: 2;height: ${toasth};font-size: 20;padding: 10 32.5;border: none;border-radius: 32.5px;background-color: ${uijson["toast_base_color"]};opacity:0;" value="${text}"/>`);
   $("#notification").fadeTo(350, 200/255, function(){
     setTimeout(() => {
