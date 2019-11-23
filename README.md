@@ -5,7 +5,7 @@ Coming Soon...
 ## What is missing (before first release) ?
 
  - ~Dialog~
- - Languages
+ - ~Languages~
  - ~Multiselect~
  - ~Suspended~
  - QuickMenu (last commit, not in uLaunch 0.1)
