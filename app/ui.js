@@ -425,7 +425,7 @@ async function init(){
   }
   let suspended;
   let romfsui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
-  let lang = require(path.join(__dirname, "ulaunch", "romFs", "LangDefault.json"));
+  let lang = InitializeLang(require(path.join(__dirname, "ulaunch", "romFs", "LangDefault.json")));
   let uijson = InitializeUIJson(require(existsUI("UI.json", defaultui, romfsui)));
   $(document.head).append("<style>@font-face {font-family: 'Font';font-style: normal;src: url('"+existsUI("Font.ttf", defaultui, romfsui).replace(/\\/g, "/")+"');}</style>");
   let defaulticon = {
@@ -647,6 +647,12 @@ async function init(){
       $("#theme").click(() => {
         if(res) return;
         clearInterval(interval);
+        if(multiselect.filter(n => n == true)[0]){
+          multiselect = multiselect.map(n => false);
+          $("#multiselect").hide();
+          document.getElementById("multiselect").innerHTML = "";
+          ShowNotification(lang["menu_multiselect_cancel"], uijson);
+        }
         theme();
         res = true;
         resolve();
@@ -654,6 +660,12 @@ async function init(){
       $("#setting").click(() => {
         if(res) return;
         clearInterval(interval);
+        if(multiselect.filter(n => n == true)[0]){
+          multiselect = multiselect.map(n => false);
+          $("#multiselect").hide();
+          document.getElementById("multiselect").innerHTML = "";
+          ShowNotification(lang["menu_multiselect_cancel"], uijson);
+        }
         settings();
         res = true;
         resolve();
@@ -662,7 +674,7 @@ async function init(){
         if(res) return;
         res = true;
         let ress = false;
-        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}<br><br>${lang["ulaunch_contribute"]}:<br>https://github.com/XorTroll/uLaunch`, ["Ok"], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, ["Ok"], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
         $("#ulaunchscreen").append(dialog);
         let inputs = $("#dialog :input");
         let selected = 0;
@@ -796,11 +808,11 @@ async function init(){
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
               left = 98;
-              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + 15*top/20}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
+              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + top}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
             } else {
               let entry = `${titles.length} ${(titles.length < 2) ? lang["folder_entry_single"] : lang["folder_entry_mult"]}`;
               left += 276;
-              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + 15*top/20}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
+              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + top}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
             }
           }
           items = items.concat(ifolders);
@@ -3391,6 +3403,16 @@ async function InitializeSize(size, defaulticon, uijson){
     });
   }
   return size;
+}
+
+function InitializeLang(lang){
+  let langKeys = Object.keys(lang);
+  for(var i=0; i<langKeys.length; i++){
+    let k = langKeys[i];
+    let l = lang[k];
+    lang[k] = l.replace(/\n/g, "<br>");
+  }
+  return lang;
 }
 
 async function createDialog(title, content, opts, hasCancel = false, icon){
