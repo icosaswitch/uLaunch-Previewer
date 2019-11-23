@@ -827,7 +827,7 @@ async function init(){
             if(ret) return "";
             file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
             let content = require(file);
-            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc")))) return "";
+            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
             left += 276;
             n += 1;
             return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
@@ -871,6 +871,70 @@ async function init(){
           });
           switchem.on("rleftstart", () => {
             click(selected-1);
+          });
+          switchem.on("x", async () => {
+            if(res || ress) return;
+            let resss = false;
+            res = true;
+            let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
+            $("#ulaunchscreen").append(dialog);
+            let inputs = $("#dialog :input");
+            let selected = 0;
+            let max = inputs.length;
+            inputs.click((e) => {
+              click(e.currentTarget.id);
+            });
+            switchem.on("arrowright", () => {
+              click(selected+1);
+            });
+            switchem.on("lrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("rrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("arrowleft", () => {
+              click(selected-1);
+            });
+            switchem.on("lleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("rleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("a", () => {
+              dblclick(selected);
+            });
+            inputs.dblclick((e) => {
+              dblclick(e.currentTarget.id);
+            });
+            function click(id){
+              if(ress) return;
+              let input = $(`#dialog #${id}`).get(0);
+              let before = $(`#dialog #${selected}`).get(0);
+              if(input === undefined) return;
+              before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+              input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+              selected = parseInt(id);
+            }
+            function dblclick(id){
+              if(resss) return;
+              if(id == 0){
+                $("#title").remove();
+                $("#suspended").hide();
+                $("#suspendedimgg").hide();
+                suspended = undefined;
+                resss = true;
+                res = false;
+                $("#dialog").remove();
+                resolve();
+              } else {
+                resss = true;
+                res = false;
+                $("#dialog").remove();
+                resolve();
+              }
+            }
           });
           switchem.on("a", () => {
             dblclick(selected);
@@ -1069,7 +1133,7 @@ async function init(){
                     suspended = alt;
                     if(sound) sound.play();
                     $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                    $("#title").animate({width: 1008,height:584,opacity:0.5}, 1000, () => {
+                    $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
                       res = false;
                     });
                     let item = document.getElementById(iid).getAttribute("style");
@@ -1159,7 +1223,7 @@ async function init(){
                 suspended = alt;
                 if(sound) sound.play();
                 $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                $("#title").animate({width: 1008,height:584,opacity:0.5}, 1000, () => {
+                $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
                   res = false;
                 });
                 let item = document.getElementById(iid).getAttribute("style");
@@ -1224,7 +1288,7 @@ async function init(){
           let hb = folders.map(file => {
             file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
             let content = require(file);
-            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc")))) return "";
+            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
             left += 276;
             n += 1;
             return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
@@ -1275,6 +1339,70 @@ async function init(){
           });
           switchem.on("a", () => {
             dblclick(selected);
+          });
+          switchem.on("x", async () => {
+            if(res || ress) return;
+            let resss = false;
+            res = true;
+            let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
+            $("#ulaunchscreen").append(dialog);
+            let inputs = $("#dialog :input");
+            let selected = 0;
+            let max = inputs.length;
+            inputs.click((e) => {
+              click(e.currentTarget.id);
+            });
+            switchem.on("arrowright", () => {
+              click(selected+1);
+            });
+            switchem.on("lrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("rrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("arrowleft", () => {
+              click(selected-1);
+            });
+            switchem.on("lleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("rleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("a", () => {
+              dblclick(selected);
+            });
+            inputs.dblclick((e) => {
+              dblclick(e.currentTarget.id);
+            });
+            function click(id){
+              if(ress) return;
+              let input = $(`#dialog #${id}`).get(0);
+              let before = $(`#dialog #${selected}`).get(0);
+              if(input === undefined) return;
+              before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+              input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+              selected = parseInt(id);
+            }
+            function dblclick(id){
+              if(resss) return;
+              if(id == 0){
+                $("#title").remove();
+                $("#suspended").hide();
+                $("#suspendedimgg").hide();
+                suspended = undefined;
+                resss = true;
+                res = false;
+                $("#dialog").remove();
+                resolve();
+              } else {
+                resss = true;
+                res = false;
+                $("#dialog").remove();
+                resolve();
+              }
+            }
           });
           switchem.on("b", () => {
             if(ress || res) return;
@@ -1463,7 +1591,7 @@ async function init(){
                     suspended = alt;
                     if(sound) sound.play();
                     $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                    $("#title").animate({width: 1008,height:584,opacity:0.5}, 1000, () => {
+                    $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
                       res = false;
                     });
                     let item = document.getElementById(iid).getAttribute("style");
@@ -1488,7 +1616,7 @@ async function init(){
                 suspended = alt;
                 if(sound) sound.play();
                 $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                $("#title").animate({width: 1008,height:584,opacity:0.5}, 1000, () => {
+                $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
                   res = false;
                 });
                 let item = document.getElementById(iid).getAttribute("style");
@@ -1545,7 +1673,7 @@ async function init(){
             if(!file.endsWith(".json")) return "";
             if(menuhb.includes(path.basename(file))) return "";
             let content = require(file);
-            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc")))) return "";
+            if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
             left += 276;
             n += 1;
             return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}"/>`;
@@ -1824,7 +1952,7 @@ async function init(){
                   suspended = alt;
                   if(sound) sound.play();
                   $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:584,opacity:0.5}, 1000, () => {
+                  $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
                     res = false;
                   });
                   let item = document.getElementById(iid).getAttribute("style");
