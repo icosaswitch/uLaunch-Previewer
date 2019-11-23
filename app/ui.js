@@ -781,6 +781,7 @@ async function init(){
           let ifolders = [];
           let numf = Object.keys(folders);
           let ids = [];
+          console.log(uijson);
           for(var i=0; i<numf.length; i++){
             n += 1;
             let name = numf[i];
@@ -795,11 +796,11 @@ async function init(){
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
               left = 98;
-              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"]}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
+              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + 15*top/20}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
             } else {
               let entry = `${titles.length} ${(titles.length < 2) ? lang["folder_entry_single"] : lang["folder_entry_mult"]}`;
               left += 276;
-              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"]}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
+              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + 15*top/20}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
             }
           }
           items = items.concat(ifolders);
@@ -1317,7 +1318,7 @@ async function init(){
           });
           switchem.on("x", async () => {
             if(res || ress) return;
-            if(document.getElementById(selected).getAttribute("alt") !== selected) return;
+            if(document.getElementById(selected).getAttribute("alt") !== suspended) return;
             let resss = false;
             res = true;
             let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
@@ -1998,7 +1999,7 @@ async function init(){
           });
           switchem.on("x", async () => {
             if(res || ress) return;
-            if(document.getElementById(selected).getAttribute("alt") !== selected) return;
+            if(document.getElementById(selected).getAttribute("alt") !== suspended) return;
             let resss = false;
             res = true;
             let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
@@ -2515,7 +2516,7 @@ async function init(){
                       hb.push(titlealt.split("/")[4]);
                     }
                     hb = menuitems.hb.concat(hb);
-                    menuitems.hb = menuitems.hb.concat(hb).filter((v,i) => hb.indexOf(v) === i)
+                    menuitems.hb = menuitems.hb.concat(hb).filter((v,i) => hb.indexOf(v) === i);
                     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify(menuitems, null, 2), (err) => {if(err) throw err});
                     multiselect[mid] = false;
                     $("#dialog").remove();
@@ -2577,7 +2578,7 @@ async function init(){
           });
           switchem.on("x", async () => {
             if(res || ress) return;
-            if(document.getElementById(selected).getAttribute("alt") !== selected) return;
+            if(document.getElementById(selected).getAttribute("alt") !== suspended) return;
             let resss = false;
             res = true;
             let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
@@ -3355,7 +3356,8 @@ function getFiles(dir, files_) {
 function ApplyConfigForElement(json, obj1, obj2){
   let defjson = require(path.join(__dirname, "ulaunch", "default.json"));
   if(obj2 === undefined) {
-    if(typeof defjson[obj1] === "string"){
+    console.log(typeof defjson[obj1]);
+    if(typeof defjson[obj1] === "string" || typeof defjson[obj1] === "number"){
       return (json[obj1] !== undefined) ? json[obj1] : defjson[obj1];
     } else {
       let obj = Object.keys(defjson[obj1]);
