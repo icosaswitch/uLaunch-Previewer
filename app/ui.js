@@ -874,6 +874,7 @@ async function init(){
           });
           switchem.on("x", async () => {
             if(res || ress) return;
+            if(document.getElementById(selected).getAttribute("alt") !== selected) return;
             let resss = false;
             res = true;
             let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
@@ -1342,6 +1343,7 @@ async function init(){
           });
           switchem.on("x", async () => {
             if(res || ress) return;
+            if(document.getElementById(selected).getAttribute("alt") !== selected) return;
             let resss = false;
             res = true;
             let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
@@ -1723,6 +1725,7 @@ async function init(){
           });
           switchem.on("x", async () => {
             if(res || ress) return;
+            if(document.getElementById(selected).getAttribute("alt") !== selected) return;
             let resss = false;
             res = true;
             let dialog = await createDialog(lang["suspended_app"], lang["suspended_close"], [lang["yes"], lang["cancel"]]);
