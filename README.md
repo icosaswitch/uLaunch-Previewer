@@ -7,7 +7,7 @@ Coming Soon...
  - ~Dialog~
  - Languages
  - Multiselect
- - Suspended
+ - ~Suspended~
  - QuickMenu (last commit, not in uLaunch 0.1)
 
 ## Credits
