@@ -5,6 +5,8 @@
 <img src="screenshot/s1.png" width="425"/> <img src="screenshot/s2.png" width="425"/>
 <img src="screenshot/s3.png" width="425"/> <img src="screenshot/s4.png" width="425"/>
 
+### For view how to configure it, see [wiki](https://github.com/IcosaSwitch/uLaunch-Previewer/wiki)
+
 ## Download
 
 | Platform | File Download |
