@@ -8,7 +8,8 @@ Coming Soon...
  - ~Languages~
  - ~Multiselect~
  - ~Suspended~
- - QuickMenu (last commit, not in uLaunch 0.1)
+ - ~QuickMenu (last commit, not in uLaunch 0.1)~
+ - Test (~Windows~, OSX, Linux)
 
 ## Credits
 
