@@ -9,7 +9,7 @@ Coming Soon...
  - ~Multiselect~
  - ~Suspended~
  - ~QuickMenu (last commit, not in uLaunch 0.1)~
- - Test (~Windows~, OSX, Linux)
+ - Test (~Windows~, ~OSX~, Linux)
 
 ## Credits
 
