@@ -1,12 +1,12 @@
 <h1 align="center" style="font-family: 'Font';">uLaunch-Previewer</h1>
 
-<h3>uLaunch Previewer is a project for Test uLaunch before installing it in your switch or to preview your themes</h3>
+<h3>uLaunch Previewer is a project with support for OS X/Linxus/Windows for testing uLaunch before installing it on your switch, or to preview uLaunch themes.</h3>
 
 <img src="screenshot/s1.png" width="425"/> <img src="screenshot/s2.png" width="425"/>
 <img src="screenshot/s3.png" width="425"/> <img src="screenshot/s4.png" width="425"/>
 
-### For view how to configure it, see [wiki](https://github.com/IcosaSwitch/uLaunch-Previewer/wiki)
-<h3 style="font-type:bold">1920x1080px screen dimension or above is recommended!</h3>
+### For configuration instructions, see the [wiki](https://github.com/IcosaSwitch/uLaunch-Previewer/wiki)
+<h3 style="font-type:bold">1920x1080px screen resolution or higher is recommended!</h3>
 
 ## Download
 
