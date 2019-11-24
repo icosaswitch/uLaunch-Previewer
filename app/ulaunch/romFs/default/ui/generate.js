@@ -22,7 +22,7 @@ let text = "  let defaulticon = {\n    "
 files.map(n => {
   text += `${n.split(".png")[0].toLowerCase()}: existsUI("${n}", defaultui, romfsui),\n    `
 });
-text = text.substring(0, text.length-2)+"}\n  let size = InitializeSize({\n    ";
+text = text.substring(0, text.length-2)+"}\n  let size = await InitializeSize({\n    ";
 files.map(n => {
   text += `${n.split(".png")[0].toLowerCase()}: {w: ${fs.readFileSync(n).readUInt32BE(16)},h: ${fs.readFileSync(n).readUInt32BE(20)}},\n    `
 });

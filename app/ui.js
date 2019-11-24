@@ -12,6 +12,7 @@ let ui = path.join(__dirname, "theme", "ui");
 let manifest;
 let emitter = require('events').EventEmitter;
 let switchem = new emitter();
+switchem.setMaxListeners(Infinity);
 let istyping = false;
 $(function() {
   $.fn.ctrlCmd = function(key) {
@@ -70,7 +71,6 @@ $(function() {
       delete keysdown[e.which];
     });
   });
-  console.log('JQuery Initialized.');
   $("#plus").click(() => {
     plus();
   });
@@ -466,12 +466,7 @@ async function init(){
     multiselect: existsUI("Multiselect.png", defaultui, romfsui),
     noconnectionicon: existsUI("NoConnectionIcon.png", defaultui, romfsui),
     powericon: existsUI("PowerIcon.png", defaultui, romfsui),
-    quickmenucontrolleritem: existsUI("QuickMenuControllerItem.png", defaultui, romfsui),
-    quickmenuhelpitem: existsUI("QuickMenuHelpItem.png", defaultui, romfsui),
     quickmenumain: existsUI("QuickMenuMain.png", defaultui, romfsui),
-    quickmenusettingsitem: existsUI("QuickMenuSettingsItem.png", defaultui, romfsui),
-    quickmenuthemesitem: existsUI("QuickMenuThemesItem.png", defaultui, romfsui),
-    quickmenuwebitem: existsUI("QuickMenuWebItem.png", defaultui, romfsui),
     settingeditable: existsUI("SettingEditable.png", defaultui, romfsui),
     settingnoeditable: existsUI("SettingNoEditable.png", defaultui, romfsui),
     settingsicon: existsUI("SettingsIcon.png", defaultui, romfsui),
@@ -500,12 +495,7 @@ async function init(){
     multiselect: {w: 296,h: 296},
     noconnectionicon: {w: 50,h: 50},
     powericon: {w: 50,h: 50},
-    quickmenucontrolleritem: {w: 150,h: 150},
-    quickmenuhelpitem: {w: 150,h: 150},
     quickmenumain: {w: 300,h: 300},
-    quickmenusettingsitem: {w: 150,h: 150},
-    quickmenuthemesitem: {w: 150,h: 150},
-    quickmenuwebitem: {w: 150,h: 150},
     settingeditable: {w: 100,h: 100},
     settingnoeditable: {w: 100,h: 100},
     settingsicon: {w: 50,h: 50},
@@ -530,7 +520,6 @@ async function init(){
           ShowNotification(lang["theme_changed"], uijson);
         }
         user = users[0];
-        console.log(user);
         if(user === undefined){
           user = {"username": "Default User", "usericon": "default", "password": false}
         }
@@ -540,7 +529,6 @@ async function init(){
         document.getElementById("ulaunchscreen").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "startup.ejs"), "utf8"), {defaulticon, lang, uijson, users, path});
         let inputs = $("#ulaunchscreen :input");
         max = inputs.length
-        console.log(max);
         inputs.click((e) => {
           leftclick = true;
           click(e.currentTarget.id);
@@ -577,6 +565,28 @@ async function init(){
         });
         switchem.on("a", () => {
           dblclick(selected);
+        });
+        switchem.on("plus", async () => {
+          if(res) return;
+          res = true;
+          let ress = false;
+          let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+          $("#ulaunchscreen").append(dialog);
+          let inputs = $("#dialog :input");
+          let selected = 0;
+          let max = inputs.length;
+          switchem.on("a", () => {
+            dblclick(selected);
+          });
+          inputs.dblclick((e) => {
+            dblclick(e.currentTarget.id);
+          });
+          function dblclick(id){
+            if(ress) return;
+            ress = true;
+            res = false;
+            $("#dialog").remove();
+          }
         });
         inputs.dblclick((e) => {
           dblclick(e.currentTarget.id);
@@ -690,7 +700,13 @@ async function init(){
         res = true;
         resolve();
       });
-      $("#logo").click(async () => {
+      $("#logo").click(() => {
+        ulaunch();
+      });
+      switchem.on("plus", async () => {
+        ulaunch();
+      });
+      async function ulaunch(){
         if(res) return;
         res = true;
         let ress = false;
@@ -699,9 +715,6 @@ async function init(){
         let inputs = $("#dialog :input");
         let selected = 0;
         let max = inputs.length;
-        inputs.click((e) => {
-          click(e.currentTarget.id);
-        });
         switchem.on("a", () => {
           dblclick(selected);
         });
@@ -714,7 +727,7 @@ async function init(){
           res = false;
           $("#dialog").remove();
         }
-      });
+      }
       $("#user").click(async () => {
         if(res) return;
         res = true;
@@ -767,6 +780,316 @@ async function init(){
           $("#dialog").remove();
         }
       });
+      switchem.on("l", () => {
+        if(res) return;
+        quickmenu();
+      });
+      switchem.on("r", () => {
+        if(res) return;
+        quickmenu();
+      });
+      async function quickmenu(){
+        res = true;
+        let quick = false;
+        let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="quickmenu">`;
+        let MainItemSize = 300;
+        let SubItemsSize = 150;
+        let CommonAreaSize = 50;
+        let MainItemX = (1280 - MainItemSize) / 2;
+        let MainItemY = (720 - MainItemSize) / 2;
+        html += `<img width="${MainItemSize}" height="${MainItemSize}" style="position:absolute;top:${MainItemY};left:${MainItemX};" src="${defaulticon.quickmenumain}"/>`;
+        let item_map = [
+          ["up", defaulticon.usericon],
+          ["down", defaulticon.settingsicon],
+          ["left", defaulticon.webicon],
+          ["right", defaulticon.themesicon],
+          ["upleft", defaulticon.controllericon],
+          ["upright", defaulticon.albumicon],
+          ["downleft", defaulticon.powericon],
+          ["downright", defaulticon.helpicon]
+        ]
+        for(var i=0; i<item_map.length; i++){
+          let item = item_map[i];
+          await new Promise(function(resolve, reject) {
+            let pos = ComputePositionForDirection(item[0]);
+            let x = pos[0];
+            let y = pos[1];
+            let tex = item[1];
+            let img = new Image();
+            img.onload = () => {
+              let texw = img.width;
+              let texh = img.height;
+              x += (SubItemsSize - texw) / 2;
+              y += (SubItemsSize - texh) / 2;
+              html += `<img width="${texw}" height="${texh}" style="position:absolute;top:${y};left:${x};color:rgb(150, 150, 200);" src="${tex}" id="img${i}"/>`;
+              resolve();
+            }
+            img.src = tex;
+          });
+        };
+        html += "</div>";
+        $("#ulaunchscreen").append(html);
+        let selected = 0;
+        await SetTextureColorMod(item_map[0][1], "img0", 150, 150, 255);
+        function ComputePositionForDirection(direction){
+          let x = MainItemX;
+          let y = MainItemY;
+          switch(direction){
+            case 'up':
+              x += ((MainItemSize - SubItemsSize) / 2);
+              y -= SubItemsSize;
+              break
+            case 'down':
+              x += ((MainItemSize - SubItemsSize) / 2);
+              y += MainItemSize;
+              break;
+            case 'left':
+              x -= SubItemsSize;
+              y += ((MainItemSize - SubItemsSize) / 2);
+              break;
+            case 'right':
+              x += MainItemSize;
+              y += ((MainItemSize - SubItemsSize) / 2);
+              break;
+            case 'upleft':
+              x -= (SubItemsSize - CommonAreaSize);
+              y -= (SubItemsSize - CommonAreaSize);
+              break;
+            case 'upright':
+              x += (MainItemSize - CommonAreaSize);
+              y -= (SubItemsSize - CommonAreaSize);
+              break;
+            case 'downleft':
+              x -= (SubItemsSize - CommonAreaSize);
+              y += (MainItemSize - CommonAreaSize);
+              break;
+            case 'downright':
+              x += (MainItemSize - CommonAreaSize);
+              y += (MainItemSize - CommonAreaSize);
+              break;
+            default:
+              break;
+          }
+          return [x, y];
+        }
+        async function select(direction){
+          if(quick) return;
+          await SetTextureColorMod(item_map[selected][1], `img${selected}`, 255, 255, 255);
+          switch(direction){
+            case 'up':
+              selected = 0;
+              break
+            case 'down':
+              selected = 1;
+              break;
+            case 'left':
+              selected = 2;
+              break;
+            case 'right':
+              selected = 3;
+              break;
+            case 'upleft':
+              selected = 4;
+              break;
+            case 'upright':
+              selected = 5;
+              break;
+            case 'downleft':
+              selected = 6;
+              break;
+            case 'downright':
+              selected = 7;
+              break;
+            default:
+              break;
+          }
+          await SetTextureColorMod(item_map[selected][1], `img${selected}`, 150, 150, 200);
+        }
+        switchem.on("ltopstart", () => {
+          select("up");
+        });
+        switchem.on("rtopstart", () => {
+          select("up");
+        });
+        switchem.on("lbottomstart", () => {
+          select("down");
+        });
+        switchem.on("rbottomstart", () => {
+          select("down");
+        });
+        switchem.on("lleftstart", () => {
+          select("left");
+        });
+        switchem.on("rleftstart", () => {
+          select("left");
+        });
+        switchem.on("lrightstart", () => {
+          select("right");
+        });
+        switchem.on("rrightstart", () => {
+          select("right");
+        });
+        switchem.on("ltopleftstart", () => {
+          select("upleft");
+        });
+        switchem.on("rtopleftstart", () => {
+          select("upleft");
+        });
+        switchem.on("lrighttopstart", () => {
+          select("upright");
+        });
+        switchem.on("rrighttopstart", () => {
+          select("upright");
+        });
+        switchem.on("lleftbottomstart", () => {
+          select("downleft");
+        });
+        switchem.on("rleftbottomstart", () => {
+          select("downleft");
+        });
+        switchem.on("lbottomrightstart", () => {
+          select("downright");
+        });
+        switchem.on("rbottomrightstart", () => {
+          select("downright");
+        });
+        switchem.on("arrowup", () => {
+          select("up");
+        });
+        switchem.on("arrowdown", () => {
+          select("down");
+        });
+        switchem.on("arrowleft", () => {
+          select("left");
+        });
+        switchem.on("arrowright", () => {
+          select("right");
+        });
+        switchem.on("b", () => {
+          if(quick) return;
+          res = false;
+          quick = true;
+          $("#quickmenu").remove();
+        });
+        switchem.on("a", async () => {
+          if(quick) return;
+          quick = true;
+          $("#quickmenu").remove();
+          if(selected == 0){
+            res = false;
+            $("#user").trigger("click");
+          } else if(selected == 1){
+            res = false;
+            $("#setting").trigger("click");
+          } else if(selected == 3){
+            res = false;
+            $("#theme").trigger("click");
+          } else if(selected == 6){
+            res = false;
+            let ress = false;
+            res = true;
+            let dialog = await createDialog(lang["power_dialog"], lang["power_dialog_info"], [lang["power_sleep"],lang["power_power_off"],lang["power_reboot"],lang["cancel"]]);
+            $("#ulaunchscreen").append(dialog);
+            let inputs = $("#dialog :input");
+            selected = 0;
+            let max = inputs.length;
+            inputs.click((e) => {
+              click(e.currentTarget.id);
+            });
+            switchem.on("arrowright", () => {
+              click(selected+1);
+            });
+            switchem.on("lrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("rrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("arrowleft", () => {
+              click(selected-1);
+            });
+            switchem.on("lleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("rleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("a", () => {
+              dblclick(selected);
+            });
+            inputs.dblclick((e) => {
+              dblclick(e.currentTarget.id);
+            });
+            function click(id){
+              if(ress) return;
+              let input = $(`#dialog #${id}`).get(0);
+              let before = $(`#dialog #${selected}`).get(0);
+              if(input === undefined) return;
+              before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+              input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+              selected = parseInt(id);
+            }
+            function dblclick(id){
+              if(ress) return;
+              if(id == 0){
+                ress = true;
+                res = false;
+                $("#dialog").remove();
+                power();
+              } else if(id == 1){
+                ress = true;
+                res = false;
+                $("#dialog").remove();
+                getCurrentWindow().close();
+              } else if(id == 2){
+                ress = true;
+                res = false;
+                $("#dialog").remove();
+                getCurrentWindow().loadURL(url.format({
+                  pathname: path.join(__dirname, 'app.ejs'),
+                  protocol: 'file:',
+                  slashes: true
+                }));
+              } else {
+                ress = true;
+                res = false;
+                $("#dialog").remove();
+              }
+            }
+          } else if(selected == 7){
+            res = false;
+            let ress = false;
+            res = true;
+            let msg = "";
+            msg += " - " + lang["help_launch"] + "<br>";
+            msg += " - " + lang["help_close"] + "<br>";
+            msg += " - " + lang["help_quick"] + "<br>";
+            msg += " - " + lang["help_multiselect"] + "<br>";
+            msg += " - " + lang["help_back"] + "<br>";
+            msg += " - " + lang["help_minus"] + "<br>";
+            msg += " - " + lang["help_plus"] + "<br>";
+            let dialog = await createDialog(lang["help_title"], msg, [lang["ok"]]);
+            $("#ulaunchscreen").append(dialog);
+            let inputs = $("#dialog :input");
+            selected = 0;
+            let max = inputs.length;
+            switchem.on("a", () => {
+              dblclick(selected);
+            });
+            inputs.dblclick((e) => {
+              dblclick(e.currentTarget.id);
+            });
+            function dblclick(id){
+              if(ress) return;
+              ress = true;
+              res = false;
+              $("#dialog").remove();
+            }
+          } else {
+            res = false;
+          }
+        });
+      }
       function lmenuitems(){
         return new Promise(async function(resolve, reject) {
           let ress = false;
@@ -786,7 +1109,6 @@ async function init(){
           let ifolders = [];
           let numf = Object.keys(folders);
           let ids = [];
-          console.log(uijson);
           for(var i=0; i<numf.length; i++){
             n += 1;
             let name = numf[i];
@@ -1020,7 +1342,7 @@ async function init(){
                       resss = true;
                       let finish = false;
                       istyping = true;
-                      $("#ulaunchscreen").append(`<div style="background-color: #0000007F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="foldername"><div style="background-color: #e1e1e1;width:300;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:22.5;" id="namep">Enter the folder name</p><input style="width:250;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
+                      $("#ulaunchscreen").append(`<div style="background-color: #3232327F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="foldername"><div style="background-color: #e1e1e1;width:300;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:22.5;" id="namep">Enter the folder name</p><input style="width:250;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
                       $('#name').bind("enterKey",function(e){
                         if(finish) return;
                         let foldername = $(e.currentTarget).val();
@@ -1122,7 +1444,6 @@ async function init(){
                       function click(id){
                         if(ressss) return;
                         let input = document.getElementById(id);
-                        console.log(input);
                         if(input === null) return;
                         let alt = input.getAttribute("alt");
                         if(alt.startsWith("game")){
@@ -1512,111 +1833,88 @@ async function init(){
                 if(ret) return;
               }
               if(testersettings["flog_enabled"] == "True"){
-                if(testersettings["flog_enabled"] == "True"){
-                  res = true;
-                  let dialog = await createDialog(lang["hb_launch"], lang["hb_launch_conf"], [lang["hb_applet"], lang["hb_app"], lang["cancel"]]);
-                  $("#ulaunchscreen").append(dialog);
-                  let inputs = $("#dialog :input");
-                  let selected = 0;
-                  let max = inputs.length;
-                  inputs.click((e) => {
-                    click(e.currentTarget.id);
-                  });
-                  switchem.on("arrowright", () => {
-                    click(selected+1);
-                  });
-                  switchem.on("lrightstart", () => {
-                    click(selected+1);
-                  });
-                  switchem.on("rrightstart", () => {
-                    click(selected+1);
-                  });
-                  switchem.on("arrowleft", () => {
-                    click(selected-1);
-                  });
-                  switchem.on("lleftstart", () => {
-                    click(selected-1);
-                  });
-                  switchem.on("rleftstart", () => {
-                    click(selected-1);
-                  });
-                  switchem.on("a", () => {
-                    dblclick(selected);
-                  });
-                  inputs.dblclick((e) => {
-                    dblclick(e.currentTarget.id);
-                  });
-                  function click(id){
-                    if(ress) return;
-                    let input = $(`#dialog #${id}`).get(0);
-                    let before = $(`#dialog #${selected}`).get(0);
-                    if(input === undefined) return;
-                    before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
-                    input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
-                    selected = parseInt(id);
-                  }
-                  function dblclick(id){
-                    if(ress) return;
-                    if(id == 0){
-                      $("#dialog").remove();
-                      if(sound) sound.stop();
-                      if(titlelaunch !== undefined){
-                        if(titlelaunch.playing()) titlelaunch.stop();
-                        titlelaunch.play();
-                      }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
-                      setTimeout(() => {
-                        $("#title").remove();
-                        if(sound) sound.play();
-                        res = false;
-                      }, 1000);
-                    } else if(id == 1){
-                      $("#dialog").remove();
-                      if(sound) sound.stop();
-                      if(titlelaunch !== undefined){
-                        if(titlelaunch.playing()) titlelaunch.stop();
-                        titlelaunch.play();
-                      }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
-                      setTimeout(() => {
-                        $("#title").remove();
-                        suspended = alt;
-                        if(sound) sound.play();
-                        $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                        $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
-                          res = false;
-                        });
-                        let item = document.getElementById(iid).getAttribute("style");
-                        let l = item.split("left:")[1].split(";")[0];
-                        document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
-                        $("#suspended").show();
-                      }, 1000);
-                    } else if(id == 2){
-                      res = false;
-                      $("#dialog").remove();
+                res = true;
+                let dialog = await createDialog(lang["hb_launch"], lang["hb_launch_conf"], [lang["hb_applet"], lang["hb_app"], lang["cancel"]]);
+                $("#ulaunchscreen").append(dialog);
+                let inputs = $("#dialog :input");
+                let selected = 0;
+                let max = inputs.length;
+                inputs.click((e) => {
+                  click(e.currentTarget.id);
+                });
+                switchem.on("arrowright", () => {
+                  click(selected+1);
+                });
+                switchem.on("lrightstart", () => {
+                  click(selected+1);
+                });
+                switchem.on("rrightstart", () => {
+                  click(selected+1);
+                });
+                switchem.on("arrowleft", () => {
+                  click(selected-1);
+                });
+                switchem.on("lleftstart", () => {
+                  click(selected-1);
+                });
+                switchem.on("rleftstart", () => {
+                  click(selected-1);
+                });
+                switchem.on("a", () => {
+                  dblclick(selected);
+                });
+                inputs.dblclick((e) => {
+                  dblclick(e.currentTarget.id);
+                });
+                function click(id){
+                  if(ress) return;
+                  let input = $(`#dialog #${id}`).get(0);
+                  let before = $(`#dialog #${selected}`).get(0);
+                  if(input === undefined) return;
+                  before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+                  input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+                  selected = parseInt(id);
+                }
+                function dblclick(id){
+                  if(ress) return;
+                  if(id == 0){
+                    $("#dialog").remove();
+                    if(sound) sound.stop();
+                    if(titlelaunch !== undefined){
+                      if(titlelaunch.playing()) titlelaunch.stop();
+                      titlelaunch.play();
                     }
-                  }
-                } else {
-                  $("#dialog").remove();
-                  if(sound) sound.stop();
-                  if(titlelaunch !== undefined){
-                    if(titlelaunch.playing()) titlelaunch.stop();
-                    titlelaunch.play();
-                  }
-                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
-                  setTimeout(() => {
-                    $("#title").remove();
-                    suspended = alt;
-                    if(sound) sound.play();
-                    $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                    $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
+                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                    setTimeout(() => {
+                      $("#title").remove();
+                      if(sound) sound.play();
                       res = false;
-                    });
-                    let item = document.getElementById(iid).getAttribute("style");
-                    let l = item.split("left:")[1].split(";")[0];
-                    document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
-                    $("#suspended").show();
-                  }, 1000);
+                    }, 1000);
+                  } else if(id == 1){
+                    $("#dialog").remove();
+                    if(sound) sound.stop();
+                    if(titlelaunch !== undefined){
+                      if(titlelaunch.playing()) titlelaunch.stop();
+                      titlelaunch.play();
+                    }
+                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                    setTimeout(() => {
+                      $("#title").remove();
+                      suspended = alt;
+                      if(sound) sound.play();
+                      $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                      $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                        res = false;
+                      });
+                      let item = document.getElementById(iid).getAttribute("style");
+                      let l = item.split("left:")[1].split(";")[0];
+                      document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                      $("#suspended").show();
+                    }, 1000);
+                  } else if(id == 2){
+                    res = false;
+                    $("#dialog").remove();
+                  }
                 }
               } else {
                 $("#dialog").remove();
@@ -1628,16 +1926,8 @@ async function init(){
                 $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
-                  suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
-                    res = false;
-                  });
-                  let item = document.getElementById(iid).getAttribute("style");
-                  let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
-                  $("#suspended").show();
+                  res = false;
                 }, 1000);
               }
             } else {
@@ -1717,7 +2007,7 @@ async function init(){
                 suspended = alt;
                 if(sound) sound.play();
                 $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
+                $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                   res = false;
                 });
                 let item = document.getElementById(iid).getAttribute("style");
@@ -1730,13 +2020,7 @@ async function init(){
           $("#toggleclick").click(() => {
             hbmenu();
           });
-          switchem.on("arrowup", () => {
-            hbmenu();
-          });
-          switchem.on("ltopstart", () => {
-            hbmenu();
-          });
-          switchem.on("rtopstart", () => {
+          switchem.on("minus", () => {
             hbmenu();
           });
           function hbmenu(){
@@ -1779,6 +2063,9 @@ async function init(){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
               document.getElementById("iv").innerHTML = "v"+game.version;
+              document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+              document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+              document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
               left = 98;
               return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
@@ -1788,16 +2075,33 @@ async function init(){
           });
           let hb = folders.map(file => {
             if(file === "hbmenu"){
-              left += 276;
               n += 1;
+              if(n == 0){
+                document.getElementById("in").innerHTML = lang["hbmenu_launch"];
+                document.getElementById("ia").innerHTML = "";
+                document.getElementById("iv").innerHTML = "";
+                document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                left = 98;
+              } else {
+                left += 276;
+              }
               return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
             } else {
               let filename = file;
               file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
               let content = require(file);
               if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
-              left += 276;
               n += 1;
+              if(n == 0){
+                document.getElementById("in").innerHTML = content.name.substring(0, 0x1FF);
+                document.getElementById("ia").innerHTML = content.author.substring(0, 0xFF);
+                document.getElementById("iv").innerHTML = content.version.substring(0, 0xF);
+                left = 98;
+              } else {
+                left += 276;
+              }
               return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
             }
           });
@@ -1822,7 +2126,6 @@ async function init(){
           let max = 0;
           let selected = 0;
           let inputs = $("#items :input");
-          console.log(inputs)
           max = inputs.length;
           switchem.on("y", () => {
             if(res || ress) return;
@@ -2301,7 +2604,7 @@ async function init(){
                       suspended = alt;
                       if(sound) sound.play();
                       $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                      $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
+                      $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                         res = false;
                       });
                       let item = document.getElementById(iid).getAttribute("style");
@@ -2324,16 +2627,8 @@ async function init(){
                 $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
-                  suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
-                    res = false;
-                  });
-                  let item = document.getElementById(iid).getAttribute("style");
-                  let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
-                  $("#suspended").show();
+                  res = false;
                 }, 1000);
               }
             } else {
@@ -2348,7 +2643,7 @@ async function init(){
                 suspended = alt;
                 if(sound) sound.play();
                 $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
+                $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                   res = false;
                 });
                 let item = document.getElementById(iid).getAttribute("style");
@@ -2361,13 +2656,7 @@ async function init(){
           $("#toggleclick").click(() => {
             hbmenu();
           });
-          switchem.on("arrowup", () => {
-            hbmenu();
-          });
-          switchem.on("ltopstart", () => {
-            hbmenu();
-          });
-          switchem.on("rtopstart", () => {
+          switchem.on("minus", () => {
             hbmenu();
           });
           function hbmenu(){
@@ -2812,100 +3101,109 @@ async function init(){
             }
             let alt = document.getElementById(id).getAttribute("alt");
             let iid = id;
-            res = true;
-            let dialog = await createDialog(lang["hb_launch"], lang["hb_launch_conf"], [lang["hb_applet"], lang["hb_app"], lang["cancel"]]);
-            $("#ulaunchscreen").append(dialog);
-            let inputs = $("#dialog :input");
-            let selected = 0;
-            let max = inputs.length;
-            inputs.click((e) => {
-              click(e.currentTarget.id);
-            });
-            switchem.on("arrowright", () => {
-              click(selected+1);
-            });
-            switchem.on("lrightstart", () => {
-              click(selected+1);
-            });
-            switchem.on("rrightstart", () => {
-              click(selected+1);
-            });
-            switchem.on("arrowleft", () => {
-              click(selected-1);
-            });
-            switchem.on("lleftstart", () => {
-              click(selected-1);
-            });
-            switchem.on("rleftstart", () => {
-              click(selected-1);
-            });
-            switchem.on("a", () => {
-              dblclick(selected);
-            });
-            inputs.dblclick((e) => {
-              dblclick(e.currentTarget.id);
-            });
-            function click(id){
-              if(ress) return;
-              let input = $(`#dialog #${id}`).get(0);
-              let before = $(`#dialog #${selected}`).get(0);
-              if(input === undefined) return;
-              before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
-              input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
-              selected = parseInt(id);
-            }
-            function dblclick(id){
-              if(ress) return;
-              if(id == 0){
-                $("#dialog").remove();
-                if(sound) sound.stop();
-                if(titlelaunch !== undefined){
-                  if(titlelaunch.playing()) titlelaunch.stop();
-                  titlelaunch.play();
-                }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
-                setTimeout(() => {
-                  $("#title").remove();
-                  if(sound) sound.play();
-                  res = false;
-                }, 1000);
-              } else if(id == 1){
-                $("#dialog").remove();
-                if(sound) sound.stop();
-                if(titlelaunch !== undefined){
-                  if(titlelaunch.playing()) titlelaunch.stop();
-                  titlelaunch.play();
-                }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
-                setTimeout(() => {
-                  $("#title").remove();
-                  suspended = alt;
-                  if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:0.5}, 1000, () => {
-                    res = false;
-                  });
-                  let item = document.getElementById(iid).getAttribute("style");
-                  let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
-                  $("#suspended").show();
-                }, 1000);
-              } else if(id == 2){
-                res = false;
-                $("#dialog").remove();
+            if(testersettings["flog_enabled"] == "True"){
+              res = true;
+              let dialog = await createDialog(lang["hb_launch"], lang["hb_launch_conf"], [lang["hb_applet"], lang["hb_app"], lang["cancel"]]);
+              $("#ulaunchscreen").append(dialog);
+              let inputs = $("#dialog :input");
+              let selected = 0;
+              let max = inputs.length;
+              inputs.click((e) => {
+                click(e.currentTarget.id);
+              });
+              switchem.on("arrowright", () => {
+                click(selected+1);
+              });
+              switchem.on("lrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("rrightstart", () => {
+                click(selected+1);
+              });
+              switchem.on("arrowleft", () => {
+                click(selected-1);
+              });
+              switchem.on("lleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("rleftstart", () => {
+                click(selected-1);
+              });
+              switchem.on("a", () => {
+                dblclick(selected);
+              });
+              inputs.dblclick((e) => {
+                dblclick(e.currentTarget.id);
+              });
+              function click(id){
+                if(ress) return;
+                let input = $(`#dialog #${id}`).get(0);
+                let before = $(`#dialog #${selected}`).get(0);
+                if(input === undefined) return;
+                before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+                input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+                selected = parseInt(id);
               }
+              function dblclick(id){
+                if(ress) return;
+                if(id == 0){
+                  $("#dialog").remove();
+                  if(sound) sound.stop();
+                  if(titlelaunch !== undefined){
+                    if(titlelaunch.playing()) titlelaunch.stop();
+                    titlelaunch.play();
+                  }
+                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                  setTimeout(() => {
+                    $("#title").remove();
+                    if(sound) sound.play();
+                    res = false;
+                  }, 1000);
+                } else if(id == 1){
+                  $("#dialog").remove();
+                  if(sound) sound.stop();
+                  if(titlelaunch !== undefined){
+                    if(titlelaunch.playing()) titlelaunch.stop();
+                    titlelaunch.play();
+                  }
+                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                  setTimeout(() => {
+                    $("#title").remove();
+                    suspended = alt;
+                    if(sound) sound.play();
+                    $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                    $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                      res = false;
+                    });
+                    let item = document.getElementById(iid).getAttribute("style");
+                    let l = item.split("left:")[1].split(";")[0];
+                    document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                    $("#suspended").show();
+                  }, 1000);
+                } else if(id == 2){
+                  res = false;
+                  $("#dialog").remove();
+                }
+              }
+            } else {
+              $("#dialog").remove();
+              if(sound) sound.stop();
+              if(titlelaunch !== undefined){
+                if(titlelaunch.playing()) titlelaunch.stop();
+                titlelaunch.play();
+              }
+              $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+              setTimeout(() => {
+                $("#title").remove();
+                if(sound) sound.play();
+                res = false;
+              }, 1000);
             }
           }
           $("#toggleclick").click(() => {
             menu();
           });
-          switchem.on("arrowup", () => {
-            menu();
-          });
-          switchem.on("ltopstart", () => {
-            menu();
-          });
-          switchem.on("rtopstart", () => {
+          switchem.on("minus", () => {
             menu();
           });
           function menu(){
@@ -2936,6 +3234,28 @@ async function init(){
         res = true;
         mainmenu();
         resolve();
+      });
+      switchem.on("plus", async () => {
+        if(res) return;
+        res = true;
+        let ress = false;
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        $("#ulaunchscreen").append(dialog);
+        let inputs = $("#dialog :input");
+        let selected = 0;
+        let max = inputs.length;
+        switchem.on("a", () => {
+          dblclick(selected);
+        });
+        inputs.dblclick((e) => {
+          dblclick(e.currentTarget.id);
+        });
+        function dblclick(id){
+          if(ress) return;
+          ress = true;
+          res = false;
+          $("#dialog").remove();
+        }
       });
       let selected = 0;
       let themes = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "themes")).filter(n => n.indexOf("Manifest") !== -1);
@@ -3032,7 +3352,6 @@ async function init(){
         } else if(testersettings.currenttheme === tpath){
           return ShowNotification(lang["theme_active_this"], uijson);
         }
-        console.log(tpath);
         testersettings.currenttheme = tpath;
         testersettings.isthemerestart = true;
         fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
@@ -3052,6 +3371,28 @@ async function init(){
         res = true;
         mainmenu();
         resolve();
+      });
+      switchem.on("plus", async () => {
+        if(res) return;
+        res = true;
+        let ress = false;
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        $("#ulaunchscreen").append(dialog);
+        let inputs = $("#dialog :input");
+        let selected = 0;
+        let max = inputs.length;
+        switchem.on("a", () => {
+          dblclick(selected);
+        });
+        inputs.dblclick((e) => {
+          dblclick(e.currentTarget.id);
+        });
+        function dblclick(id){
+          if(ress) return;
+          ress = true;
+          res = false;
+          $("#dialog").remove();
+        }
       });
       let max = 0;
       let selected = 0;
@@ -3397,7 +3738,7 @@ async function init(){
           res = true;
           let finish = false;
           istyping = true;
-          $("#ulaunchscreen").append(`<div style="background-color: #0000007F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="consolename"><div style="background-color: #e1e1e1;width:350;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:28;" id="namep">Enter your console name</p><input style="width:300;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
+          $("#ulaunchscreen").append(`<div style="background-color: #3232327F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="consolename"><div style="background-color: #e1e1e1;width:350;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:28;" id="namep">Enter your console name</p><input style="width:300;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
           $('#name').bind("enterKey",function(e){
             if(finish) return;
             let consolename = $(e.currentTarget).val();
@@ -3426,6 +3767,28 @@ async function init(){
         res = true;
         settings();
         resolve();
+      });
+      switchem.on("plus", async () => {
+        if(res) return;
+        res = true;
+        let ress = false;
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        $("#ulaunchscreen").append(dialog);
+        let inputs = $("#dialog :input");
+        let selected = 0;
+        let max = inputs.length;
+        switchem.on("a", () => {
+          dblclick(selected);
+        });
+        inputs.dblclick((e) => {
+          dblclick(e.currentTarget.id);
+        });
+        function dblclick(id){
+          if(ress) return;
+          ress = true;
+          res = false;
+          $("#dialog").remove();
+        }
       });
       document.getElementById("ulaunchscreen").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "languages.ejs"), "utf8"), {testersettings, Languages, defaulticon, path, size, uijson, lang});
       let down,leftclick;
@@ -3717,7 +4080,6 @@ function getFiles(dir, files_) {
 function ApplyConfigForElement(json, obj1, obj2){
   let defjson = require(path.join(__dirname, "ulaunch", "default.json"));
   if(obj2 === undefined) {
-    console.log(typeof defjson[obj1]);
     if(typeof defjson[obj1] === "string" || typeof defjson[obj1] === "number"){
       return (json[obj1] !== undefined) ? json[obj1] : defjson[obj1];
     } else {
@@ -3788,7 +4150,7 @@ function InitializeLang(lang, Languages){
 }
 
 async function createDialog(title, content, opts, hasCancel = false, icon){
-  let html = `<div style="background-color: #0000007F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="dialog">`;
+  let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="dialog">`;
   if(hasCancel) opts.push("Cancel");
   if(opts.length !== 0){
     let dw = (20 * (opts.length - 1)) + 250;
@@ -3800,10 +4162,8 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
     let icm = 30;
     let elemh = 60;
     let tdw = getTextWH(20, content)[0] + 157.5;
-    console.log(tdw-90);
     if(tdw > dw) dw = tdw;
     tdw = getTextWH(30, title)[0] + 157.5;
-    console.log(tdw-90);
     if(tdw > dw) dw = tdw;
     let ely = getTextWH(20, content)[1] + getTextWH(30, title)[1] + 140;
     if(icon){
@@ -3882,6 +4242,44 @@ function visibility(visible){
   } else {
     return "visible";
   }
+}
+
+async function SetTextureColorMod(src, id, r, g, b){
+  await new Promise(function(resolve, reject) {
+    let img = new Image();
+    img.onload = () => {
+      var can = document.createElement("canvas");
+      can.width = img.width;
+      can.height = img.height;
+      var ctx = can.getContext('2d');
+      ctx.scale(can.width / img.width, can.height / img.height);
+      ctx.drawImage(img, 0, 0);
+
+      var imageData = ctx.getImageData(0,0,can.width, can.height);
+      var pixels = imageData.data;
+      var numPixels = pixels.length;
+
+      ctx.clearRect(0, 0, can.width, can.height);
+
+      for (var i = 0; i < numPixels; i++) {
+          pixels[i*4] = pixels[i*4]*(r/255);
+          pixels[i*4+1] = pixels[i*4+1]*(g/255);
+          pixels[i*4+2] = pixels[i*4+2]*(b/255);
+      }
+      ctx.putImageData(imageData, 0, 0);
+      if(id !== undefined){
+        document.getElementById(id).setAttribute("src", can.toDataURL());
+      } else {
+        img = document.createElement("img");
+        img.width = can.width;
+        img.height = can.height;
+        img.src = can.toDataURL();
+        document.body.appendChild(img);
+      }
+      resolve();
+    }
+    img.src = src;
+  });
 }
 
 let ispower = true;
@@ -4094,7 +4492,7 @@ async function power(){
     istounpower = true
     $('#switchcontainer').find('input, textarea, button, select').prop('disabled', true);
     $("#switchcontainer").fadeTo(300, 0, function(){
-      sound.pause();
+      if(sound) sound.pause();
       istounpower = false;
       ispower = false;
       if(ispowerpressed){
@@ -4105,7 +4503,7 @@ async function power(){
   }
   function onpower(){
     if(istopower) return;
-    sound.play();
+    if(sound) sound.play();
     ispowerpressed = false;
     istopower = true
     $("#switchcontainer").fadeTo(300, 1, function(){
