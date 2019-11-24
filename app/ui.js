@@ -4123,7 +4123,7 @@ function InitializeLang(lang, Languages){
   } else {
     if(Languages[lang] === undefined){
       lang = langdefault;
-      testersettings.lang = key;
+      testersettings.lang = "en-US";
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     } else {
       if(!fs.existsSync(path.join(documents, "uLaunch-Previewer", "sdmc", "ulaunch", "lang", `${lang}.json`))){
