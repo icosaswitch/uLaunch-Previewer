@@ -30,7 +30,7 @@
   "build": {
     "appId": "ulaunch-previewer",
     "productName": "uLaunch Previewer",
-    "artifactName": "${productName}-${version}.${ext}",
+    "artifactName": "${productName} ${version}.${ext}",
     "directories": {
       "buildResources": "build",
       "output": "dist"
