@@ -1,6 +1,6 @@
 {
   "name": "ulaunch-previewer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "uLaunch Previewer",
   "main": "index.js",
   "scripts": {
@@ -57,10 +57,12 @@
       "icon": "build/icon.icns"
     },
     "dmg": {
-      "backgroundColor": "#2f3640",
+      "background": "build/background.png",
       "icon": "build/icon.icns",
+      "iconTextSize": 15,
+      "iconSize": 100,
       "window": {
-        "width": 550,
+        "width": 541,
         "height": 400
       }
     },
