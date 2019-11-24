@@ -6,7 +6,7 @@
 <img src="screenshot/s3.png" width="425"/> <img src="screenshot/s4.png" width="425"/>
 
 ### For view how to configure it, see [wiki](https://github.com/IcosaSwitch/uLaunch-Previewer/wiki)
-<h3 style="font-type:bold">1920x1080px dimension or above is recommended!</h3>
+<h3 style="font-type:bold">1920x1080px screen dimension or above is recommended!</h3>
 
 ## Download
 
