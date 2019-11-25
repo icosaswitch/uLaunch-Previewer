@@ -250,6 +250,24 @@ $(function() {
   init();
 })
 
+let Timer = function(callback, delay) {
+    var timerId, start, remaining = delay;
+    this.stop = function() {
+      window.clearTimeout(timerId);
+      remaining = delay;
+    };
+    this.pause = function() {
+      window.clearTimeout(timerId);
+      remaining -= Date.now() - start;
+    };
+    this.resume = function() {
+      start = Date.now();
+      window.clearTimeout(timerId);
+      timerId = window.setTimeout(callback, remaining);
+    };
+    this.resume();
+};
+let fadetimeout = undefined;
 let sound = undefined;
 let titlelaunch = undefined;
 let menutoggle = undefined;
@@ -389,13 +407,13 @@ async function init(){
           fade(sound.duration());
         });
         function fade(duration){
-          sound.fade(0,1,parseFloat(bgm.fade_in_ms));
-          setTimeout(() => {
-            sound.fade(1,0,parseFloat(bgm.fade_out_ms));
+          sound.fade(0,1,bgm.fade_in_ms);
+          fadetimeout = new Timer(() => {
+            sound.fade(1,0,bgm.fade_out_ms);
             setTimeout(() => {
               if(bgm.loop) fade(duration);
             }, bgm.fade_out_ms);
-          }, duration*1000-parseFloat(bgm.fade_out_ms));
+          }, duration*1000-bgm.fade_out_ms);
         }
       } if(fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "sound", "TitleLaunch.wav"))){
         titlelaunch = new Howl({
@@ -651,7 +669,7 @@ async function init(){
       }
       document.getElementById("in").innerHTML = games[0].name;
       document.getElementById("ia").innerHTML = games[0].author;
-      document.getElementById("iv").innerHTML = games[0].version;
+      document.getElementById("iv").innerHTML = "v"+games[0].version;
       if(testersettings.time === "auto"){
         let time = new Date();
         let minutes = [];
@@ -1152,7 +1170,7 @@ async function init(){
             if(n == 0){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              document.getElementById("iv").innerHTML = "v"+game.version;
               left = 98;
               return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
@@ -1271,7 +1289,7 @@ async function init(){
                   let game = games.find(g => g.id === alt.split("/")[1]);
                   document.getElementById("in").innerHTML = game.name;
                   document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = game.version;
+                  document.getElementById("iv").innerHTML = "v"+game.version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -1747,7 +1765,7 @@ async function init(){
               let game = games.find(g => g.id === alt.split("/")[1]);
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              document.getElementById("iv").innerHTML = "v"+game.version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -1786,7 +1804,10 @@ async function init(){
             let alt = document.getElementById(id).getAttribute("alt");
             if(document.getElementById(id).getAttribute("alt") === suspended){
               res = true;
-              if(sound) sound.stop();
+              if(sound){
+                sound.stop();
+                fadetimeout.stop();
+              };
               if(titlelaunch !== undefined){
                 if(titlelaunch.playing()) titlelaunch.stop();
                 titlelaunch.play();
@@ -1797,7 +1818,10 @@ async function init(){
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
-                  if(sound) sound.play();
+                  if(sound){
+                    sound.play();
+                    fadetimeout.resume();
+                  };
                   $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
@@ -1927,7 +1951,10 @@ async function init(){
                     if(ress) return;
                     if(id == 0){
                       $("#dialog").remove();
-                      if(sound) sound.stop();
+                      if(sound){
+                        sound.stop();
+                        fadetimeout.stop();
+                      };
                       if(titlelaunch !== undefined){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
@@ -1935,12 +1962,18 @@ async function init(){
                       $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
-                        if(sound) sound.play();
+                        if(sound){
+                          sound.play();
+                          fadetimeout.resume();
+                        };
                         res = false;
                       }, 1000);
                     } else if(id == 1){
                       $("#dialog").remove();
-                      if(sound) sound.stop();
+                      if(sound){
+                        sound.stop();
+                        fadetimeout.stop();
+                      };
                       if(titlelaunch !== undefined){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
@@ -1949,7 +1982,10 @@ async function init(){
                       setTimeout(() => {
                         $("#title").remove();
                         suspended = alt;
-                        if(sound) sound.play();
+                        if(sound){
+                          sound.play();
+                          fadetimeout.resume();
+                        };
                         $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                         $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                           res = false;
@@ -1966,7 +2002,10 @@ async function init(){
                   }
                 } else {
                   $("#dialog").remove();
-                  if(sound) sound.stop();
+                  if(sound){
+                    sound.stop();
+                    fadetimeout.stop();
+                  };
                   if(titlelaunch !== undefined){
                     if(titlelaunch.playing()) titlelaunch.stop();
                     titlelaunch.play();
@@ -1974,7 +2013,10 @@ async function init(){
                   $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                   setTimeout(() => {
                     $("#title").remove();
-                    if(sound) sound.play();
+                    if(sound){
+                      sound.play();
+                      fadetimeout.resume();
+                    };
                     res = false;
                   }, 1000);
                 }
@@ -2044,7 +2086,10 @@ async function init(){
                   });
                   if(ret) return;
                 }
-                if(sound) sound.stop();
+                if(sound){
+                  sound.stop();
+                  fadetimeout.stop();
+                };
                 if(titlelaunch !== undefined){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
@@ -2053,7 +2098,10 @@ async function init(){
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
-                  if(sound) sound.play();
+                  if(sound){
+                    sound.play();
+                    fadetimeout.resume();
+                  };
                   $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
@@ -2111,7 +2159,7 @@ async function init(){
             if(n == 0){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              document.getElementById("iv").innerHTML = "v"+game.version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2247,7 +2295,7 @@ async function init(){
                   let game = games.find(g => g.id === alt.split("/")[1]);
                   document.getElementById("in").innerHTML = game.name;
                   document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = game.version;
+                  document.getElementById("iv").innerHTML = "v"+game.version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2494,7 +2542,7 @@ async function init(){
               let game = games.find(g => g.id === alt.split("/")[1]);
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              document.getElementById("iv").innerHTML = "v"+game.version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2524,7 +2572,10 @@ async function init(){
             let alt = document.getElementById(id).getAttribute("alt");
             if(document.getElementById(id).getAttribute("alt") === suspended){
               res = true;
-              if(sound) sound.stop();
+              if(sound){
+                sound.stop();
+                fadetimeout.stop();
+              };
               if(titlelaunch !== undefined){
                 if(titlelaunch.playing()) titlelaunch.stop();
                 titlelaunch.play();
@@ -2535,7 +2586,10 @@ async function init(){
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
-                  if(sound) sound.play();
+                  if(sound){
+                    sound.play();
+                    fadetimeout.resume();
+                  };
                   $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
@@ -2662,7 +2716,10 @@ async function init(){
                     if(ress) return;
                     if(id == 0){
                       $("#dialog").remove();
-                      if(sound) sound.stop();
+                      if(sound){
+                        sound.stop();
+                        fadetimeout.stop();
+                      };
                       if(titlelaunch !== undefined){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
@@ -2670,12 +2727,18 @@ async function init(){
                       $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
-                        if(sound) sound.play();
+                        if(sound){
+                          sound.play();
+                          fadetimeout.resume();
+                        };
                         res = false;
                       }, 1000);
                     } else if(id == 1){
                       $("#dialog").remove();
-                      if(sound) sound.stop();
+                      if(sound){
+                        sound.stop();
+                        fadetimeout.stop();
+                      };
                       if(titlelaunch !== undefined){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
@@ -2684,7 +2747,10 @@ async function init(){
                       setTimeout(() => {
                         $("#title").remove();
                         suspended = alt;
-                        if(sound) sound.play();
+                        if(sound){
+                          sound.play();
+                          fadetimeout.resume();
+                        };
                         $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                         $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                           res = false;
@@ -2701,7 +2767,10 @@ async function init(){
                   }
                 } else {
                   $("#dialog").remove();
-                  if(sound) sound.stop();
+                  if(sound){
+                    sound.stop();
+                    fadetimeout.stop();
+                  };
                   if(titlelaunch !== undefined){
                     if(titlelaunch.playing()) titlelaunch.stop();
                     titlelaunch.play();
@@ -2709,12 +2778,18 @@ async function init(){
                   $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                   setTimeout(() => {
                     $("#title").remove();
-                    if(sound) sound.play();
+                    if(sound){
+                      sound.play();
+                      fadetimeout.resume();
+                    };
                     res = false;
                   }, 1000);
                 }
               } else {
-                if(sound) sound.stop();
+                if(sound){
+                  sound.stop();
+                  fadetimeout.stop();
+                };
                 if(titlelaunch !== undefined){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
@@ -2723,7 +2798,10 @@ async function init(){
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
-                  if(sound) sound.play();
+                  if(sound){
+                    sound.play();
+                    fadetimeout.resume();
+                  };
                   $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
@@ -2878,7 +2956,7 @@ async function init(){
                   let game = games.find(g => g.id === alt.split("/")[1]);
                   document.getElementById("in").innerHTML = game.name;
                   document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = game.version;
+                  document.getElementById("iv").innerHTML = "v"+game.version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -3127,7 +3205,10 @@ async function init(){
             let alt = document.getElementById(id).getAttribute("alt");
             if(document.getElementById(id).getAttribute("alt") === suspended){
               res = true;
-              if(sound) sound.stop();
+              if(sound){
+                sound.stop();
+                fadetimeout.stop();
+              };
               if(titlelaunch !== undefined){
                 if(titlelaunch.playing()) titlelaunch.stop();
                 titlelaunch.play();
@@ -3138,7 +3219,10 @@ async function init(){
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
-                  if(sound) sound.play();
+                  if(sound){
+                    sound.play();
+                    fadetimeout.resume();
+                  };
                   $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
@@ -3264,7 +3348,10 @@ async function init(){
                   if(ress) return;
                   if(id == 0){
                     $("#dialog").remove();
-                    if(sound) sound.stop();
+                    if(sound){
+                      sound.stop();
+                      fadetimeout.stop();
+                    };
                     if(titlelaunch !== undefined){
                       if(titlelaunch.playing()) titlelaunch.stop();
                       titlelaunch.play();
@@ -3272,12 +3359,18 @@ async function init(){
                     $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                     setTimeout(() => {
                       $("#title").remove();
-                      if(sound) sound.play();
+                      if(sound){
+                        sound.play();
+                        fadetimeout.resume();
+                      };
                       res = false;
                     }, 1000);
                   } else if(id == 1){
                     $("#dialog").remove();
-                    if(sound) sound.stop();
+                    if(sound){
+                      sound.stop();
+                      fadetimeout.stop();
+                    };
                     if(titlelaunch !== undefined){
                       if(titlelaunch.playing()) titlelaunch.stop();
                       titlelaunch.play();
@@ -3286,7 +3379,10 @@ async function init(){
                     setTimeout(() => {
                       $("#title").remove();
                       suspended = alt;
-                      if(sound) sound.play();
+                      if(sound){
+                        sound.play();
+                        fadetimeout.resume();
+                      };
                       $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                       $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                         res = false;
@@ -3303,7 +3399,10 @@ async function init(){
                 }
               } else {
                 $("#dialog").remove();
-                if(sound) sound.stop();
+                if(sound){
+                  sound.stop();
+                  fadetimeout.stop();
+                };
                 if(titlelaunch !== undefined){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
@@ -3311,7 +3410,10 @@ async function init(){
                 $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
-                  if(sound) sound.play();
+                  if(sound){
+                    sound.play();
+                    fadetimeout.resume();
+                  };
                   res = false;
                 }, 1000);
               }
@@ -4609,7 +4711,10 @@ async function power(){
     istounpower = true
     $('#switchcontainer').find('input, textarea, button, select').prop('disabled', true);
     $("#switchcontainer").fadeTo(300, 0, function(){
-      if(sound) sound.pause();
+      if(sound){
+        sound.pause();
+        fadetimeout.pause();
+      };
       istounpower = false;
       ispower = false;
       if(ispowerpressed){
@@ -4620,7 +4725,10 @@ async function power(){
   }
   function onpower(){
     if(istopower) return;
-    if(sound) sound.play();
+    if(sound){
+      sound.play();
+      fadetimeout.resume();
+    };
     ispowerpressed = false;
     istopower = true
     $("#switchcontainer").fadeTo(300, 1, function(){
