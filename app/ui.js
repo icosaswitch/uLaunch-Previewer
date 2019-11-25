@@ -506,14 +506,14 @@ async function init(){
     usericon: {w: 50,h: 50},
     webicon: {w: 50,h: 50},
   }, defaulticon, uijson);
-  function startup(){
+  function startup(logoff){
     return new Promise(function(resolve, reject) {
       let res = false;
       let selected = 0;
       let max = 0;
       let down,leftclick;
       let users = require(path.join(ulaunchtester, "testersettings", "users.json"));
-      if(testersettings.skipstartup || testersettings.isthemerestart){
+      if((testersettings.skipstartup || testersettings.isthemerestart) && !logoff){
         if(testersettings.isthemerestart) {
           testersettings.isthemerestart = false;
           fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
@@ -623,7 +623,7 @@ async function init(){
               "password": false
             });
             fs.writeFileSync(path.join(ulaunchtester, "testersettings", "users.json"), JSON.stringify(users, null, 2), function(err){if(err) throw err;});
-            startup();
+            startup(logoff);
             res = true;
             resolve();
           } else {
@@ -775,9 +775,22 @@ async function init(){
         }
         function dblclick(id){
           if(ress) return;
-          ress = true;
-          res = false;
-          $("#dialog").remove();
+          if(id == "2"){
+            ress = true;
+            clearInterval(interval);
+            if(multiselect.filter(n => n == true)[0]){
+              multiselect = multiselect.map(n => false);
+              $("#multiselect").hide();
+              document.getElementById("multiselect").innerHTML = "";
+              ShowNotification(lang["menu_multiselect_cancel"], uijson);
+            }
+            $("#dialog").remove();
+            startup(true);
+          } else {
+            ress = true;
+            res = false;
+            $("#dialog").remove();
+          }
         }
       });
       switchem.on("l", () => {
@@ -1199,6 +1212,16 @@ async function init(){
               inputs.click((e) => {
                 click(e.currentTarget.id);
               });
+              switchem.on("y", () => {
+                select(selected);
+              });
+              function select(id){
+                if(res || !multiselect[mid]) return;
+                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                if($(`#multiselect #${id}`).get(0) === undefined){
+                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                }
+              }
               switchem.on("arrowright", () => {
                 click(selected+1);
               });
@@ -1241,11 +1264,7 @@ async function init(){
                 let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
                 document.getElementById("cursor").setAttribute("alt", id);
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
-                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
                 selected = parseInt(id);
-                if($(`#multiselect #${id}`).get(0) === undefined){
-                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
-                }
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: 0; left: ${leftcursor}`);
                 let alt = input.getAttribute("alt");
                 if(alt.startsWith("game")){
@@ -1774,12 +1793,12 @@ async function init(){
               }
               $("#title").animate({width: 1280,height:720,opacity:1}, 1000, () => {
                 $("#title").remove();
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
@@ -1913,7 +1932,7 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         if(sound) sound.play();
@@ -1926,12 +1945,12 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         suspended = alt;
                         if(sound) sound.play();
-                        $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                        $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                         $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                           res = false;
                         });
@@ -1952,7 +1971,7 @@ async function init(){
                     if(titlelaunch.playing()) titlelaunch.stop();
                     titlelaunch.play();
                   }
-                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                   setTimeout(() => {
                     $("#title").remove();
                     if(sound) sound.play();
@@ -2030,12 +2049,12 @@ async function init(){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
                 }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
@@ -2093,9 +2112,9 @@ async function init(){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
               document.getElementById("iv").innerHTML = "v"+game.version;
-              document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+              document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
-              document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+              document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
               left = 98;
               return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
@@ -2169,6 +2188,16 @@ async function init(){
               inputs.click((e) => {
                 click(e.currentTarget.id);
               });
+              switchem.on("y", () => {
+                select(selected);
+              });
+              function select(id){
+                if(res || !multiselect[mid]) return;
+                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                if($(`#multiselect #${id}`).get(0) === undefined){
+                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                }
+              }
               switchem.on("arrowright", () => {
                 click(selected+1);
               });
@@ -2211,11 +2240,7 @@ async function init(){
                 let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
                 document.getElementById("cursor").setAttribute("alt", id);
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
-                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
                 selected = parseInt(id);
-                if($(`#multiselect #${id}`).get(0) === undefined){
-                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
-                }
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: 0; left: ${leftcursor}`);
                 let alt = input.getAttribute("alt");
                 if(alt.startsWith("game")){
@@ -2506,12 +2531,12 @@ async function init(){
               }
               $("#title").animate({width: 1280,height:720,opacity:1}, 1000, () => {
                 $("#title").remove();
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
@@ -2642,7 +2667,7 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         if(sound) sound.play();
@@ -2655,12 +2680,12 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         suspended = alt;
                         if(sound) sound.play();
-                        $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                        $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                         $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                           res = false;
                         });
@@ -2681,7 +2706,7 @@ async function init(){
                     if(titlelaunch.playing()) titlelaunch.stop();
                     titlelaunch.play();
                   }
-                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                   setTimeout(() => {
                     $("#title").remove();
                     if(sound) sound.play();
@@ -2694,12 +2719,12 @@ async function init(){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
                 }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
@@ -2794,6 +2819,16 @@ async function init(){
               inputs.click((e) => {
                 click(e.currentTarget.id);
               });
+              switchem.on("y", () => {
+                select(selected);
+              });
+              function select(id){
+                if(res || !multiselect[mid]) return;
+                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                if($(`#multiselect #${id}`).get(0) === undefined){
+                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                }
+              }
               switchem.on("arrowright", () => {
                 click(selected+1);
               });
@@ -2836,11 +2871,7 @@ async function init(){
                 let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
                 document.getElementById("cursor").setAttribute("alt", id);
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
-                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
                 selected = parseInt(id);
-                if($(`#multiselect #${id}`).get(0) === undefined){
-                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
-                }
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: 0; left: ${leftcursor}`);
                 let alt = input.getAttribute("alt");
                 if(alt.startsWith("game")){
@@ -3103,12 +3134,12 @@ async function init(){
               }
               $("#title").animate({width: 1280,height:720,opacity:1}, 1000, () => {
                 $("#title").remove();
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
                   if(sound) sound.play();
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                   $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
@@ -3238,7 +3269,7 @@ async function init(){
                       if(titlelaunch.playing()) titlelaunch.stop();
                       titlelaunch.play();
                     }
-                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                     setTimeout(() => {
                       $("#title").remove();
                       if(sound) sound.play();
@@ -3251,12 +3282,12 @@ async function init(){
                       if(titlelaunch.playing()) titlelaunch.stop();
                       titlelaunch.play();
                     }
-                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                     setTimeout(() => {
                       $("#title").remove();
                       suspended = alt;
                       if(sound) sound.play();
-                      $("#suspendedimg").append(`<input type="button" style="background-color:#111;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
+                      $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
                       $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                         res = false;
                       });
@@ -3277,7 +3308,7 @@ async function init(){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
                 }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#111;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   if(sound) sound.play();
