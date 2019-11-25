@@ -389,13 +389,13 @@ async function init(){
           fade(sound.duration());
         });
         function fade(duration){
-          sound.fade(0,1,bgm.fade_in_ms);
+          sound.fade(0,1,parseFloat(bgm.fade_in_ms));
           setTimeout(() => {
-            sound.fade(1,0,bgm.fade_out_ms);
+            sound.fade(1,0,parseFloat(bgm.fade_out_ms));
             setTimeout(() => {
               if(bgm.loop) fade(duration);
             }, bgm.fade_out_ms);
-          }, duration*1000-bgm.fade_out_ms);
+          }, duration*1000-parseFloat(bgm.fade_out_ms));
         }
       } if(fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme, "sound", "TitleLaunch.wav"))){
         titlelaunch = new Howl({
@@ -651,7 +651,7 @@ async function init(){
       }
       document.getElementById("in").innerHTML = games[0].name;
       document.getElementById("ia").innerHTML = games[0].author;
-      document.getElementById("iv").innerHTML = "v"+games[0].version;
+      document.getElementById("iv").innerHTML = games[0].version;
       if(testersettings.time === "auto"){
         let time = new Date();
         let minutes = [];
@@ -1152,7 +1152,7 @@ async function init(){
             if(n == 0){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = "v"+game.version;
+              document.getElementById("iv").innerHTML = game.version;
               left = 98;
               return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
@@ -1271,7 +1271,7 @@ async function init(){
                   let game = games.find(g => g.id === alt.split("/")[1]);
                   document.getElementById("in").innerHTML = game.name;
                   document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = "v"+game.version;
+                  document.getElementById("iv").innerHTML = game.version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -1747,7 +1747,7 @@ async function init(){
               let game = games.find(g => g.id === alt.split("/")[1]);
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = "v"+game.version;
+              document.getElementById("iv").innerHTML = game.version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2111,7 +2111,7 @@ async function init(){
             if(n == 0){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = "v"+game.version;
+              document.getElementById("iv").innerHTML = game.version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2247,7 +2247,7 @@ async function init(){
                   let game = games.find(g => g.id === alt.split("/")[1]);
                   document.getElementById("in").innerHTML = game.name;
                   document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = "v"+game.version;
+                  document.getElementById("iv").innerHTML = game.version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2494,7 +2494,7 @@ async function init(){
               let game = games.find(g => g.id === alt.split("/")[1]);
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = "v"+game.version;
+              document.getElementById("iv").innerHTML = game.version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2878,7 +2878,7 @@ async function init(){
                   let game = games.find(g => g.id === alt.split("/")[1]);
                   document.getElementById("in").innerHTML = game.name;
                   document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = "v"+game.version;
+                  document.getElementById("iv").innerHTML = game.version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
