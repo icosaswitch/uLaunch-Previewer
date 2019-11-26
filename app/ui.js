@@ -320,7 +320,11 @@ async function init(){
     });
   });
   document.getElementById("switchcontainer").innerHTML = `<div id="ulaunchscreen"></div>`
-  testersettings = require(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
+  try{
+    testersettings = require(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
+  } catch(e){
+    corrupted(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
+  }
   let currenttheme = testersettings.currenttheme;
   let user;
   let timeout = null;
@@ -537,7 +541,12 @@ async function init(){
       let selected = 0;
       let max = 0;
       let down,leftclick;
-      let users = require(path.join(ulaunchtester, "testersettings", "users.json"));
+      let users
+      try{
+        users = require(path.join(ulaunchtester, "testersettings", "users.json"));
+      }catch(e){
+        corrupted(path.join(ulaunchtester, "testersettings", "users.json"));
+      }
       if((testersettings.skipstartup || testersettings.isthemerestart) && !logoff){
         if(testersettings.isthemerestart) {
           testersettings.isthemerestart = false;
@@ -1134,7 +1143,12 @@ async function init(){
           document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
           document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
           document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
-          let menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          let menuitems;
+          try{
+            menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          }catch(e){
+            corrupted(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          }
           let height = [size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0];
           let top = (height-256)/2;
           let left = 0;
@@ -2154,7 +2168,12 @@ async function init(){
           let top = (height-256)/2;
           let left = 98;
           let n = -1;
-          let menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          let menuitems;
+          try{
+            menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          }catch(e){
+            corrupted(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          }
           let folders = menuitems.folders[fname];
           let items = games.filter((game) => {
             if(folders.includes(game.id)){
@@ -2855,7 +2874,12 @@ async function init(){
           document.getElementById("iv").innerHTML = "";
           let height = [size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0];
           let top = (height-256)/2;
-          let menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          let menuitems;
+          try{
+            menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          }catch(e){
+            corrupted(path.join(ulaunchtester, "testersettings", "menuitems.json"));
+          }
           let menuhb = menuitems.hb;
           let jsonsfiles = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
           let left = 98;
@@ -4748,4 +4772,9 @@ async function power(){
       }
     });
   }
+}
+
+function corrupted(file){
+  alert(`"${file.replace(/\\/g, "/")}" is in incorrect format or corrupted`);
+  getCurrentWindow().close();
 }
