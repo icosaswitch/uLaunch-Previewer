@@ -1,6 +1,6 @@
 {
   "name": "ulaunch-previewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "uLaunch Previewer",
   "main": "index.js",
   "scripts": {
@@ -29,8 +29,8 @@
   },
   "build": {
     "appId": "ulaunch-previewer",
-    "productName": "uLaunch Previewer",
-    "artifactName": "${productName} ${version}.${ext}",
+    "productName": "uLaunch-Previewer",
+    "artifactName": "${productName}-${version}.${ext}",
     "directories": {
       "buildResources": "build",
       "output": "dist"
