@@ -1,0 +1,127 @@
+<input type="button" class="switchback"/>
+<div id="jl">
+  <input type="button" class="lbtn" id="l"/>
+  <input type="button" class="joyconl"/>
+  <input type="button" class="minus" id="minus"/>
+  <div id="ljoystick" style="position:fixed;top:<%- getHeight(125) %>;left:<%- getWidth(85.5) %>;width:<%- getWidth(160) %>;height:<%- getHeight(160) %>">
+    <input type="button" class="joystickbg"/>
+    <div id="ljoybutton" style="position:relative;top:<%- getHeight(20) %>;left:<%- getWidth(-20) %>">
+      <input type="button" class="joystick"/>
+      <input type="button" class="joysticks"/>
+      <input type="button" class="barleft"/>
+      <input type="button" class="barright"/>
+      <input type="button" class="bartop"/>
+      <input type="button" class="barbottom"/>
+    </div>
+    <input type="button" class="top" id="ltop"/>
+    <input type="button" class="topleft" id="ltopleft"/>
+    <input type="button" class="left" id="lleft"/>
+    <input type="button" class="leftbottom" id="lleftbottom"/>
+    <input type="button" class="bottom" id="lbottom"/>
+    <input type="button" class="bottomright" id="lbottomright"/>
+    <input type="button" class="right" id="lright"/>
+    <input type="button" class="righttop" id="lrighttop"/>
+  </div>
+  <div id="arrowupdiv" style="position:fixed;top:<%- getHeight(330) %>;left:<%- getWidth(95.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowup">
+      <g transform="rotate(180 12.25 12.25)">
+        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+      </g>
+    </svg>
+    <input type="button" class="btnround"/>
+    <input type="button" class="transparentbtnround" id="arrowup"/>
+  </div>
+  <div id="arrowleftdiv" style="position:fixed;top:<%- getHeight(385) %>;left:<%- getWidth(40.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowleft">
+      <g transform="rotate(90 12.25 12.25)">
+        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+      </g>
+    </svg>
+    <input type="button" class="btnround"/>
+    <input type="button" class="transparentbtnround" id="arrowleft"/>
+  </div>
+  <div id="arrowbottomdiv" style="position:fixed;top:<%- getHeight(440) %>;left:<%- getWidth(95.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowbottom">
+      <g transform="rotate(1 12.25 12.25)">
+        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+      </g>
+    </svg>
+    <input type="button" class="btnround"/>
+    <input type="button" class="transparentbtnround" id="arrowdown"/>
+  </div>
+  <div id="arrowrightdiv" style="position:fixed;top:<%- getHeight(385) %>;left:<%- getWidth(150.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowright">
+      <g transform="rotate(270 12.25 12.25)">
+        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
+      </g>
+    </svg>
+    <input type="button" class="btnround"/>
+    <input type="button" class="transparentbtnround" id="arrowright"/>
+  </div>
+  <div id="capture" style="position:fixed;top:<%- getHeight(540) %>;left:<%- getWidth(150) %>;width:<%- getWidth(42) %>;height:<%- getHeight(42) %>">
+    <input type"button" class="capturebg" id="capturebg" disabled/>
+    <input type"button" class="capture" id="capture" disabled/>
+  </div>
+</div>
+<div id="jr">
+  <input type="button" class="rbtn" id="r"/>
+  <input type="button" class="joyconr"/>
+  <div id="dplus" style="position:fixed;top:<%- getHeight(50) %>;left:<%- getWidth(1605) %>">
+    <input type="button" class="plus" id="plus"/>
+    <input type="button" class="pluss" id="pluss"/>
+    <input type="button" class="plusss" id="plusss"/>
+  </div>
+  <div id="rjoystick" style="position:fixed;top:<%- getHeight(335) %>;left:<%- getWidth(1642.5) %>;width:<%- getWidth(160) %>;height:<%- getHeight(160) %>">
+    <input type="button" class="joystickbg"/>
+    <div id="rjoybutton" style="position:relative;top:<%- getHeight(20) %>;left:<%- getWidth(-20) %>">
+      <input type="button" class="joystick"/>
+      <input type="button" class="joysticks"/>
+      <input type="button" class="barleft"/>
+      <input type="button" class="barright"/>
+      <input type="button" class="bartop"/>
+      <input type="button" class="barbottom"/>
+    </div>
+    <input type="button" class="top" id="rtop"/>
+    <input type="button" class="topleft" id="rtopleft"/>
+    <input type="button" class="left" id="rleft"/>
+    <input type="button" class="leftbottom" id="rleftbottom"/>
+    <input type="button" class="bottom" id="rbottom"/>
+    <input type="button" class="bottomright" id="rbottomright"/>
+    <input type="button" class="right" id="rright"/>
+    <input type="button" class="righttop" id="rrighttop"/>
+  </div>
+  <div id="x" style="position:fixed;top:<%- getHeight(120) %>;left:<%- getWidth(1652.5)%>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <p class="switchbtntxt">X</p>
+    <input type="button" class="btnround" id="x"/>
+  </div>
+  <div id="b" style="position:fixed;top:<%- getHeight(230) %>;left:<%- getWidth(1652.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <p class="switchbtntxt">B</p>
+    <input type="button" class="btnround" id="b"/>
+  </div>
+  <div id="y" style="position:fixed;top:<%- getHeight(175) %>;left:<%- getWidth(1597.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <p class="switchbtntxt">Y</p>
+    <input type="button" class="btnround" id="y"/>
+  </div>
+  <div id="a" style="position:fixed;top:<%- getHeight(175) %>;left:<%- getWidth(1707.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
+    <p class="switchbtntxt">A</p>
+    <input type="button" class="btnround" id="a"/>
+  </div>
+  <div id="home" style="position:fixed;top:<%- getHeight(540) %>;left:<%- getWidth(1618) %>;width:<%- getWidth(42) %>;height:<%- getHeight(42) %>">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(24) %>pt" height="<%- getHeight(12) %>pt" viewBox="0 0 <%- getWidth(24) %> <%- getHeight(12) %>" version="1.1" class="homesvg">
+      <g>
+        <path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 16.0625 8.402344 L 1.9375 8.402344 L 9 1.859375 "/>
+      </g>
+    </svg>
+    <input type"button" class="home"/>
+    <input type"button" class="homebar"/>
+    <input type"button" class="homebars"/>
+    <input type"button" class="homebarss"/>
+    <input type"button" class="homebg" id="home"/>
+  </div>
+  <div id="volume" style="position:fixed;top:<%- getHeight(5) %>;left:<%- getWidth(302.5) %>;width:<%- getWidth(90) %>;height:<%- getHeight(5) %>">
+    <input type="button" class="volm" id="volm">
+    <input type="button" class="volbar">
+    <input type="button" class="volp" id="volp">
+  </div>
+  <input type="button" class="power" id="power">
+</div>

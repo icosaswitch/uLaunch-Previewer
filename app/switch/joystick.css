@@ -1,155 +1,155 @@
 .joystickbg {
   position: absolute;
-  top: 20;
-  left: -20;
-  border-radius: 120px;
+  top: <%- getHeight(20) %>;
+  left: <%- getWidth(-20) %>;
+  border-radius: <%- getHeight(120) %>px;
   outline: none;
   background-color: #464646;
   border: none;
-  width: 120;
-  height: 120;
+  width: <%- getWidth(120) %>;
+  height: <%- getHeight(120) %>;
 }
 .joystick {
   position: absolute;
   top: 0;
   left: 0;
-  border: 5px solid;
+  border: <%- getHeight(5) %>px solid;
   border-color: #262626;
   outline: none;
-  border-radius: 120px;
+  border-radius: <%- getHeight(120) %>px;
   background-color: #464646;
-  width: 120;
-  height: 120;
+  width: <%- getWidth(120) %>;
+  height: <%- getHeight(120) %>;
 }
 .joysticks {
   position: absolute;
-  top: 10;
-  left: 10;
-  border: 5px solid;
+  top: <%- getHeight(10) %>;
+  left: <%- getWidth(10) %>;
+  border: <%- getHeight(5) %>px solid;
   border-color: #262626;
-  border-radius: 120px;
+  border-radius: <%- getHeight(120) %>px;
   outline: none;
   background-color: #464646;
-  width: 100;
-  height: 100;
+  width: <%- getWidth(100) %>;
+  height: <%- getHeight(100) %>;
 }
 .barleft {
   position: absolute;
-  top: 54;
-  left: 107.5;
+  top: <%- getHeight(54) %>;
+  left: <%- getWidth(107.5) %>;
   border: none;
   outline: none;
   background-color: #262626;
-  width: 7;
-  height: 13;
+  width: <%- getWidth(5) %>;
+  height: <%- getHeight(13) %>;
 }
 .barright {
   position: absolute;
-  top: 54;
-  left: 1.5;
+  top: <%- getHeight(54) %>;
+  left: <%- getWidth(1.5) %>;
   border: none;
   outline: none;
   background-color: #262626;
-  width: 7;
-  height: 13;
+  width: <%- getWidth(7) %>;
+  height: <%- getHeight(13) %>;
 }
 .bartop {
   position: absolute;
-  top: 4;
-  left: 53.5;
+  top: <%- getHeight(4) %>;
+  left: <%- getWidth(53.5) %>;
   border: none;
   outline: none;
   background-color: #262626;
-  width: 14;
-  height: 7;
+  width: <%- getWidth(14) %>;
+  height: <%- getHeight(7) %>;
 }
 .barbottom {
   position: absolute;
-  top: 109;
-  left: 53.5;
+  top: <%- getHeight(109) %>;
+  left: <%- getWidth(53.5) %>;
   border: none;
   outline: none;
   background-color: #262626;
-  width: 14;
-  height: 7;
+  width: <%- getWidth(14) %>;
+  height: <%- getHeight(7) %>;
 }
 .top {
   position: absolute;
-  top: 20;
-  left: 20;
+  top: <%- getHeight(20) %>;
+  left: <%- getWidth(20) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .topleft {
   position: absolute;
-  top: 20;
-  left: -20;
+  top: <%- getHeight(20) %>;
+  left: <%- getWidth(-20) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .left {
   position: absolute;
-  top: 60;
-  left: -20;
+  top: <%- getHeight(60) %>;
+  left: <%- getWidth(-20) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .leftbottom {
   position: absolute;
-  top: 100;
-  left: -20;
+  top: <%- getHeight(100) %>;
+  left: <%- getWidth(-20) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .bottom {
   position: absolute;
-  top: 100;
-  left: 20;
+  top: <%- getHeight(100) %>;
+  left: <%- getWidth(20) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .bottomright {
   position: absolute;
-  top: 100;
-  left: 60;
+  top: <%- getHeight(100) %>;
+  left: <%- getWidth(60) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .right {
   position: absolute;
-  top: 60;
-  left: 60;
+  top: <%- getHeight(60) %>;
+  left: <%- getWidth(60) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }
 .righttop {
   position: absolute;
-  top: 20;
-  left: 60;
+  top: <%- getHeight(20) %>;
+  left: <%- getWidth(60) %>;
   border: none;
   outline: none;
   background-color: transparent;
-  width: 40;
-  height: 40;
+  width: <%- getWidth(40) %>;
+  height: <%- getHeight(40) %>;
 }

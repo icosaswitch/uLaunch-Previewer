@@ -1,7 +1,6 @@
 @font-face {
     font-family: 'Default';
     font-style: normal;
-    font-weight: 700;
     src: url('./ulaunch/romFs/default/ui/Font.ttf');
 }
 
@@ -16,7 +15,7 @@ input {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 20px;
+  width: <%- getWidth(20) %>px;
 }
 
 /* Track */
@@ -31,22 +30,4 @@ input {
 
 p {
   user-select:none;
-}
-
-.bubble {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0);
-  top: 550;
-  width: auto;
-  text-align: center;
-  color: #e1e1e1;
-  z-index: 2;
-  height: 45;
-  font-size: 20;
-  padding: 10 32.5;
-  border: none;
-  border-radius: 32.5px;
-  background-color: #1e1e1e;
-  opacity: 0.78431372549019607843137254901961;
 }

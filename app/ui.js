@@ -5,16 +5,33 @@ const path = require('path');
 const url = require('url');
 const {Howler} = require('howler');
 const platformFolder = require("platform-folders");
+const {ipcRenderer, escreen} = require("electron");
 const {getCurrentWindow} = require("electron").remote;
 let documents = platformFolder.getDocumentsFolder();
 const html2canvas = require("html2canvas");
 let ui = path.join(__dirname, "theme", "ui");
 let manifest;
+let windowSize;
+ipcRenderer.on("setSize", async (event, arg, data) => {
+  windowSize = arg;
+  console.log(windowSize)
+});
+ipcRenderer.send("getSize", "");
 let emitter = require('events').EventEmitter;
 let switchem = new emitter();
 switchem.setMaxListeners(Infinity);
 let istyping = false;
+function getWidth(w){
+  return (w*windowSize.w)/1810;
+} function getHeight(h){
+  return (h*windowSize.h)/800;
+}
 $(function() {
+  $("#switchcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch", "style.css"), "utf8")), {path});
+  $("#joystickcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch", "joystick.css"), "utf8")));
+  $("#ulaunchcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "style.css"), "utf8")));
+  $("#switch").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch.ejs"), "utf8")));
+  $(".center").html(ejs.render(fs.readFileSync(path.join(__dirname, "center.ejs"), "utf8")));
   $.fn.ctrlCmd = function(key) {
     var allowDefault = true;
     if (!$.isArray(key)) {
@@ -132,115 +149,115 @@ $(function() {
     power();
   });
   $('#ltop').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:0;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(0)};left:${getWidth(-20)}`);
     ltopstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     ltopstop();
   });
   $('#ltopleft').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:0;left:-40");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(0)};left:${getWidth(-40)}`);
     ltopleftstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     ltopleftstop();
   });
   $('#lleft').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-40");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-40)}`);
     lleftstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     lleftstop();
   });
   $('#lleftbottom').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:40;left:-40");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(40)};left:${getWidth(-40)}`);
     lleftbottomstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     lleftbottomstop();
   });
   $('#lbottom').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:40;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(40)};left:${getWidth(-20)}`);
     lbottomstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     lbottomstop();
   });
   $('#lbottomright').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:40;left:0");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(40)};left:${getWidth(0)}`);
     lbottomrightstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     lbottomrightstop();
   });
   $('#lright').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:0");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(0)}`);
     lrightstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     lrightstop();
   });
   $('#lrighttop').on('mousedown', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:0;left:0");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(0)};left:${getWidth(0)}`);
     lrighttopstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("ljoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     lrighttopstop();
   });
   $('#rtop').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:0;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(0)};left:${getWidth(-20)}`);
     rtopstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rtopstop();
   });
   $('#rtopleft').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:0;left:-40");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(0)};left:${getWidth(-40)}`);
     rtopleftstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rtopleftstop();
   });
   $('#rleft').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-40");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-40)}`);
     rleftstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rleftstop();
   });
   $('#rleftbottom').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:40;left:-40");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(40)};left:${getWidth(-40)}`);
     rleftbottomstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rleftbottomstop();
   });
   $('#rbottom').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:40;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(40)};left:${getWidth(-20)}`);
     rbottomstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rbottomstop();
   });
   $('#rbottomright').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:40;left:0");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(40)};left:${getWidth(0)}`);
     rbottomrightstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rbottomrightstop();
   });
   $('#rright').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:0");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(0)}`);
     rrightstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rrightstop();
   });
   $('#rrighttop').on('mousedown', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:0;left:0");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(0)};left:${getWidth(0)}`);
     rrighttopstart();
   }).on('mouseup mouseleave', function() {
-    document.getElementById("rjoybutton").setAttribute("style", "position:relative;top:20;left:-20");
+    document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(20)};left:${getWidth(-20)}`);
     rrighttopstop();
   });
   $('#a').disableSelection();
@@ -301,8 +318,8 @@ async function init(){
   }
   switchem.on("capture", () => {
     html2canvas(document.getElementById("switchcontainer"), {
-        width: 1280,
-        height: 720
+        width: getWidth(1280),
+        height: getHeight(720)
     }).then(canvas => {
       canvas.setAttribute("style", "width:1280;height:720;display: none;");
       document.body.appendChild(canvas);
@@ -319,7 +336,7 @@ async function init(){
       document.body.removeChild(canvas);
     });
   });
-  document.getElementById("switchcontainer").innerHTML = `<div id="ulaunchscreen"></div>`
+  $("#switchcontainer").append(`<div id="ulaunchscreen"></div>`);
   try{
     testersettings = require(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
   } catch(e){
@@ -328,12 +345,13 @@ async function init(){
   let currenttheme = testersettings.currenttheme;
   let user;
   let timeout = null;
-  document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width:300`, `width:${testersettings.volume*300}`));
-  let vnum = 15;
+  document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width:300`, `width:${parseInt(testersettings.volume*getWidth(300))}`));
+  let vnum = getWidth(15);
+  console.log(vnum);
   switchem.on("volp", () => {
     clearTimeout(timeout);
     var HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
-    if(HTMLvolume/300 >= 1){
+    if(HTMLvolume/getWidth(300) >= 1){
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
         timeout = setTimeout(() => {
@@ -344,22 +362,22 @@ async function init(){
       testersettings.volume = 1;
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     } else {
-      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}`, `width: ${HTMLvolume+vnum}`).replace(`width:${HTMLvolume}`, `width:${HTMLvolume+vnum}`));
+      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}`, `width: ${parseInt(HTMLvolume+vnum)}`).replace(`width:${HTMLvolume}`, `width:${parseInt(HTMLvolume+vnum)}`));
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           $("#vol").fadeTo(100, 0);
         }, 3000);
       });
-      Howler.volume((HTMLvolume+vnum)/300);
-      testersettings.volume = (HTMLvolume+vnum)/300;
+      Howler.volume((HTMLvolume+vnum)/getWidth(300));
+      testersettings.volume = (HTMLvolume+vnum)/getWidth(300);
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     }
   });
   switchem.on("volm", () => {
     clearTimeout(timeout);
     var HTMLvolume = parseInt(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
-    if(HTMLvolume/300 <= 0){
+    if(HTMLvolume/getWidth(300) <= 0){
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
         timeout = setTimeout(() => {
@@ -370,15 +388,15 @@ async function init(){
       testersettings.volume = 0;
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     } else {
-      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}`, `width: ${HTMLvolume-vnum}`).replace(`width:${HTMLvolume}`, `width:${HTMLvolume-vnum}`));
+      document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width: ${HTMLvolume}`, `width: ${parseInt(HTMLvolume-vnum)}`).replace(`width:${HTMLvolume}`, `width:${parseInt(HTMLvolume-vnum)}`));
       $("#vol").fadeTo(100, 1, function(){
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           $("#vol").fadeTo(100, 0);
         }, 3000);
       });
-      Howler.volume((HTMLvolume-vnum)/300);
-      testersettings.volume = (HTMLvolume-vnum)/300;
+      Howler.volume((HTMLvolume-vnum)/getWidth(300));
+      testersettings.volume = (HTMLvolume-vnum)/getWidth(300);
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     }
   });
@@ -636,14 +654,14 @@ async function init(){
           if(leftclick) return;
           let scroll = document.getElementById("users").scrollTop;
           if(down){
-            if(selected*100-400 < scroll) return;
+            if(selected*getHeight(100)-getHeight(400) < scroll) return;
             $(`#users`).animate({
-                scrollTop: selected*100-400
+                scrollTop: selected*getHeight(100)-getHeight(400)
             }, 0);
           } else {
-            if(selected*100 > scroll) return;
+            if(selected*getHeight(100) > scroll) return;
             $(`#users`).animate({
-                scrollTop: selected*100
+                scrollTop: selected*getHeight(100)
             }, 0);
           }
         }
@@ -838,13 +856,13 @@ async function init(){
       async function quickmenu(){
         res = true;
         let quick = false;
-        let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="quickmenu">`;
+        let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};" id="quickmenu">`;
         let MainItemSize = 300;
         let SubItemsSize = 150;
         let CommonAreaSize = 50;
-        let MainItemX = (1280 - MainItemSize) / 2;
-        let MainItemY = (720 - MainItemSize) / 2;
-        html += `<img width="${MainItemSize}" height="${MainItemSize}" style="position:absolute;top:${MainItemY};left:${MainItemX};" src="${defaulticon.quickmenumain}"/>`;
+        let MainItemX = ((getWidth(1280) - getWidth(MainItemSize)) / 2);
+        let MainItemY = ((getHeight(720) - getHeight(MainItemSize)) / 2);
+        html += `<img width="${getWidth(MainItemSize)}" height="${getHeight(MainItemSize)}" style="position:absolute;top:${MainItemY};left:${MainItemX};" src="${defaulticon.quickmenumain}"/>`;
         let item_map = [
           ["up", defaulticon.usericon],
           ["down", defaulticon.settingsicon],
@@ -864,8 +882,8 @@ async function init(){
             let tex = item[1];
             let img = new Image();
             img.onload = () => {
-              let texw = img.width;
-              let texh = img.height;
+              let texw = getWidth(img.width);
+              let texh = getHeight(img.height);
               x += (SubItemsSize - texw) / 2;
               y += (SubItemsSize - texh) / 2;
               html += `<img width="${texw}" height="${texh}" style="position:absolute;top:${y};left:${x};color:rgb(150, 150, 200);" src="${tex}" id="img${i}"/>`;
@@ -883,36 +901,36 @@ async function init(){
           let y = MainItemY;
           switch(direction){
             case 'up':
-              x += ((MainItemSize - SubItemsSize) / 2);
-              y -= SubItemsSize;
+              x += ((getWidth(MainItemSize) - getWidth(SubItemsSize)) / 2);
+              y -= getHeight(SubItemsSize);
               break
             case 'down':
-              x += ((MainItemSize - SubItemsSize) / 2);
-              y += MainItemSize;
+              x += ((getWidth(MainItemSize) - getWidth(SubItemsSize)) / 2);
+              y += getHeight(MainItemSize);
               break;
             case 'left':
-              x -= SubItemsSize;
-              y += ((MainItemSize - SubItemsSize) / 2);
+              x -= getWidth(SubItemsSize);
+              y += ((getHeight(MainItemSize) - getHeight(SubItemsSize)) / 2);
               break;
             case 'right':
-              x += MainItemSize;
-              y += ((MainItemSize - SubItemsSize) / 2);
+              x += getWidth(MainItemSize);
+              y += ((getHeight(MainItemSize) - getHeight(SubItemsSize)) / 2);
               break;
             case 'upleft':
-              x -= (SubItemsSize - CommonAreaSize);
-              y -= (SubItemsSize - CommonAreaSize);
+              x -= (getWidth(SubItemsSize) - getWidth(CommonAreaSize));
+              y -= (getHeight(SubItemsSize) - getHeight(CommonAreaSize));
               break;
             case 'upright':
-              x += (MainItemSize - CommonAreaSize);
-              y -= (SubItemsSize - CommonAreaSize);
+              x += (getWidth(MainItemSize) - getWidth(CommonAreaSize));
+              y -= (getHeight(SubItemsSize) - getHeight(CommonAreaSize));
               break;
             case 'downleft':
-              x -= (SubItemsSize - CommonAreaSize);
-              y += (MainItemSize - CommonAreaSize);
+              x -= (getWidth(SubItemsSize) - getWidth(CommonAreaSize));
+              y += (getHeight(MainItemSize) - getHeight(CommonAreaSize));
               break;
             case 'downright':
-              x += (MainItemSize - CommonAreaSize);
-              y += (MainItemSize - CommonAreaSize);
+              x += (getWidth(MainItemSize) - getWidth(CommonAreaSize));
+              y += (getHeight(MainItemSize) - getHeight(CommonAreaSize));
               break;
             default:
               break;
@@ -1137,7 +1155,7 @@ async function init(){
           }
         });
       }
-      function lmenuitems(){
+      function mainmenugh(){
         return new Promise(async function(resolve, reject) {
           let ress = false;
           document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
@@ -1149,13 +1167,13 @@ async function init(){
           }catch(e){
             corrupted(path.join(ulaunchtester, "testersettings", "menuitems.json"));
           }
-          let height = [size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0];
-          let top = (height-256)/2;
+          let height = getHeight([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]);
+          let top = (height-getHeight(256))/2;
           let left = 0;
           let n = -1;
-          let cursor = (height-size.cursor.h)/2;
-          let suspendedd = (height-size.suspended.h)/2;
-          let multiselectt = (height-size.multiselect.h)/2;
+          let cursor = (height-getHeight(size.cursor.h))/2;
+          let suspendedd = (height-getHeight(size.suspended.h))/2;
+          let multiselectt = (height-getHeight(size.multiselect.h))/2;
           let items = [];
           let folders = menuitems.folders;
           let ifolders = [];
@@ -1174,12 +1192,12 @@ async function init(){
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
-              left = 98;
-              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + top}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
+              left = getWidth(98);
+              ifolders.push(`<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${getHeight(uijson["menu_folder_text_y"]) + top}; left: ${getWidth(uijson["menu_folder_text_x"]) + left};border: 0;font-family: 'Font'; font-size: ${getHeight(uijson["menu_folder_text_size"])};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
             } else {
               let entry = `${titles.length} ${(titles.length < 2) ? lang["folder_entry_single"] : lang["folder_entry_mult"]}`;
-              left += 276;
-              ifolders.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${uijson["menu_folder_text_y"] + top}; left: ${uijson["menu_folder_text_x"] + left};border: 0;font-family: 'Font'; font-size: ${uijson["menu_folder_text_size"]};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
+              left += getWidth(276);
+              ifolders.push(`<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.folder}" alt="folder/${entry}/${name}"/><p style="position: absolute;top: ${getHeight(uijson["menu_folder_text_y"]) + top}; left: ${getWidth(uijson["menu_folder_text_x"]) + left};border: 0;font-family: 'Font'; font-size: ${getHeight(uijson["menu_folder_text_size"])};margin: 0px 0px; background-color: transparent; border: 0; color: ${uijson["text_color"]}">${name}</p><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="folder/${entry}/${name}"/>`)
             }
           }
           items = items.concat(ifolders);
@@ -1192,11 +1210,11 @@ async function init(){
               document.getElementById("in").innerHTML = game.name;
               document.getElementById("ia").innerHTML = game.author;
               document.getElementById("iv").innerHTML = game.version;
-              left = 98;
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              left = getWidth(98);
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
-              left += 276;
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              left += getWidth(276);
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             }
           });
           items = items.concat(igames);
@@ -1207,31 +1225,31 @@ async function init(){
             });
             if(ret) return "";
             if(file === "hbmenu"){
-              left += 276;
+              left += getWidth(276);
               n += 1;
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
             } else {
               let filename = file;
               file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
               let content = require(file);
               if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
-              left += 276;
+              left += getWidth(276);
               n += 1;
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
             }
           });
           items = items.concat(hbi);
-          items.push(`<img width="${size.suspended.w}" height="${size.suspended.h}" style="position: absolute;top: ${suspendedd}; left: ${98-(size.suspended.w-256)/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
-          items.push(`<div id="multiselect" style="position:absolute;top:${multiselectt};left:0;width:1280;height:${height-multiselectt*2};background-color: transparent;pointer-events:none;"></div>`)
-          items.push(`<img width="${size.cursor.w}" height="${size.cursor.h}" style="position: absolute;top: ${cursor}; left: ${98-(size.cursor.w-256)/2}" src="${defaulticon.cursor}" id="cursor" alt="0"/>`)
-          items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+256+86}"/>`)
+          items.push(`<img width="${getWidth(size.suspended.w)}" height="${getHeight(size.suspended.h)}" style="position: absolute;top: ${suspendedd}; left: ${getWidth(98)-(getWidth(size.suspended.w)-getWidth(256))/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
+          items.push(`<div id="multiselect" style="position:absolute;top:${getHeight(multiselectt)};left:0;width:${getWidth(1280)};height:${height-multiselectt*2};background-color: transparent;pointer-events:none;"></div>`)
+          items.push(`<img width="${getWidth(size.cursor.w)}" height="${getHeight(size.cursor.h)}" style="position: absolute;top: ${cursor}; left: ${getWidth(98)-(getWidth(size.cursor.w)-getWidth(256))/2}" src="${defaulticon.cursor}" id="cursor" alt="0"/>`)
+          items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+getWidth(256)+getWidth(86)}"/>`)
           items = items.join("");
           document.getElementById("items").innerHTML = items;
           if(suspended !== undefined){
             try {
               let item = $(`input[alt="${suspended}"]`).get(0).getAttribute("style");
               let l = item.split("left:")[1].split(";")[0];
-              document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`);
+              document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`);
               $("#suspended").show();
             }catch(e){}
           }
@@ -1247,7 +1265,7 @@ async function init(){
               multiselect.push(true);
               let div = $("#multiselect");
               div.show();
-              div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(size.cursor.w-256)/2-(size.multiselect.w-256)/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
+              div.append(`<img width="${getWidth(size.multiselect.w)}" height="${getHeight(size.multiselect.h)}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(getWidth(size.cursor.w)-getWidth(256))/2-(getWidth(size.multiselect.w)-getWidth(256))/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
               inputs.click((e) => {
                 click(e.currentTarget.id);
               });
@@ -1256,9 +1274,9 @@ async function init(){
               });
               function select(id){
                 if(res || !multiselect[mid]) return;
-                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                let leftmultiselect = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.multiselect.w)-getWidth(256))/2;
                 if($(`#multiselect #${id}`).get(0) === undefined){
-                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                  div.append(`<img width="${getWidth(size.multiselect.w)}" height="${getHeight(size.multiselect.h)}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
                 }
               }
               switchem.on("arrowright", () => {
@@ -1299,8 +1317,8 @@ async function init(){
                 if(res || !multiselect[mid]) return;
                 let input = document.getElementById(id);
                 if(input === null) return;
-                let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-                let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+                let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
                 document.getElementById("cursor").setAttribute("alt", id);
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
                 selected = parseInt(id);
@@ -1333,14 +1351,14 @@ async function init(){
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
                 }
                 let scroll = document.getElementById("items").scrollLeft;
-                if(selected*276 > scroll){
-                  if(selected*276-276*3 < scroll) return;
+                if(selected*getWidth(276) > scroll){
+                  if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
                   $(`#items`).animate({
-                      scrollLeft: selected*276-276*3
+                      scrollLeft: selected*getWidth(276)-getWidth(276)*3
                   }, 0);
                 } else {
                   $(`#items`).animate({
-                      scrollLeft: selected*276
+                      scrollLeft: selected*getWidth(276)
                   }, 0);
                 }
               }
@@ -1401,7 +1419,7 @@ async function init(){
                       resss = true;
                       let finish = false;
                       istyping = true;
-                      $("#ulaunchscreen").append(`<div style="background-color: #3232327F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="foldername"><div style="background-color: #e1e1e1;width:300;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:22.5;" id="namep">Enter the folder name</p><input style="width:250;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
+                      $("#ulaunchscreen").append(`<div style="background-color: #3232327F;z-index:100;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};" id="foldername"><div style="background-color: #e1e1e1;width:${getWidth(300)};height:${getHeight(100)};position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: ${getHeight(25)};margin:0px 0px;position:absolute;top: ${getHeight(10)};left:${getWidth(22.5)};" id="namep">Enter the folder name</p><input style="width:${getWidth(250)};height:${getHeight(30)};font-family: 'OpenSans';font-size: ${getHeight(20)};position:absolute;top:${getHeight(50)};left:${getWidth(25)}" type="text" id="name"/></div></div>`);
                       $('#name').bind("enterKey",function(e){
                         if(finish) return;
                         let foldername = $(e.currentTarget).val();
@@ -1443,7 +1461,7 @@ async function init(){
                           $(`#items`).animate({
                             scrollLeft: 0
                           }, 0);
-                          lmenuitems();
+                          mainmenugh();
                           resolve();
                         }
                       });
@@ -1453,8 +1471,8 @@ async function init(){
                       let ressss = false;
                       $("#dialog").remove();
                       ShowNotification(lang["menu_move_select_folder"], uijson);
-                      let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-                      let leftcursor = 98-(size.cursor.w-256)/2;
+                      let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+                      let leftcursor = getHeight(98-(size.cursor.w-256)/2);
                       document.getElementById("cursor").setAttribute("alt", 0);
                       document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
                       $(`#items`).animate({
@@ -1520,20 +1538,20 @@ async function init(){
                         } else if(alt.startsWith("homebrew")){
                           return;
                         }
-                        let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-                        let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                        let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+                        let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
                         selected = parseInt(id);
                         document.getElementById("cursor").setAttribute("alt", id);
                         document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
                         let scroll = document.getElementById("items").scrollLeft;
-                        if(selected*276 > scroll){
-                          if(selected*276-276*3 < scroll) return;
+                        if(selected*getWidth(276) > scroll){
+                          if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
                           $(`#items`).animate({
-                              scrollLeft: selected*276-276*3
+                              scrollLeft: selected*getWidth(276)-getWidth(276)*3
                           }, 0);
                         } else {
                           $(`#items`).animate({
-                              scrollLeft: selected*276
+                              scrollLeft: selected*getWidth(276)
                           }, 0);
                         }
                       }
@@ -1577,7 +1595,7 @@ async function init(){
                         $(`#items`).animate({
                           scrollLeft: 0
                         }, 0);
-                        lmenuitems();
+                        mainmenugh();
                         resolve();
                       }
                     } else {
@@ -1665,7 +1683,7 @@ async function init(){
                       $(`#items`).animate({
                         scrollLeft: 0
                       }, 0);
-                      lmenuitems();
+                      mainmenugh();
                       resolve();
                     } else {
                       multiselect[mid] = false;
@@ -1776,8 +1794,8 @@ async function init(){
             if(ress || res) return;
             let input = document.getElementById(id);
             if(input === null) return;
-            let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-            let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+            let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+            let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
             selected = parseInt(id);
             document.getElementById("cursor").setAttribute("alt", id);
             document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
@@ -1809,14 +1827,14 @@ async function init(){
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
             }
             let scroll = document.getElementById("items").scrollLeft;
-            if(selected*276 > scroll){
-              if(selected*276-276*3 < scroll) return;
+            if(selected*getWidth(276) > scroll){
+              if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
               $(`#items`).animate({
-                  scrollLeft: selected*276-276*3
+                  scrollLeft: selected*getWidth(276)-getWidth(276)*3
               }, 0);
             } else {
               $(`#items`).animate({
-                  scrollLeft: selected*276
+                  scrollLeft: selected*getWidth(276)
               }, 0);
             }
           }
@@ -1833,9 +1851,9 @@ async function init(){
                 if(titlelaunch.playing()) titlelaunch.stop();
                 titlelaunch.play();
               }
-              $("#title").animate({width: 1280,height:720,opacity:1}, 1000, () => {
+              $("#title").animate({width: getWidth(1280),height:getHeight(720),opacity:1}, 1000, () => {
                 $("#title").remove();
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
@@ -1843,13 +1861,13 @@ async function init(){
                     sound.play();
                     fadetimeout.resume();
                   };
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                  $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
                   let item = document.getElementById(iid).getAttribute("style");
                   let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                   $("#suspended").show();
                 }, 1000);
               });
@@ -1980,7 +1998,7 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         if(sound){
@@ -1999,7 +2017,7 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         suspended = alt;
@@ -2007,13 +2025,13 @@ async function init(){
                           sound.play();
                           fadetimeout.resume();
                         };
-                        $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                        $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                        $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                        $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                           res = false;
                         });
                         let item = document.getElementById(iid).getAttribute("style");
                         let l = item.split("left:")[1].split(";")[0];
-                        document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                        document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                         $("#suspended").show();
                       }, 1000);
                     } else if(id == 2){
@@ -2031,7 +2049,7 @@ async function init(){
                     if(titlelaunch.playing()) titlelaunch.stop();
                     titlelaunch.play();
                   }
-                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                   setTimeout(() => {
                     $("#title").remove();
                     if(sound){
@@ -2115,7 +2133,7 @@ async function init(){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
                 }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
@@ -2123,13 +2141,13 @@ async function init(){
                     sound.play();
                     fadetimeout.resume();
                   };
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                  $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
                   let item = document.getElementById(iid).getAttribute("style");
                   let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                   $("#suspended").show();
                 }, 1000);
               }
@@ -2164,9 +2182,9 @@ async function init(){
           document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
           document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
           document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
-          let height = [size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0];
-          let top = (height-256)/2;
-          let left = 98;
+          let height = getHeight([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]);
+          let top = (height-getHeight(256))/2;
+          let left = getWidth(98);
           let n = -1;
           let menuitems;
           try{
@@ -2189,11 +2207,11 @@ async function init(){
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
-              left = 98;
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              left = getWidth(98);
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
-              left += 276;
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              left += getWidth(276);
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             }
           });
           let hb = folders.map(file => {
@@ -2206,11 +2224,11 @@ async function init(){
                 document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
                 document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                 document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
-                left = 98;
+                left = getWidth(98);
               } else {
-                left += 276;
+                left += getWidth(276);
               }
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`
             } else {
               let filename = file;
               file = path.join(ulaunchtester, "sdmc", "ulaunch", "entries", file);
@@ -2221,28 +2239,31 @@ async function init(){
                 document.getElementById("in").innerHTML = content.name.substring(0, 0x1FF);
                 document.getElementById("ia").innerHTML = content.author.substring(0, 0xFF);
                 document.getElementById("iv").innerHTML = content.version.substring(0, 0xF);
-                left = 98;
+                document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
+                document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
+                document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
+                left = getWidth(98);
               } else {
-                left += 276;
+                left += getWidth(276);
               }
-              return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
             }
           });
           items = items.concat(hb);
-          let cursor = (height-size.cursor.h)/2;
-          let suspendedd = (height-size.suspended.h)/2;
-          let multiselectt = (height-size.multiselect.h)/2;
-          items.push(`<img width="${size.suspended.w}" height="${size.suspended.h}" style="position: absolute;top: ${suspendedd}; left: ${98-(size.suspended.w-256)/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
-          items.push(`<img width="${size.cursor.w}" height="${size.cursor.h}" style="position: absolute;top: ${cursor}; left: ${98-(size.cursor.w-256)/2}" src="${defaulticon.cursor}" id="cursor" alt="0"/>`)
+          let cursor = (height-getHeight(size.cursor.h))/2;
+          let suspendedd = (height-getHeight(size.suspended.h))/2;
+          let multiselectt = (height-getHeight(size.multiselect.h))/2;
+          items.push(`<img width="${getWidth(size.suspended.w)}" height="${getWidth(size.suspended.h)}" style="position: absolute;top: ${suspendedd}; left: ${98-(size.suspended.w-256)/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
+          items.push(`<img width="${getWidth(size.cursor.w)}" height="${getWidth(size.cursor.h)}" style="position: absolute;top: ${cursor}; left: ${getWidth(98-(size.cursor.w-256)/2)}" src="${defaulticon.cursor}" id="cursor" alt="0"/>`)
           items.push(`<div id="multiselect" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color: transparent;pointer-events:none;"></div>`)
-          items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+256+86}"/>`)
+          items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+getWidth(256)+getWidth(86)}"/>`)
           items = items.join("");
           document.getElementById("items").innerHTML = items;
           if(suspended !== undefined){
             try {
               let item = $(`input[alt="${suspended}"]`).get(0).getAttribute("style");
               let l = item.split("left:")[1].split(";")[0];
-              document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`);
+              document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`);
               $("#suspended").show();
             }catch(e){}
           }
@@ -2258,7 +2279,7 @@ async function init(){
               multiselect.push(true);
               let div = $("#multiselect");
               div.show();
-              div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(size.cursor.w-256)/2-(size.multiselect.w-256)/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
+              div.append(`<img width="${getWidth(size.multiselect.w)}" height="${getHeight(size.multiselect.h)}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+getWidth((size.cursor.w-256)/2)-getWidth((size.multiselect.w-256)/2)}" src="${defaulticon.multiselect}" id="${selected}"/>`);
               inputs.click((e) => {
                 click(e.currentTarget.id);
               });
@@ -2267,9 +2288,9 @@ async function init(){
               });
               function select(id){
                 if(res || !multiselect[mid]) return;
-                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                let leftmultiselect = getWidth(98+276*parseInt(id)-(size.multiselect.w-256)/2);
                 if($(`#multiselect #${id}`).get(0) === undefined){
-                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                  div.append(`<img width="${getWidth(size.multiselect.w)}" height="${getHeight(size.multiselect.h)}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
                 }
               }
               switchem.on("arrowright", () => {
@@ -2310,8 +2331,8 @@ async function init(){
                 if(res || !multiselect[mid]) return;
                 let input = document.getElementById(id);
                 if(input === null) return;
-                let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-                let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+                let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
                 document.getElementById("cursor").setAttribute("alt", id);
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
                 selected = parseInt(id);
@@ -2344,14 +2365,14 @@ async function init(){
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
                 }
                 let scroll = document.getElementById("items").scrollLeft;
-                if(selected*276 > scroll){
-                  if(selected*276-276*3 < scroll) return;
+                if(selected*getWidth(276) > scroll){
+                  if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
                   $(`#items`).animate({
-                      scrollLeft: selected*276-276*3
+                      scrollLeft: selected*getWidth(276)-getWidth(276)*3
                   }, 0);
                 } else {
                   $(`#items`).animate({
-                      scrollLeft: selected*276
+                      scrollLeft: selected*getWidth(276)
                   }, 0);
                 }
               }
@@ -2438,7 +2459,7 @@ async function init(){
                       scrollLeft: 0
                     }, 0);
                     if(menuitems.folders[fname] == undefined){
-                      lmenuitems();
+                      mainmenugh();
                     } else {
                       folderitems(fname);
                     }
@@ -2549,7 +2570,7 @@ async function init(){
           switchem.on("b", () => {
             if(ress || res) return;
             ress = true;
-            lmenuitems();
+            mainmenugh();
           });
           inputs.dblclick((e) => {
             dblclick(e.currentTarget.id);
@@ -2558,8 +2579,8 @@ async function init(){
             if(ress || res) return;
             let input = document.getElementById(id);
             if(input === null) return;
-            let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-            let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+            let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+            let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
             selected = parseInt(id);
             document.getElementById("cursor").setAttribute("alt", id);
             document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
@@ -2582,14 +2603,14 @@ async function init(){
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
             }
             let scroll = document.getElementById("items").scrollLeft;
-            if(selected*276 > scroll){
-              if(selected*276-276*3 < scroll) return;
+            if(selected*getWidth(276) > scroll){
+              if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
               $(`#items`).animate({
-                  scrollLeft: selected*276-276*3
+                  scrollLeft: selected*getWidth(276)-getWidth(276)*3
               }, 0);
             } else {
               $(`#items`).animate({
-                  scrollLeft: selected*276
+                  scrollLeft: selected*getWidth(276)
               }, 0);
             }
           }
@@ -2606,9 +2627,9 @@ async function init(){
                 if(titlelaunch.playing()) titlelaunch.stop();
                 titlelaunch.play();
               }
-              $("#title").animate({width: 1280,height:720,opacity:1}, 1000, () => {
+              $("#title").animate({width: getWidth(1280),height:getHeight(720),opacity:1}, 1000, () => {
                 $("#title").remove();
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
@@ -2616,13 +2637,13 @@ async function init(){
                     sound.play();
                     fadetimeout.resume();
                   };
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                  $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
                   let item = document.getElementById(iid).getAttribute("style");
                   let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                   $("#suspended").show();
                 }, 1000);
               });
@@ -2750,7 +2771,7 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         if(sound){
@@ -2769,7 +2790,7 @@ async function init(){
                         if(titlelaunch.playing()) titlelaunch.stop();
                         titlelaunch.play();
                       }
-                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                      $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                       setTimeout(() => {
                         $("#title").remove();
                         suspended = alt;
@@ -2777,13 +2798,13 @@ async function init(){
                           sound.play();
                           fadetimeout.resume();
                         };
-                        $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                        $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                        $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                        $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                           res = false;
                         });
                         let item = document.getElementById(iid).getAttribute("style");
                         let l = item.split("left:")[1].split(";")[0];
-                        document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                        document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                         $("#suspended").show();
                       }, 1000);
                     } else if(id == 2){
@@ -2801,7 +2822,7 @@ async function init(){
                     if(titlelaunch.playing()) titlelaunch.stop();
                     titlelaunch.play();
                   }
-                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                  $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                   setTimeout(() => {
                     $("#title").remove();
                     if(sound){
@@ -2820,7 +2841,7 @@ async function init(){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
                 }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
@@ -2828,13 +2849,13 @@ async function init(){
                     sound.play();
                     fadetimeout.resume();
                   };
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                  $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
                   let item = document.getElementById(iid).getAttribute("style");
                   let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                   $("#suspended").show();
                 }, 1000);
               }
@@ -2872,8 +2893,8 @@ async function init(){
           document.getElementById("in").innerHTML = lang["hbmenu_launch"];
           document.getElementById("ia").innerHTML = "";
           document.getElementById("iv").innerHTML = "";
-          let height = [size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0];
-          let top = (height-256)/2;
+          let height = getHeight([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]);
+          let top = (height-getHeight(256))/2;
           let menuitems;
           try{
             menuitems = require(path.join(ulaunchtester, "testersettings", "menuitems.json"));
@@ -2882,33 +2903,33 @@ async function init(){
           }
           let menuhb = menuitems.hb;
           let jsonsfiles = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
-          let left = 98;
+          let left = getWidth(98);
           let n = 0;
           let items = [];
-          items.push(`<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`)
-          let cursor = (height-size.cursor.h)/2;
-          let suspendedd = (height-size.suspended.h)/2;
-          let multiselectt = (height-size.multiselect.h)/2;
+          items.push(`<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${defaulticon.hbmenu}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${lang["hbmenu_launch"]}///hbmenu"/>`)
+          let cursor = (height-getHeight(size.cursor.h))/2;
+          let suspendedd = (height-getHeight(size.suspended.h))/2;
+          let multiselectt = (height-getHeight(size.multiselect.h))/2;
           let hbi = jsonsfiles.map(file => {
             if(!file.endsWith(".json")) return "";
             let content = require(file);
             if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
-            left += 276;
+            left += getWidth(276);
             n += 1;
-            return `<img width="256" height="256" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/><input style="width:256;height:256;position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/>`;
+            return `<img width="${getWidth(256)}" height="${getWidth(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/>`;
           });
           items = items.concat(hbi);
-          items.push(`<img width="${size.suspended.w}" height="${size.suspended.h}" style="position: absolute;top: ${suspendedd}; left: ${98-(size.suspended.w-256)/2};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
-          items.push(`<img width="${size.cursor.w}" height="${size.cursor.h}" style="position: absolute;top: ${cursor}; left: ${98-(size.cursor.w-256)/2};pointer-events:none;" src="${defaulticon.cursor}" id="cursor" alt="0"/>`)
+          items.push(`<img width="${getWidth(size.suspended.w)}" height="${getHeight(size.suspended.h)}" style="position: absolute;top: ${suspendedd}; left: ${getWidth(98-(size.suspended.w-256)/2)};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
+          items.push(`<img width="${getWidth(size.cursor.w)}" height="${getHeight(size.cursor.h)}" style="position: absolute;top: ${cursor}; left: ${getWidth(98-(size.cursor.w-256)/2)};pointer-events:none;" src="${defaulticon.cursor}" id="cursor" alt="0"/>`)
           items.push(`<div id="multiselect" style="position:absolute;top:0;left:0;width:100%;height:100%;background-color: transparent;pointer-events:none;"></div>`)
-          items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+256+86}"/>`)
+          items.push(`<input type="button" style="position: absolute;border:none;outline:none;background-color:transparent;top:0;width:1;height:1;left:${left+getWidth(256)+getWidth(86)}"/>`)
           items = items.join("");
           document.getElementById("items").innerHTML = items;
           if(suspended !== undefined){
             try {
               let item = $(`input[alt="${suspended}"]`).get(0).getAttribute("style");
               let l = item.split("left:")[1].split(";")[0];
-              document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`);
+              document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`);
               $("#suspended").show();
             }catch(e){}
           }
@@ -2924,7 +2945,7 @@ async function init(){
               multiselect.push(true);
               let div = $("#multiselect");
               div.show();
-              div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+(size.cursor.w-256)/2-(size.multiselect.w-256)/2}" src="${defaulticon.multiselect}" id="${selected}"/>`);
+              div.append(`<img width="${getWidth(size.multiselect.w)}" height="${getHeight(size.multiselect.h)}" style="position: absolute;top: 0; left: ${parseInt($("#cursor").get(0).getAttribute("style").split("left:")[1].split(";")[0])+getWidth((size.cursor.w-256)/2)-getWidth((size.multiselect.w-256)/2)}" src="${defaulticon.multiselect}" id="${selected}"/>`);
               inputs.click((e) => {
                 click(e.currentTarget.id);
               });
@@ -2933,9 +2954,9 @@ async function init(){
               });
               function select(id){
                 if(res || !multiselect[mid]) return;
-                let leftmultiselect = 98+276*parseInt(id)-(size.multiselect.w-256)/2;
+                let leftmultiselect = getWidth(98+276*parseInt(id)-(size.multiselect.w-256)/2);
                 if($(`#multiselect #${id}`).get(0) === undefined){
-                  div.append(`<img width="${size.multiselect.w}" height="${size.multiselect.h}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
+                  div.append(`<img width="${getWidth(size.multiselect.w)}" height="${getHeight(size.multiselect.h)}" style="position: absolute;top: 0; left: ${leftmultiselect}" src="${defaulticon.multiselect}" id="${id}"/>`)
                 }
               }
               switchem.on("arrowright", () => {
@@ -2976,8 +2997,8 @@ async function init(){
                 if(res || !multiselect[mid]) return;
                 let input = document.getElementById(id);
                 if(input === null) return;
-                let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-                let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+                let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+                let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
                 document.getElementById("cursor").setAttribute("alt", id);
                 document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
                 selected = parseInt(id);
@@ -3010,14 +3031,14 @@ async function init(){
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
                 }
                 let scroll = document.getElementById("items").scrollLeft;
-                if(selected*276 > scroll){
-                  if(selected*276-276*3 < scroll) return;
+                if(selected*getWidth(276) > scroll){
+                  if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
                   $(`#items`).animate({
-                      scrollLeft: selected*276-276*3
+                      scrollLeft: selected*getWidth(276)-getWidth(276)*3
                   }, 0);
                 } else {
                   $(`#items`).animate({
-                      scrollLeft: selected*276
+                      scrollLeft: selected*getWidth(276)
                   }, 0);
                 }
               }
@@ -3210,8 +3231,8 @@ async function init(){
             if(ress || res) return;
             let input = document.getElementById(id);
             if(input === null) return;
-            let cursor = ([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2;
-            let leftcursor = 98+276*parseInt(id)-(size.cursor.w-256)/2
+            let cursor = getHeight(([size.cursor.h, size.multiselect.h, size.suspended.h].sort((a, b) => a > b)[0]-size.cursor.h)/2);
+            let leftcursor = getWidth(98)+getWidth(276)*parseInt(id)-(getWidth(size.cursor.w)-getWidth(256))/2
             selected = parseInt(id);
             document.getElementById("cursor").setAttribute("alt", id);
             document.getElementById("cursor").setAttribute("style", `position: absolute;top: ${cursor}; left: ${leftcursor}`);
@@ -3220,14 +3241,14 @@ async function init(){
             document.getElementById("ia").innerHTML = alt[2];
             document.getElementById("iv").innerHTML = alt[3];
             let scroll = document.getElementById("items").scrollLeft;
-            if(selected*276 > scroll){
-              if(selected*276-276*3 < scroll) return;
+            if(selected*getWidth(276) > scroll){
+              if(selected*getWidth(276)-getWidth(276)*3 < scroll) return;
               $(`#items`).animate({
-                  scrollLeft: selected*276-276*3
+                  scrollLeft: selected*getWidth(276)-getWidth(276)*3
               }, 0);
             } else {
               $(`#items`).animate({
-                  scrollLeft: selected*276
+                  scrollLeft: selected*getWidth(276)
               }, 0);
             }
           }
@@ -3244,9 +3265,9 @@ async function init(){
                 if(titlelaunch.playing()) titlelaunch.stop();
                 titlelaunch.play();
               }
-              $("#title").animate({width: 1280,height:720,opacity:1}, 1000, () => {
+              $("#title").animate({width: getWidth(1280),height:getHeight(720),opacity:1}, 1000, () => {
                 $("#title").remove();
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   suspended = alt;
@@ -3254,13 +3275,13 @@ async function init(){
                     sound.play();
                     fadetimeout.resume();
                   };
-                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                  $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                  $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                  $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                     res = false;
                   });
                   let item = document.getElementById(iid).getAttribute("style");
                   let l = item.split("left:")[1].split(";")[0];
-                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                  document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                   $("#suspended").show();
                 }, 1000);
               });
@@ -3387,7 +3408,7 @@ async function init(){
                       if(titlelaunch.playing()) titlelaunch.stop();
                       titlelaunch.play();
                     }
-                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                     setTimeout(() => {
                       $("#title").remove();
                       if(sound){
@@ -3406,7 +3427,7 @@ async function init(){
                       if(titlelaunch.playing()) titlelaunch.stop();
                       titlelaunch.play();
                     }
-                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                    $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                     setTimeout(() => {
                       $("#title").remove();
                       suspended = alt;
@@ -3414,13 +3435,13 @@ async function init(){
                         sound.play();
                         fadetimeout.resume();
                       };
-                      $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:1280;height:720;" id="title"/>`);
-                      $("#title").animate({width: 1008,height:567,opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
+                      $("#suspendedimg").append(`<input type="button" style="background-color:#222;outline:none;border:none;top:50%;left:50%;transform:translate(-50%, -50%);position:absolute;width:${getWidth(1280)};height:${getHeight(720)};" id="title"/>`);
+                      $("#title").animate({width: getWidth(1008),height:getHeight(567),opacity:parseInt(uijson["suspended_final_alpha"])/255}, 1000, () => {
                         res = false;
                       });
                       let item = document.getElementById(iid).getAttribute("style");
                       let l = item.split("left:")[1].split(";")[0];
-                      document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${l-(size.suspended.w-256)/2};pointer-events:none;display:none;`)
+                      document.getElementById("suspended").setAttribute("style", `position: absolute;top: ${suspendedd}; left: ${getWidth(l-(size.suspended.w-256)/2)};pointer-events:none;display:none;`)
                       $("#suspended").show();
                     }, 1000);
                   } else if(id == 2){
@@ -3438,7 +3459,7 @@ async function init(){
                   if(titlelaunch.playing()) titlelaunch.stop();
                   titlelaunch.play();
                 }
-                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:1280;height:720" id="title"/>`);
+                $("#ulaunchscreen").append(`<input type="button" style="background-color:#222;z-index:99;outline:none;border:none;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)}" id="title"/>`);
                 setTimeout(() => {
                   $("#title").remove();
                   if(sound){
@@ -3469,11 +3490,11 @@ async function init(){
               ShowNotification(lang["menu_multiselect_cancel"], uijson);
             }
             ress = true;
-            lmenuitems();
+            mainmenugh();
           }
         });
       }
-      lmenuitems();
+      mainmenugh();
     });
   }
   function theme(){
@@ -3582,14 +3603,14 @@ async function init(){
         if(leftclick) return;
         let scroll = document.getElementById("themes").scrollTop;
         if(down){
-          if(selected*100-400 < scroll) return;
+          if(selected*getHeight(100)-getHeight(400) < scroll) return;
           $(`#themes`).animate({
-              scrollTop: selected*100-400
+              scrollTop: selected*getHeight(100)-getHeight(400)
           }, 0);
         } else {
-          if(selected*100 > scroll) return;
+          if(selected*getHeight(100) > scroll) return;
           $(`#themes`).animate({
-              scrollTop: selected*100
+              scrollTop: selected*getHeight(100)
           }, 0);
         }
       }
@@ -3763,14 +3784,14 @@ async function init(){
         if(leftclick) return;
         let scroll = document.getElementById("settings").scrollTop;
         if(down){
-          if(selected*100-300 < scroll) return;
+          if(selected*getHeight(100)-getHeight(300) < scroll) return;
           $(`#settings`).animate({
-              scrollTop: selected*100-300
+              scrollTop: selected*getHeight(100)-getHeight(300)
           }, 0);
         } else {
-          if(selected*100 > scroll) return;
+          if(selected*getHeight(100) > scroll) return;
           $(`#settings`).animate({
-              scrollTop: selected*100
+              scrollTop: selected*getHeight(100)
           }, 0);
         }
       }
@@ -3988,7 +4009,7 @@ async function init(){
           res = true;
           let finish = false;
           istyping = true;
-          $("#ulaunchscreen").append(`<div style="background-color: #3232327F;z-index:100;position:absolute;top:0;left:0;width:1280;height:720;" id="consolename"><div style="background-color: #e1e1e1;width:350;height:100;position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: 25;margin:0px 0px;position:absolute;top: 10;left:28;" id="namep">Enter your console name</p><input style="width:300;height:30;font-family: 'OpenSans';font-size: 20;position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
+          $("#ulaunchscreen").append(`<div style="background-color: #3232327F;z-index:100;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};" id="consolename"><div style="background-color: #e1e1e1;width:${getWidth(350)};height:${getHeight(100)};position:absolute;top:50%;left:50%;transform:translate(-50%, -50%)"><p style="font-family: 'OpenSans';font-size: ${getHeight(25)};margin:0px 0px;position:absolute;top: ${getHeight(10)};left:${getWidth(28)};" id="namep">Enter your console name</p><input style="width:${getWidth(300)};height:${getHeight(30)};font-family: 'OpenSans';font-size: ${getHeight(20)};position:absolute;top:50;left:25" type="text" id="name"/></div></div>`);
           $('#name').bind("enterKey",function(e){
             if(finish) return;
             let consolename = $(e.currentTarget).val();
@@ -4096,14 +4117,14 @@ async function init(){
         if(leftclick) return;
         let scroll = document.getElementById("settings").scrollTop;
         if(down){
-          if(selected*100-300 < scroll) return;
+          if(selected*getHeight(100)-getHeight(300) < scroll) return;
           $(`#settings`).animate({
-              scrollTop: selected*100-300
+              scrollTop: selected*getHeight(100)-getHeight(300)
           }, 0);
         } else {
-          if(selected*100 > scroll) return;
+          if(selected*getHeight(100) > scroll) return;
           $(`#settings`).animate({
-              scrollTop: selected*100
+              scrollTop: selected*getHeight(100)
           }, 0);
         }
       }
@@ -4227,10 +4248,10 @@ async function ShowNotification(text, uijson, ms = 1500){
       }
     });
   }
-  let wh = getTextWH(20, text);
-  let toastw = wh[0] + (wh[1] * 4);
-  let toasth = wh[1] * 3;
-  $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(1280 - toastw) / 2};top: 550;width: ${toastw};text-align: center;color: ${uijson["toast_text_color"]};z-index: 2;height: ${toasth};font-size: 20;padding: 10 32.5;border: none;border-radius: 32.5px;background-color: ${uijson["toast_base_color"]};opacity:0;" value="${text}"/>`);
+  let wh = getTextWH(getHeight(20), text);
+  let toastw = wh[0] + (wh[1] * getWidth(4));
+  let toasth = wh[1] * getHeight(3);
+  $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(getHeight(1280) - toastw) / 2};top: ${getHeight(550)};width: ${toastw};text-align: center;color: ${uijson["toast_text_color"]};z-index: 2;height: ${toasth};font-size: ${getHeight(20)};padding: ${getHeight(10)} ${getWidth(32.5)};border: none;border-radius: ${getHeight(32.5)}px;background-color: ${uijson["toast_base_color"]};opacity:0;" value="${text}"/>`);
   $("#notification").fadeTo(350, 200/255, function(){
     setTimeout(() => {
       $("#notification").fadeTo(350, 0, function(){
@@ -4403,42 +4424,42 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
   let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="dialog">`;
   if(hasCancel) opts.push("Cancel");
   if(opts.length !== 0){
-    let dw = (20 * (opts.length - 1)) + 250;
+    let dw = (getWidth(20) * (opts.length - 1)) + getWidth(250);
     for(var i = 0; i < opts.length; i++){
-        let tw = getTextWH(18, opts[i])[0];
-        dw += tw + 20;
+        let tw = getTextWH(getHeight(18), opts[i])[0];
+        dw += tw + getWidth(20);
     }
-    if(dw > 1280) dw = 1280;
+    if(dw > getWidth(1280)) dw = getWidth(1280);
     let icm = 30;
-    let elemh = 60;
-    let tdw = getTextWH(20, content)[0] + 157.5;
+    let elemh = getHeight(60);
+    let tdw = getTextWH(getHeight(20), content)[0] + getWidth(157.5);
     if(tdw > dw) dw = tdw;
-    tdw = getTextWH(30, title)[0] + 157.5;
+    tdw = getTextWH(getHeight(30), title)[0] + getWidth(157.5);
     if(tdw > dw) dw = tdw;
-    let ely = getTextWH(20, content)[1] + getTextWH(30, title)[1] + 140;
+    let ely = getTextWH(getHeight(20), content)[1] + getTextWH(getHeight(30), title)[1] + getHeight(140);
     if(icon){
       await new Promise(function(resolve, reject) {
         let img = new Image();
         img.onload = () => {
-          let tely = img.height + icm + 25;
+          let tely = getHeight(img.height) + getHeight(icm) + getHeight(25);
           if(tely > ely) ely = tely;
-          tdw = getTextWH(20, content)[0] + 90 + img.width + 20;
+          tdw = getTextWH(getHeight(20), content)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
           if(tdw > dw) dw = tdw;
-          tdw = getTextWH(30, title)[0] + 90 + img.width + 20;
+          tdw = getTextWH(getHeight(30), title)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
           if(tdw > dw) dw = tdw;
           resolve();
         }
         img.src = icon;
       });
     }
-    if(dw > 1280) dw = 1280;
-    let dh = ely + elemh + 30;
-    if(dh > 720) dh = 720;
-    let dx = (1280 - dw) / 2;
-    let dy = (720 - dh) / 2;
+    if(dw > getWidth(1280)) dw = getWidth(1280);
+    let dh = ely + elemh + getHeight(30);
+    if(dh > getHeight(720)) dh = getHeight(720);
+    let dx = (getWidth(1280) - dw) / 2;
+    let dy = (getHeight(720) - dh) / 2;
     ely += dy;
-    let elemw = ((dw - (20 * (opts.length + 1))) / opts.length);
-    let elx = dx + ((dw - ((elemw * opts.length) + (20 * (opts.length - 1)))) / 2);
+    let elemw = ((dw - (getWidth(20) * (opts.length + 1))) / opts.length);
+    let elx = dx + ((dw - ((elemw * opts.length) + (getWidth(20) * (opts.length - 1)))) / 2);
     let r = 35;
     let nr = "B4";
     let ng = "B4";
@@ -4456,29 +4477,30 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
       await new Promise(function(resolve, reject) {
         let img = new Image();
         img.onload = () => {
-          let icw = img.width;
-          let icx = (dw - (icw + icm));
-          let icy = icm;
-          iconwidth = icw+(bw-(icx+icw))-20;
+          let icw = getWidth(img.width);
+          let icx = (dw - (icw + getWidth(icm)));
+          let icy = getHeight(icm);
+          iconwidth = icw+(bw-(icx+icw))-getWidth(20);
+          console.log(icw);
           html += `<img style="position:absolute;top:${icy};left:${icx}" src="${icon}"/>`;
           resolve();
         }
         img.src = icon;
       });
     }
-    html += `<div style="background-color:transparent;position:absolute;top:0;left:45;width:${bw-90-iconwidth};height:${bh};"><p style="user-select:none;margin:0px 0px;padding: 0px;font-size:30;font-family: 'Font';position:relative;top:55;left:0"><span style="word-break: break-all;">${title}</span></p><p style="user-select:none;margin:0px 0px;padding: 0px;font-size:20;font-family: 'Font';position:relative;top:110;left:0"><span style="word-break: break-all;">${content}</span></p></div>`
+    html += `<div style="background-color:transparent;position:absolute;top:0;left:${getWidth(45)};width:${bw-getWidth(90)-iconwidth};height:${bh};"><p style="user-select:none;margin:0px 0px;padding: 0px;font-size:${getHeight(30)};font-family: 'Font';position:relative;top:${getHeight(55)};left:0"><span style="word-break: break-all;">${title}</span></p><p style="user-select:none;margin:0px 0px;padding: 0px;font-size:${getHeight(20)};font-family: 'Font';position:relative;top:${getHeight(110)};left:0"><span style="word-break: break-all;">${content}</span></p></div>`
     for(var i=0; i<opts.length; i++){
       let n = i;
       let txt = opts[n];
-      let tw = getTextWH(18, txt)[0];
-      let th = getTextWH(18, txt)[1];
-      let tx = elx + ((elemw - tw) / 2) + ((elemw + 20) * i);
+      let tw = getTextWH(getHeight(18), txt)[0];
+      let th = getTextWH(getHeight(18), txt)[1];
+      let tx = elx + ((elemw - tw) / 2) + ((elemw + getWidth(20)) * i);
       let ty = ely + ((elemh - th) / 2);
-      let rx = elx + ((elemw + 20) * i);
+      let rx = elx + ((elemw + getWidth(20)) * i);
       let ry = ely;
       let rr = (elemh / 2);
       let dclr = `#${nr}${ng}${nb}${(n == 0) ? "FF" : "00"}`;
-      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:18;font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-30};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px 20px;" value="${txt}" id="${n}"/>`
+      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:${getHeight(18)};font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-30};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px 20px;" value="${txt}" id="${n}"/>`
     }
     html += "</div>";
   };
