@@ -14,10 +14,10 @@
 | Platform | File Download |
 | -------- | ---- |
 | Windows x64 | [`uLaunch-Previewer-0.1.1.exe`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.1/uLaunch-Previewer-0.1.1.exe) |
-| macOS | [`uLaunch-Previewer-0.1.0.dmg`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1/uLaunch-Previewer-0.1.0.dmg) |
+| macOS | [`uLaunch-Previewer-0.1.1.dmg`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.1/uLaunch-Previewer-0.1.1.dmg) |
 | Linux x64 | [`uLaunch-Previewer-0.1.0.deb`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1/uLaunch-Previewer-0.1.0.deb)<br>[`uLaunch-Previewer-0.1.0.AppImage`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1/uLaunch-Previewer-0.1.0.AppImage) |
 
-<h3 style="font-type:bold">v0.1.1 of macOS and Linux will be build later</h3>
+<h3 style="font-type:bold">v0.1.1 of Linux will be build later</h3>
 
 ## Credits
 
