@@ -67,7 +67,7 @@
       }
     },
     "linux": {
-      "target": "AppImage",
+      "target": ["AppImage","deb"],
       "maintainer": "Pharuxtan",
       "vendor": "uLaunch Previewer",
       "synopsis": "uLaunch Previewer",
