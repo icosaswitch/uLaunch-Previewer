@@ -6,8 +6,7 @@
 <img src="screenshot/s3.png" width="425"/> <img src="screenshot/s4.png" width="425"/>
 
 ### For configuration instructions, see the [wiki](https://github.com/IcosaSwitch/uLaunch-Previewer/wiki)
-<h3 style="font-type:bold">v0.1.1: 16:9 screen aspect ratio is recommanded!</h3>
-<h3 style="font-type:bold">v0.1: 1920x1080px screen resolution or higher is recommended!</h3>
+<h3 style="font-type:bold">16:9 screen aspect ratio is recommanded!</h3>
 
 ## Download
 
@@ -15,9 +14,7 @@
 | -------- | ---- |
 | Windows x64 | [`uLaunch-Previewer-0.1.1.exe`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.1/uLaunch-Previewer-0.1.1.exe) |
 | macOS | [`uLaunch-Previewer-0.1.1.dmg`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.1/uLaunch-Previewer-0.1.1.dmg) |
-| Linux x64 | [`uLaunch-Previewer-0.1.0.deb`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1/uLaunch-Previewer-0.1.0.deb)<br>[`uLaunch-Previewer-0.1.0.AppImage`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1/uLaunch-Previewer-0.1.0.AppImage) |
-
-<h3 style="font-type:bold">v0.1.1 of Linux will be build later</h3>
+| Linux x64 | [`uLaunch-Previewer-0.1.1.deb`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.1/uLaunch-Previewer-0.1.1.deb)<br>[`uLaunch-Previewer-0.1.1.AppImage`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.1/uLaunch-Previewer-0.1.1.AppImage) |
 
 ## Credits
 
