@@ -14,10 +14,10 @@ app.on("ready", async () => {
   let w = 1810,
   h = 800;
 
-  if(width >= 1860){
+  if(width <= 1860){
     w = parseInt((1810*width)/1920);
-  } if(width >= 850){
-    h = parseInt((800*width)/1080);
+  } if(height <= 850){
+    h = parseInt((800*height)/1080);
   }
 
   ipcMain.on("getSize", async (event, arg, data) => {
