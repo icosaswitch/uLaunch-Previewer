@@ -10,6 +10,7 @@
     "dist:darwin": "electron-builder --mac"
   },
   "author": "Pharuxtan",
+  "homepage": "https://github.com/IcosaSwitch/uLaunch-Previewer#readme",
   "dependencies": {
     "ejs": "^2.6.1",
     "ejs-electron": "^2.0.3",
