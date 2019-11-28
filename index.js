@@ -11,8 +11,14 @@ app.disableHardwareAcceleration();
 app.on("ready", async () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-  let w = parseInt((1810*width)/1920);
-  let h = parseInt((800*height)/1040);
+  let w = 1810,
+  h = 800;
+
+  if(width >= 1860){
+    w = parseInt((1810*width)/1920);
+  } if(width >= 850){
+    h = parseInt((800*width)/1080);
+  }
 
   ipcMain.on("getSize", async (event, arg, data) => {
     event.sender.send('setSize', {w,h});
