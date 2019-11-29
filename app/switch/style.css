@@ -64,53 +64,6 @@
   height: <%- getHeight(780) %>;
 }
 
-.minus {
-  position: absolute;
-  top: <%- getHeight(65) %>;
-  left: <%- getWidth(159) %>;
-  background-color: #464646;
-  border-color: #262626;
-  width: <%- getWidth(46) %>;
-  outline: none;
-  border-radius: <%- getHeight(1) %>px;
-  height: <%- getHeight(16) %>;
-}
-
-.plus {
-  position: absolute;
-  top: <%- getHeight(15) %>;
-  left: 0;
-  background-color: #464646;
-  border-color: #262626;
-  outline: none;
-  width: <%- getWidth(46) %>;
-  border-radius: <%- getHeight(1) %>px;
-  height: <%- getHeight(16) %>;
-}
-
-.pluss {
-  position: absolute;
-  top: 0;
-  left: <%- getWidth(15) %>;
-  background-color: #464646;
-  border-color: #262626;
-  outline: none;
-  border-radius: <%- getHeight(1) %>px;
-  width: <%- getWidth(16) %>;
-  height: <%- getHeight(46) %>;
-}
-
-.plusss {
-  position: absolute;
-  top: <%- getHeight(17) %>;
-  left: <%- getWidth(15) %>;
-  outline: none;
-  background-color: #464646;
-  border: none;
-  width: <%- getWidth(20) %>;
-  height: <%- getHeight(12) %>;
-}
-
 .btnround {
   position: absolute;
   z-index: -1;
@@ -118,6 +71,7 @@
   left: 0;
   outline: none;
   background-color: #464646;
+  cursor: default;
   border: <%- getHeight(2.5) %>px solid;
   border-color: #262626;
   border-radius: 100%;
@@ -131,35 +85,12 @@
   top: 0;
   left: 0;
   outline: none;
+  cursor: default;
   background-color: transparent;
   border: none;
   border-radius: 100%;
   width: <%- getWidth(60) %>;
   height: <%- getHeight(60) %>;
-}
-
-.arrowup {
-  position: absolute;
-  top: <%- getHeight(8.5) %>;
-  left: <%- getWidth(12.5) %>;
-}
-
-.arrowleft {
-  position: absolute;
-  top: <%- getHeight(15.25) %>;
-  left: <%- getWidth(7.5) %>;
-}
-
-.arrowbottom {
-  position: absolute;
-  top: <%- getHeight(19.5) %>;
-  left: <%- getWidth(15.5) %>;
-}
-
-.arrowright {
-  position: absolute;
-  top: <%- getHeight(11.5) %>;
-  left: <%- getWidth(20) %>;
 }
 
 .capturebg {
@@ -214,7 +145,7 @@
   transform: translate(-50%,-50%);
   cursor: default;
   color: #fff;
-  font-size: <%- getHeight(42.5) %>;
+  font-size: <%- getWidth(42.5) %>;
   font-family: 'OpenSans';
   background-color: transparent;
 }
@@ -228,6 +159,7 @@
   background-color: #646464;
   border: <%- getHeight(2) %>px solid;
   border-color: #262626;
+  cursor: default;
   border-radius: <%- getHeight(42) %>px;
   width: <%- getWidth(42) %>;
   height: <%- getHeight(42) %>;
@@ -235,55 +167,17 @@
 
 .home {
   position: absolute;
-  top: <%- getHeight(7) %>;
-  left: <%- getWidth(7) %>;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
   outline: none;
   background-color: #464646;
+  cursor: default;
   border: <%- getHeight(1) %>px solid;
   border-color: #262626;
   border-radius: <%- getHeight(28) %>px;
   width: <%- getWidth(28) %>;
   height: <%- getHeight(28) %>;
-}
-
-.homesvg {
-  position: absolute;
-  z-index: 1;
-  top: <%- getHeight(8.5) %>;
-  left: <%- getWidth(8.5) %>;
-}
-
-.homebar {
-  position: absolute;
-  top: <%- getHeight(20) %>;
-  left: <%- getWidth(14) %>;
-  outline: none;
-  background-color: #000;
-  border: none;
-  width: <%- getWidth(5) %>;
-  height: <%- getHeight(9) %>;
-}
-
-.homebars {
-  position: absolute;
-  top: <%- getHeight(20) %>;
-  left: <%- getWidth(23) %>;
-  outline: none;
-  background-color: #000;
-  border: none;
-  width: <%- getWidth(5) %>;
-  height: <%- getHeight(9) %>;
-}
-
-.homebarss {
-  position: absolute;
-  top: <%- getHeight(25) %>;
-  left: <%- getWidth(18) %>;
-  outline: none;
-  background-color: #000;
-  border: none;
-  width: <%- getWidth(9) %>;
-  height: <%- getHeight(4) %>;
 }
 
 .rbtn {
@@ -347,17 +241,6 @@
 
 .power {
   position: absolute;
-  outline: none;
-  border: none;
-  border-top: <%- getHeight(2) %>px solid;
-  border-left: <%- getHeight(2) %>px solid;
-  border-right: <%- getHeight(2) %>px solid;
-  border-top-left-radius: <%- getHeight(2) %>px;
-  border-top-right-radius: <%- getHeight(2) %>px;
-  border-color: #262626;
-  background-color: #595959;
   top: <%- getHeight(6) %>;
   left: <%- getWidth(265) %>;
-  height: <%- getHeight(2.5) %>;
-  width: <%- getWidth(30) %>;
 }

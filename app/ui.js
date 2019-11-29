@@ -14,7 +14,6 @@ let manifest;
 let windowSize;
 ipcRenderer.on("setSize", async (event, arg, data) => {
   windowSize = arg;
-  console.log(windowSize)
 });
 ipcRenderer.send("getSize", "");
 let emitter = require('events').EventEmitter;
@@ -22,9 +21,28 @@ let switchem = new emitter();
 switchem.setMaxListeners(Infinity);
 let istyping = false;
 function getWidth(w){
+  if(windowSize == undefined){while(true){if(windowSize !== undefined){break}}}
   return (w*windowSize.w)/1810;
 } function getHeight(h){
+  if(windowSize == undefined){while(true){if(windowSize !== undefined){break}}}
   return (h*windowSize.h)/800;
+} function getOrigWidth(w){
+  if(windowSize == undefined){while(true){if(windowSize !== undefined){break}}}
+  if(typeof w == "string"){
+    if(w.indexOf("%") !== -1) return w;
+    if(w.indexOf("em") !== -1){
+      return 1.5+"em";
+    }
+    w = parseFloat(w.replace("px", ""));
+  }
+  return Math.round((w*1810)/windowSize.w);
+} function getOrigHeight(h){
+  if(windowSize == undefined){while(true){if(windowSize !== undefined){break}}}
+  if(typeof h == "string"){
+    if(h.indexOf("%") !== -1) return h;
+    h = parseFloat(h.replace("px", ""));
+  }
+  return Math.round((h*800)/windowSize.h);
 }
 $(function() {
   $("#switchcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch", "style.css"), "utf8")), {path});
@@ -59,6 +77,58 @@ $(function() {
      .bind('selectstart', false)
      .on('mousedown', false);
   };
+  $.fn.getDefaultElement = function() {
+    let div = this.get(0).cloneNode(true);
+    div.id = "screenshot";
+    div.style = "width:1280;height:720;position:absolute;top:10;left:40;z-index:-2;";
+    document.body.appendChild(div);
+    function transformAll(NodeList){
+      NodeList.forEach((element) => {
+        if(element.nodeType == 3) return;
+        let name = element.nodeName;
+        let top = getOrigHeight(element.style.top);
+        let left = getOrigWidth(element.style.left);
+        let fontsize = getOrigWidth(element.style.fontSize);
+        let width,height;
+        if(name === "IMG"){
+          width = getOrigWidth(element.getAttribute("width"));
+          height = getOrigHeight(element.getAttribute("height"));
+        } else {
+          width = getOrigWidth(element.style.width);
+          height = getOrigHeight(element.style.height);
+        }
+        if(!isNaN(top)){
+          element.style.top = top;
+        } if(!isNaN(left)){
+          element.style.left = left;
+        } if(name === "IMG"){
+          if(!isNaN(width)){
+            element.width = width;
+          } if(!isNaN(height)){
+            element.height = height;
+          }
+        } else {
+          if(!isNaN(width)){
+            element.style.width = width;
+          } if(!isNaN(height)){
+            element.style.height = height;
+          } if(!isNaN(fontsize) || fontsize.toString().endsWith("em")){
+            element.style.fontSize = fontsize;
+          }
+        }
+        if(name === "DIV"){
+          if(`#ulaunchscreen #${element.id}` !== `#ulaunchscreen #`){
+            element.scrollTop = $(`#ulaunchscreen #${element.id}`).get(0).scrollTop;
+            element.scrollLeft = $(`#ulaunchscreen #${element.id}`).get(0).scrollLeft;
+          }
+          transformAll(element.childNodes);
+        }
+      });
+      return;
+    }
+    transformAll(div.childNodes);
+    return div;
+  };
   let keysdown = {};
   $(document).keydown(function(e){
     if(keysdown[e.which] || istyping) return;
@@ -89,12 +159,6 @@ $(function() {
     });
   });
   $("#plus").click(() => {
-    plus();
-  });
-  $("#pluss").click(() => {
-    plus();
-  });
-  $("#plusss").click(() => {
     plus();
   });
   $("#minus").click(() => {
@@ -317,10 +381,12 @@ async function init(){
     fs.mkdirSync(path.join(ulaunchtester, "screenshot"));
   }
   switchem.on("capture", () => {
-    html2canvas(document.getElementById("switchcontainer"), {
-        width: getWidth(1280),
-        height: getHeight(720)
+    let div = $("#ulaunchscreen").getDefaultElement();
+    html2canvas(div, {
+        width: 1280,
+        height: 720
     }).then(canvas => {
+      document.body.removeChild(div);
       canvas.setAttribute("style", "width:1280;height:720;display: none;");
       document.body.appendChild(canvas);
       let img = $("canvas").get(0).toDataURL();
@@ -347,7 +413,6 @@ async function init(){
   let timeout = null;
   document.getElementById("setvol").setAttribute("style", document.getElementById("setvol").getAttribute("style").replace(`width:300`, `width:${parseInt(testersettings.volume*getWidth(300))}`));
   let vnum = getWidth(15);
-  console.log(vnum);
   switchem.on("volp", () => {
     clearTimeout(timeout);
     var HTMLvolume = parseFloat(document.getElementById("setvol").getAttribute("style").split("width:")[1].split(";")[0].replace("px", ""));
@@ -884,8 +949,8 @@ async function init(){
             img.onload = () => {
               let texw = getWidth(img.width);
               let texh = getHeight(img.height);
-              x += (SubItemsSize - texw) / 2;
-              y += (SubItemsSize - texh) / 2;
+              x += (getWidth(SubItemsSize) - texw) / 2;
+              y += (getHeight(SubItemsSize) - texh) / 2;
               html += `<img width="${texw}" height="${texh}" style="position:absolute;top:${y};left:${x};color:rgb(150, 150, 200);" src="${tex}" id="img${i}"/>`;
               resolve();
             }
@@ -4248,7 +4313,7 @@ async function ShowNotification(text, uijson, ms = 1500){
       }
     });
   }
-  let wh = getTextWH(getHeight(20), text);
+  let wh = getTextWH(getWidth(20), text);
   let toastw = wh[0] + (wh[1] * getWidth(4));
   let toasth = wh[1] * getHeight(3);
   $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(getHeight(1280) - toastw) / 2};top: ${getHeight(550)};width: ${toastw};text-align: center;color: ${uijson["toast_text_color"]};z-index: 2;height: ${toasth};font-size: ${getHeight(20)};padding: ${getHeight(10)} ${getWidth(32.5)};border: none;border-radius: ${getHeight(32.5)}px;background-color: ${uijson["toast_base_color"]};opacity:0;" value="${text}"/>`);
@@ -4426,26 +4491,26 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
   if(opts.length !== 0){
     let dw = (getWidth(20) * (opts.length - 1)) + getWidth(250);
     for(var i = 0; i < opts.length; i++){
-        let tw = getTextWH(getHeight(18), opts[i])[0];
+        let tw = getTextWH(getWidth(18), opts[i])[0];
         dw += tw + getWidth(20);
     }
     if(dw > getWidth(1280)) dw = getWidth(1280);
     let icm = 30;
     let elemh = getHeight(60);
-    let tdw = getTextWH(getHeight(20), content)[0] + getWidth(157.5);
+    let tdw = getTextWH(getWidth(20), content)[0] + getWidth(157.5);
     if(tdw > dw) dw = tdw;
-    tdw = getTextWH(getHeight(30), title)[0] + getWidth(157.5);
+    tdw = getTextWH(getWidth(30), title)[0] + getWidth(157.5);
     if(tdw > dw) dw = tdw;
-    let ely = getTextWH(getHeight(20), content)[1] + getTextWH(getHeight(30), title)[1] + getHeight(140);
+    let ely = getTextWH(getWidth(20), content)[1] + getTextWH(getWidth(30), title)[1] + getHeight(140);
     if(icon){
       await new Promise(function(resolve, reject) {
         let img = new Image();
         img.onload = () => {
           let tely = getHeight(img.height) + getHeight(icm) + getHeight(25);
           if(tely > ely) ely = tely;
-          tdw = getTextWH(getHeight(20), content)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
+          tdw = getTextWH(getWidth(20), content)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
           if(tdw > dw) dw = tdw;
-          tdw = getTextWH(getHeight(30), title)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
+          tdw = getTextWH(getWidth(30), title)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
           if(tdw > dw) dw = tdw;
           resolve();
         }
@@ -4482,7 +4547,7 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
           let icy = getHeight(icm);
           iconwidth = icw+(bw-(icx+icw))-getWidth(20);
           console.log(icw);
-          html += `<img style="position:absolute;top:${icy};left:${icx}" src="${icon}"/>`;
+          html += `<img width="${icw}" height="${getHeight(img.height)}" style="position:absolute;top:${icy};left:${icx}" src="${icon}"/>`;
           resolve();
         }
         img.src = icon;
@@ -4492,15 +4557,15 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
     for(var i=0; i<opts.length; i++){
       let n = i;
       let txt = opts[n];
-      let tw = getTextWH(getHeight(18), txt)[0];
-      let th = getTextWH(getHeight(18), txt)[1];
+      let tw = getTextWH(getWidth(18), txt)[0];
+      let th = getTextWH(getWidth(18), txt)[1];
       let tx = elx + ((elemw - tw) / 2) + ((elemw + getWidth(20)) * i);
       let ty = ely + ((elemh - th) / 2);
       let rx = elx + ((elemw + getWidth(20)) * i);
       let ry = ely;
       let rr = (elemh / 2);
       let dclr = `#${nr}${ng}${nb}${(n == 0) ? "FF" : "00"}`;
-      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:${getHeight(18)};font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-30};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px 20px;" value="${txt}" id="${n}"/>`
+      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:${getHeight(18)};font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-30};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px ${getWidth(20)}px;" value="${txt}" id="${n}"/>`
     }
     html += "</div>";
   };

@@ -2,16 +2,29 @@
 <div id="jl">
   <input type="button" class="lbtn" id="l"/>
   <input type="button" class="joyconl"/>
-  <input type="button" class="minus" id="minus"/>
+  <div style="position:absolute;top: <%- getHeight(65) %>;left: <%- getWidth(159) %>;">
+    <svg width="<%- getWidth(45) %>" height="<%- getHeight(15) %>" viewBox="0 0 <%- getWidth(45) %> <%- getHeight(15) %>" style="position:absolute;top:0;left:0;z-index:2" id="minus">
+      <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 <%- getHeight(15) %>,<%- getWidth(45) %> <%- getHeight(15) %>,<%- getWidth(45) %> 0,0 0"></polygon>
+      <polygon style="stroke:black;fill:#464646;stroke-width:0px;" points="0 <%- getHeight(13) %>,<%- getWidth(43) %> <%- getHeight(13) %>,<%- getWidth(43) %> <%- getHeight(2) %>,<%- getWidth(2) %> <%- getHeight(2) %>"></polygon>
+    </svg>
+  </div>
   <div id="ljoystick" style="position:fixed;top:<%- getHeight(125) %>;left:<%- getWidth(85.5) %>;width:<%- getWidth(160) %>;height:<%- getHeight(160) %>">
     <input type="button" class="joystickbg"/>
     <div id="ljoybutton" style="position:relative;top:<%- getHeight(20) %>;left:<%- getWidth(-20) %>">
       <input type="button" class="joystick"/>
       <input type="button" class="joysticks"/>
-      <input type="button" class="barleft"/>
-      <input type="button" class="barright"/>
-      <input type="button" class="bartop"/>
-      <input type="button" class="barbottom"/>
+      <svg width="<%- getWidth(10) %>" height="<%- getHeight(14) %>" viewBox="0 0 <%- getWidth(10) %> <%- getHeight(14) %>" style="position:absolute;top:<%- getHeight(53) %>;left:<%- getWidth(108) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(10) %> 0,<%- getWidth(10) %> <%- getHeight(14) %>,0 <%- getHeight(14) %>"></polygon>
+      </svg>
+      <svg width="<%- getWidth(10) %>" height="<%- getHeight(14) %>" viewBox="0 0 <%- getWidth(10) %> <%- getHeight(14) %>" style="position:absolute;top:<%- getHeight(53) %>;left:<%- getWidth(3) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(10) %> 0,<%- getWidth(10) %> <%- getHeight(14) %>,0 <%- getHeight(14) %>"></polygon>
+      </svg>
+      <svg width="<%- getWidth(14) %>" height="<%- getHeight(10) %>" viewBox="0 0 <%- getWidth(14) %> <%- getHeight(10) %>" style="position:absolute;top:<%- getHeight(3) %>;left:<%- getWidth(53) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(14) %> 0,<%- getWidth(14) %> <%- getHeight(10) %>,0 <%- getHeight(10) %>"></polygon>
+      </svg>
+      <svg width="<%- getWidth(14) %>" height="<%- getHeight(10) %>" viewBox="0 0 <%- getWidth(14) %> <%- getHeight(10) %>" style="position:absolute;top:<%- getHeight(108) %>;left:<%- getWidth(53) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(14) %> 0,<%- getWidth(14) %> <%- getHeight(10) %>,0 <%- getHeight(10) %>"></polygon>
+      </svg>
     </div>
     <input type="button" class="top" id="ltop"/>
     <input type="button" class="topleft" id="ltopleft"/>
@@ -23,37 +36,29 @@
     <input type="button" class="righttop" id="lrighttop"/>
   </div>
   <div id="arrowupdiv" style="position:fixed;top:<%- getHeight(330) %>;left:<%- getWidth(95.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowup">
-      <g transform="rotate(180 12.25 12.25)">
-        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
-      </g>
+    <svg width="<%- getWidth(30) %>px" height="<%- getHeight(30) %>px" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(30) %>" style="position:absolute;top:45%;left:50%;transform: translate(-50%, -50%)">
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(30) %> <%- getHeight(30) %>,0 <%- getHeight(30) %>,<%- getWidth(30)/2 %> 0"></polygon>
     </svg>
     <input type="button" class="btnround"/>
     <input type="button" class="transparentbtnround" id="arrowup"/>
   </div>
   <div id="arrowleftdiv" style="position:fixed;top:<%- getHeight(385) %>;left:<%- getWidth(40.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowleft">
-      <g transform="rotate(90 12.25 12.25)">
-        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
-      </g>
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(30) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(30) %>" style="position:absolute;top:50%;left:45%;transform: translate(-50%, -50%)">
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(30) %> <%- getHeight(30) %>,<%- getWidth(30) %> 0,0 <%- getHeight(30)/2 %>"></polygon>
     </svg>
     <input type="button" class="btnround"/>
     <input type="button" class="transparentbtnround" id="arrowleft"/>
   </div>
   <div id="arrowbottomdiv" style="position:fixed;top:<%- getHeight(440) %>;left:<%- getWidth(95.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowbottom">
-      <g transform="rotate(1 12.25 12.25)">
-        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
-      </g>
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(30) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(30) %>" style="position:absolute;top:55%;left:50%;transform: translate(-50%, -50%)">
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(30)/2 %> <%- getHeight(30) %>,<%- getWidth(30) %> 0,0 0"></polygon>
     </svg>
     <input type="button" class="btnround"/>
     <input type="button" class="transparentbtnround" id="arrowdown"/>
   </div>
   <div id="arrowrightdiv" style="position:fixed;top:<%- getHeight(385) %>;left:<%- getWidth(150.5) %>;width:<%- getWidth(60) %>;height:<%- getHeight(60) %>">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(36) %>pt" height="<%- getHeight(34) %>pt" viewBox="0 0 <%- getWidth(36) %> <%- getHeight(34) %>" version="1.1" class="arrowright">
-      <g transform="rotate(270 12.25 12.25)">
-        <path style="stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 0.40625 0.417969 L 21.59375 0.417969 L 11 19.167969 "/>
-      </g>
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(30) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(30) %>" style="position:absolute;top:50%;left:55%;transform: translate(-50%, -50%)">
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="0 <%- getHeight(30) %>,0 0,<%- getWidth(30) %> <%- getHeight(30)/2 %>"></polygon>
     </svg>
     <input type="button" class="btnround"/>
     <input type="button" class="transparentbtnround" id="arrowright"/>
@@ -67,19 +72,28 @@
   <input type="button" class="rbtn" id="r"/>
   <input type="button" class="joyconr"/>
   <div id="dplus" style="position:fixed;top:<%- getHeight(50) %>;left:<%- getWidth(1605) %>">
-    <input type="button" class="plus" id="plus"/>
-    <input type="button" class="pluss" id="pluss"/>
-    <input type="button" class="plusss" id="plusss"/>
+    <svg width="<%- getWidth(45) %>" height="<%- getHeight(45) %>" viewBox="0 0 <%- getWidth(45) %> <%- getHeight(45) %>" style="position:absolute;top:0;left:0;z-index:2" id="plus">
+      <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="<%- getWidth(15) %> <%- getHeight(30) %>,0 <%- getHeight(30) %>,0 <%- getHeight(15) %>,<%- getWidth(15) %> <%- getHeight(15) %>,<%- getWidth(15) %> 0,<%- getWidth(30) %> 0,<%- getWidth(30) %> <%- getHeight(15) %>,<%- getWidth(45) %> <%- getHeight(15) %>,<%- getWidth(45) %> <%- getHeight(30) %>,<%- getWidth(30) %> <%- getHeight(30) %>,<%- getWidth(30) %> <%- getHeight(45) %>,<%- getWidth(15) %> <%- getHeight(45) %>"></polygon>
+      <polygon style="stroke:black;fill:#464646;stroke-width:0px;" points="<%- getWidth(17) %> <%- getHeight(28) %>,<%- getWidth(2) %> <%- getHeight(28) %>,<%- getWidth(2) %> <%- getHeight(17) %>,<%- getWidth(17) %> <%- getHeight(17) %>,<%- getWidth(17) %> <%- getHeight(2) %>,<%- getWidth(28) %> <%- getHeight(2) %>,<%- getWidth(28) %> <%- getHeight(17) %>,<%- getWidth(43) %> <%- getHeight(17) %>,<%- getWidth(43) %> <%- getHeight(28) %>,<%- getWidth(28) %> <%- getHeight(28) %>,<%- getWidth(28) %> <%- getHeight(43) %>,<%- getWidth(17) %> <%- getHeight(43) %>"></polygon>
+    </svg>
   </div>
   <div id="rjoystick" style="position:fixed;top:<%- getHeight(335) %>;left:<%- getWidth(1642.5) %>;width:<%- getWidth(160) %>;height:<%- getHeight(160) %>">
     <input type="button" class="joystickbg"/>
     <div id="rjoybutton" style="position:relative;top:<%- getHeight(20) %>;left:<%- getWidth(-20) %>">
       <input type="button" class="joystick"/>
       <input type="button" class="joysticks"/>
-      <input type="button" class="barleft"/>
-      <input type="button" class="barright"/>
-      <input type="button" class="bartop"/>
-      <input type="button" class="barbottom"/>
+      <svg width="<%- getWidth(10) %>" height="<%- getHeight(14) %>" viewBox="0 0 <%- getWidth(10) %> <%- getHeight(14) %>" style="position:absolute;top:<%- getHeight(53) %>;left:<%- getWidth(108) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(10) %> 0,<%- getWidth(10) %> <%- getHeight(14) %>,0 <%- getHeight(14) %>"></polygon>
+      </svg>
+      <svg width="<%- getWidth(10) %>" height="<%- getHeight(14) %>" viewBox="0 0 <%- getWidth(10) %> <%- getHeight(14) %>" style="position:absolute;top:<%- getHeight(53) %>;left:<%- getWidth(3) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(10) %> 0,<%- getWidth(10) %> <%- getHeight(14) %>,0 <%- getHeight(14) %>"></polygon>
+      </svg>
+      <svg width="<%- getWidth(14) %>" height="<%- getHeight(10) %>" viewBox="0 0 <%- getWidth(14) %> <%- getHeight(10) %>" style="position:absolute;top:<%- getHeight(3) %>;left:<%- getWidth(53) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(14) %> 0,<%- getWidth(14) %> <%- getHeight(10) %>,0 <%- getHeight(10) %>"></polygon>
+      </svg>
+      <svg width="<%- getWidth(14) %>" height="<%- getHeight(10) %>" viewBox="0 0 <%- getWidth(14) %> <%- getHeight(10) %>" style="position:absolute;top:<%- getHeight(108) %>;left:<%- getWidth(53) %>">
+          <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 0,<%- getWidth(14) %> 0,<%- getWidth(14) %> <%- getHeight(10) %>,0 <%- getHeight(10) %>"></polygon>
+      </svg>
     </div>
     <input type="button" class="top" id="rtop"/>
     <input type="button" class="topleft" id="rtopleft"/>
@@ -107,21 +121,33 @@
     <input type="button" class="btnround" id="a"/>
   </div>
   <div id="home" style="position:fixed;top:<%- getHeight(540) %>;left:<%- getWidth(1618) %>;width:<%- getWidth(42) %>;height:<%- getHeight(42) %>">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="<%- getWidth(24) %>pt" height="<%- getHeight(12) %>pt" viewBox="0 0 <%- getWidth(24) %> <%- getHeight(12) %>" version="1.1" class="homesvg">
-      <g>
-        <path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 16.0625 8.402344 L 1.9375 8.402344 L 9 1.859375 "/>
-      </g>
+    <svg width="<%- getWidth(20) %>" height="<%- getHeight(18) %>" viewBox="0 0 <%- getWidth(20) %> <%- getHeight(18) %>" style="position:absolute;top:47.5%;left:50%;z-index:2;transform: translate(-50%, -50%)">
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(20)/2 %> 0,<%- getWidth(20) %> <%- getHeight(10) %>,0 <%- getHeight(10) %>"></polygon>
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(3) %> <%- getHeight(20) %>,<%- getWidth(8) %> <%- getHeight(20) %>,<%- getWidth(8) %> <%- getHeight(10) %>,<%- getWidth(3) %> <%- getHeight(10) %>"></polygon>
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(3) %> <%- getHeight(20) %>,<%- getWidth(17) %> <%- getHeight(20) %>,<%- getWidth(17) %> <%- getHeight(15) %>,<%- getWidth(3) %> <%- getHeight(15) %>"></polygon>
+      <polygon style="stroke:black;fill:#000;stroke-width:0px;" points="<%- getWidth(12) %> <%- getHeight(18) %>,<%- getWidth(17) %> <%- getHeight(18) %>,<%- getWidth(17) %> <%- getHeight(10) %>,<%- getWidth(12) %> <%- getHeight(10) %>"></polygon>
     </svg>
     <input type"button" class="home"/>
-    <input type"button" class="homebar"/>
-    <input type"button" class="homebars"/>
-    <input type"button" class="homebarss"/>
-    <input type"button" class="homebg" id="home"/>
+    <input type"button" class="homebg" id="home" disabled/>
   </div>
   <div id="volume" style="position:fixed;top:<%- getHeight(5) %>;left:<%- getWidth(302.5) %>;width:<%- getWidth(90) %>;height:<%- getHeight(5) %>">
-    <input type="button" class="volm" id="volm">
-    <input type="button" class="volbar">
-    <input type="button" class="volp" id="volp">
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(5) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(5) %>" id="volm" style="position:absolute;left:0;top:0">
+      <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 <%- getHeight(5) %>,<%- getWidth(30) %> <%- getHeight(5) %>,<%- getWidth(30) %> 0,0 0"></polygon>
+      <polygon style="stroke:black;fill:#595959;stroke-width:0px;" points="<%- getWidth(2) %> <%- getHeight(5) %>,<%- getWidth(28) %> <%- getHeight(5) %>,<%- getWidth(28) %> <%- getHeight(2) %>,<%- getWidth(2) %> <%- getHeight(2) %>"></polygon>
+    </svg>
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(4) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(4) %>" style="position:absolute;left:<%- getWidth(30) %>;top:<%- getHeight(1) %>">
+      <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 <%- getHeight(4) %>,<%- getWidth(30) %> <%- getHeight(4) %>,<%- getWidth(30) %> 0,0 0"></polygon>
+      <polygon style="stroke:black;fill:#595959;stroke-width:0px;" points="0 <%- getHeight(4) %>,<%- getWidth(30) %> <%- getHeight(4) %>,<%- getWidth(30) %> <%- getHeight(2) %>,0 <%- getHeight(2) %>"></polygon>
+    </svg>
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(5) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(5) %>" id="volp" style="position:absolute;left:<%- getWidth(60) %>;top:0">
+      <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 <%- getHeight(5) %>,<%- getWidth(30) %> <%- getHeight(5) %>,<%- getWidth(30) %> 0,0 0"></polygon>
+      <polygon style="stroke:black;fill:#595959;stroke-width:0px;" points="<%- getWidth(2) %> <%- getHeight(5) %>,<%- getWidth(28) %> <%- getHeight(5) %>,<%- getWidth(28) %> <%- getHeight(2) %>,<%- getWidth(2) %> <%- getHeight(2) %>"></polygon>
+    </svg>
   </div>
-  <input type="button" class="power" id="power">
+  <div class="power">
+    <svg width="<%- getWidth(30) %>" height="<%- getHeight(4) %>" viewBox="0 0 <%- getWidth(30) %> <%- getHeight(4) %>">
+      <polygon style="stroke:black;fill:#262626;stroke-width:0px;" points="0 <%- getHeight(4) %>,<%- getWidth(30) %> <%- getHeight(4) %>,<%- getWidth(30) %> 0,0 0"></polygon>
+      <polygon style="stroke:black;fill:#595959;stroke-width:0px;" points="<%- getWidth(2) %> <%- getHeight(4) %>,<%- getWidth(28) %> <%- getHeight(4) %>,<%- getWidth(28) %> <%- getHeight(2) %>,<%- getWidth(2) %> <%- getHeight(2) %>"></polygon>
+    </svg>
+  </div>
 </div>
