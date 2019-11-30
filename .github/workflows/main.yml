@@ -1,0 +1,46 @@
+name: uLaunch Previewer Build
+
+on: [push]
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm run dist:win
+      - uses: actions/upload-artifact@master
+        with:
+          name: uLaunch-Previewer-Windows
+          path: dist/
+  
+  build-osx:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm run dist:darwin
+      - uses: actions/upload-artifact@master
+        with:
+          name: uLaunch-Previewer-macOS
+          path: dist/
+  
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm run dist:linux
+      - uses: actions/upload-artifact@master
+        with:
+          name: uLaunch-Previewer-Linux
+          path: dist/
