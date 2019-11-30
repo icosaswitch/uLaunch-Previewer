@@ -15,7 +15,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Windows
-          path: dist/uLaunch-Previewer-*.*.*.exe
+          path: dist/uLaunch-Previewer.exe
   
   build-osx:
     runs-on: macOS-latest
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-macOS
-          path: dist/uLaunch-Previewer-*.*.*.dmg
+          path: dist/uLaunch-Previewer.dmg
   
   build-linux:
     runs-on: ubuntu-latest
@@ -43,9 +43,9 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-deb
-          path: dist/uLaunch-Previewer-*.*.*.deb
+          path: dist/uLaunch-Previewer.deb
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-AppImage
-          path: dist/uLaunch-Previewer-*.*.*.AppImage
+          path: dist/uLaunch-Previewer.AppImage
          
