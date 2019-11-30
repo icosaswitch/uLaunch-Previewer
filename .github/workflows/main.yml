@@ -12,12 +12,10 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:win
-        env:
-          APPPATH: 'dist/uLaunch-Previewer-*.exe'
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Windows
-          path: ${APPPATH}
+          path: ${{ '**/uLaunch-Previewer-*.exe' }}
   
   build-osx:
     runs-on: macOS-latest
@@ -28,12 +26,10 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:darwin
-        env:
-          APPPATH: 'dist/uLaunch-Previewer-*.dmg'
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-macOS
-          path: ${APPPATH}
+          path: ${{ '**/uLaunch-Previewer-*.dmg' }}
   
   build-linux:
     runs-on: ubuntu-latest
@@ -44,15 +40,12 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:linux
-        env:
-          APPPATHD: 'dist/uLaunch-Previewer-*.deb'
-          APPPATHA: 'dist/uLaunch-Previewer-*.AppImage'
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-deb
-          path: ${APPPATHD}
+          path: ${{ '**/uLaunch-Previewer-*.deb' }}
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-AppImage
-          path: ${APPPATHA}
+          path: ${{ '**/uLaunch-Previewer-*.AppImage' }}
          
