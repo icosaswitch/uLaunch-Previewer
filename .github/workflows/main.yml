@@ -15,7 +15,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Windows
-          path: ${{ hashFiles('**/uLaunch-Previewer-*.exe') }}
+          path: '**/uLaunch-Previewer-*.exe'
   
   build-osx:
     runs-on: macOS-latest
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-macOS
-          path: ${{ hashFiles('**/uLaunch-Previewer-*.dmg') }}
+          path: '**/uLaunch-Previewer-*.dmg'
   
   build-linux:
     runs-on: ubuntu-latest
@@ -43,9 +43,9 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-deb
-          path: ${{ hashFiles('**/uLaunch-Previewer-*.deb') }}
+          path: '**/uLaunch-Previewer-*.deb'
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-AppImage
-          path: ${{ hashFiles('**/uLaunch-Previewer-*.AppImage') }}
+          path: '**/uLaunch-Previewer-*.AppImage'
          
