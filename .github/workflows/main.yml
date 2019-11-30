@@ -12,10 +12,11 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:win
+      - run: rename '**/uLaunch-Previewer-*.exe' uLaunch-Previewer.exe
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Windows
-          path: ${{ '**/uLaunch-Previewer-*.exe' }}
+          path: '**/uLaunch-Previewer.exe'
   
   build-osx:
     runs-on: macOS-latest
@@ -26,10 +27,11 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:darwin
+      - run: mv '**/uLaunch-Previewer-*.dmg' uLaunch-Previewer.dmg
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-macOS
-          path: ${{ '**/uLaunch-Previewer-*.dmg' }}
+          path: '**/uLaunch-Previewer.dmg'
   
   build-linux:
     runs-on: ubuntu-latest
@@ -40,12 +42,14 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:linux
+      - run: mv '**/uLaunch-Previewer-*.deb' uLaunch-Previewer.deb
+      - run: mv '**/uLaunch-Previewer-*.AppImage' uLaunch-Previewer.AppImage
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-deb
-          path: ${{ '**/uLaunch-Previewer-*.deb' }}
+          path: '**/uLaunch-Previewer.deb'
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Linux-AppImage
-          path: ${{ '**/uLaunch-Previewer-*.AppImage' }}
+          path: '**/uLaunch-Previewer.AppImage'
          
