@@ -44,8 +44,38 @@ function getWidth(w){
   }
   return Math.round((h*800)/windowSize.h);
 }
+let ulaunchtester = path.join(documents, "uLaunch-Previewer");
 $(function() {
-  $("#switchcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch", "style.css"), "utf8")), {path});
+  if(!fs.existsSync(ulaunchtester)){
+    fs.mkdirSync(ulaunchtester);
+  }
+  if(!fs.existsSync(path.join(ulaunchtester, "sdmc"))){
+    fs.mkdirSync(path.join(ulaunchtester, "sdmc"));
+  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch"))){
+    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch"));
+  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"))){
+    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
+  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "lang"))){
+    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "lang"));
+  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes"))){
+    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes"));
+  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings"))){
+    fs.mkdirSync(path.join(ulaunchtester, "testersettings"));
+  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "users.json"))){
+    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "users.json"), JSON.stringify([{"username": "Default User", "usericon": "default", "password": false}], null, 2), function(err){if(err) throw err;});
+  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"))){
+    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"volume":1,"currenttheme":"default","lang":"en-US","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.0.0","consolename":"uLaunchPreviewer","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False","joyconleft":"#00c3e3","joyconright":"#ff4554"}, null, 2), function(err){if(err) throw err;});
+  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "menuitems.json"))){
+    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify({"folders":{},"hb":[]}, null, 2), function(err){if(err) throw err;});
+  } if(!fs.existsSync(path.join(ulaunchtester, "screenshot"))){
+    fs.mkdirSync(path.join(ulaunchtester, "screenshot"));
+  }
+  try{
+    testersettings = require(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
+  } catch(e){
+    corrupted(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
+  }
+  $("#switchcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch", "style.css"), "utf8")), {path, testersettings});
   $("#joystickcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch", "joystick.css"), "utf8")));
   $("#ulaunchcss").html(ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "style.css"), "utf8")));
   $("#switch").html(ejs.render(fs.readFileSync(path.join(__dirname, "switch.ejs"), "utf8")));
@@ -355,31 +385,6 @@ let menutoggle = undefined;
 let testersettings;
 
 async function init(){
-  if(!fs.existsSync(path.join(documents, "uLaunch-Previewer"))){
-    fs.mkdirSync(path.join(documents, "uLaunch-Previewer"));
-  }
-  let ulaunchtester = path.join(documents, "uLaunch-Previewer");
-  if(!fs.existsSync(path.join(ulaunchtester, "sdmc"))){
-    fs.mkdirSync(path.join(ulaunchtester, "sdmc"));
-  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch"))){
-    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch"));
-  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"))){
-    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
-  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "lang"))){
-    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "lang"));
-  } if(!fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes"))){
-    fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes"));
-  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings"))){
-    fs.mkdirSync(path.join(ulaunchtester, "testersettings"));
-  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "users.json"))){
-    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "users.json"), JSON.stringify([{"username": "Default User", "usericon": "default", "password": false}], null, 2), function(err){if(err) throw err;});
-  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"))){
-    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"volume":1,"currenttheme":"default","lang":"en-US","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.0.0","consolename":"uLaunchPreviewer","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False"}, null, 2), function(err){if(err) throw err;});
-  } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "menuitems.json"))){
-    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify({"folders":{},"hb":[]}, null, 2), function(err){if(err) throw err;});
-  } if(!fs.existsSync(path.join(ulaunchtester, "screenshot"))){
-    fs.mkdirSync(path.join(ulaunchtester, "screenshot"));
-  }
   switchem.on("capture", () => {
     let div = $("#ulaunchscreen").getDefaultElement();
     html2canvas(div, {
@@ -403,11 +408,6 @@ async function init(){
     });
   });
   $("#switchcontainer").append(`<div id="ulaunchscreen"></div>`);
-  try{
-    testersettings = require(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
-  } catch(e){
-    corrupted(path.join(ulaunchtester, "testersettings", "ulaunch.json"));
-  }
   let currenttheme = testersettings.currenttheme;
   let user;
   let timeout = null;
@@ -930,13 +930,13 @@ async function init(){
         html += `<img width="${getWidth(MainItemSize)}" height="${getHeight(MainItemSize)}" style="position:absolute;top:${MainItemY};left:${MainItemX};" src="${defaulticon.quickmenumain}"/>`;
         let item_map = [
           ["up", defaulticon.usericon],
-          ["down", defaulticon.settingsicon],
-          ["left", defaulticon.webicon],
+          ["upleft", defaulticon.powericon],
+          ["upright", defaulticon.settingsicon],
+          ["left", defaulticon.controllericon],
           ["right", defaulticon.themesicon],
-          ["upleft", defaulticon.controllericon],
-          ["upright", defaulticon.albumicon],
-          ["downleft", defaulticon.powericon],
-          ["downright", defaulticon.helpicon]
+          ["downleft", defaulticon.webicon],
+          ["downright", defaulticon.albumicon],
+          ["down", defaulticon.helpicon]
         ]
         for(var i=0; i<item_map.length; i++){
           let item = item_map[i];
@@ -1009,25 +1009,25 @@ async function init(){
             case 'up':
               selected = 0;
               break
-            case 'down':
+            case 'upleft':
               selected = 1;
               break;
-            case 'left':
+            case 'upright':
               selected = 2;
               break;
-            case 'right':
+            case 'left':
               selected = 3;
               break;
-            case 'upleft':
+            case 'right':
               selected = 4;
               break;
-            case 'upright':
+            case 'downleft':
               selected = 5;
               break;
-            case 'downleft':
+            case 'downright':
               selected = 6;
               break;
-            case 'downright':
+            case 'down':
               selected = 7;
               break;
             default:
@@ -1108,13 +1108,13 @@ async function init(){
           if(selected == 0){
             res = false;
             $("#user").trigger("click");
-          } else if(selected == 1){
+          } else if(selected == 2){
             res = false;
             $("#setting").trigger("click");
-          } else if(selected == 3){
+          } else if(selected == 4){
             res = false;
             $("#theme").trigger("click");
-          } else if(selected == 6){
+          } else if(selected == 1){
             res = false;
             let ress = false;
             res = true;
@@ -4370,7 +4370,7 @@ function InitializeUIJson(uijson){
     uijson["main_menu"]["connection_icon"] = ApplyConfigForElement(uijson, "main_menu", "connection_icon");
     uijson["main_menu"]["user_icon"] = ApplyConfigForElement(uijson, "main_menu", "user_icon");
     uijson["main_menu"]["logo_icon"] = ApplyConfigForElement(uijson, "main_menu", "logo_icon");
-    uijson["main_menu"]["web_icon"] = ApplyConfigForElement(uijson, "main_menu", "web_icon");
+    uijson["main_menu"]["controller_icon"] = ApplyConfigForElement(uijson, "main_menu", "controller_icon");
     uijson["main_menu"]["time_text"] = ApplyConfigForElement(uijson, "main_menu", "time_text");
     uijson["main_menu"]["battery_text"] = ApplyConfigForElement(uijson, "main_menu", "battery_text");
     uijson["main_menu"]["battery_icon"] = ApplyConfigForElement(uijson, "main_menu", "battery_icon");

@@ -1,6 +1,6 @@
 {
   "name": "ulaunch-previewer",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "uLaunch Previewer",
   "main": "index.js",
   "scripts": {
@@ -68,7 +68,10 @@
       }
     },
     "linux": {
-      "target": ["AppImage","deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "maintainer": "Pharuxtan",
       "vendor": "uLaunch Previewer",
       "synopsis": "uLaunch Previewer",
@@ -76,7 +79,7 @@
       "category": "Utility"
     },
     "files": [
-      "!{dist,dev-app-update.yml,.github,screenshot,package-lock.json,screenshot,README.md,.gitignore}"
+      "!{dist,dev-app-update.yml,screenshot,package-lock.json,screenshot,README.md,.gitignore}"
     ],
     "compression": "maximum",
     "asar": true

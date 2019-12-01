@@ -39,7 +39,7 @@
 }
 
 .joyconr {
-  background-color: #ff4554;
+  background-color: <%- (testersettings.joyconright) ? testersettings.joyconright : "#ff4554" %>;
   border: 0px;
   position: absolute;
   top: <%- getHeight(10) %>;
@@ -52,7 +52,7 @@
 }
 
 .joyconl {
-  background-color: #00c3e3;
+  background-color: <%- (testersettings.joyconleft) ? testersettings.joyconleft : "#00c3e3" %>;
   border: 0px;
   position: absolute;
   top: <%- getHeight(10) %>;
