@@ -1244,6 +1244,7 @@ async function init(){
           let ifolders = [];
           let numf = Object.keys(folders);
           let ids = [];
+          let entryfiles = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
           for(var i=0; i<numf.length; i++){
             n += 1;
             let name = numf[i];
@@ -1268,18 +1269,31 @@ async function init(){
           items = items.concat(ifolders);
           let igames = games.map((game) => {
             if(ids.includes(game.id)) return "";
+            let name = game.name;
+            let author = game.author;
+            let version = game.version;
+            let icon = path.join(__dirname, "ulaunch", "game", game.icon);
+            entryfiles.map(n => {
+              let json = require(n);
+              if(json.type !== 1) return;
+              if(json.application_id !== game.id) return;
+              if(json.icon) icon = json.icon;
+              if(json.name) name = json.name;
+              if(json.author) author = json.author;
+              if(json.version) version = json.version;
+            });
             n += 1;
             let width = 256;
             let height = 256;
             if(n == 0){
-              document.getElementById("in").innerHTML = game.name;
-              document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              document.getElementById("in").innerHTML = name;
+              document.getElementById("ia").innerHTML = author;
+              document.getElementById("iv").innerHTML = version;
               left = getWidth(98);
-              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${icon}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
               left += getWidth(276);
-              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${icon}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             }
           });
           items = items.concat(igames);
@@ -1300,7 +1314,7 @@ async function init(){
               if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
               left += getWidth(276);
               n += 1;
-              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name}/${content.author}/${content.version}/${filename}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name}/${content.author}/${content.version}/${filename}"/>`;
             }
           });
           items = items.concat(hbi);
@@ -1391,9 +1405,20 @@ async function init(){
                 let alt = input.getAttribute("alt");
                 if(alt.startsWith("game")){
                   let game = games.find(g => g.id === alt.split("/")[1]);
-                  document.getElementById("in").innerHTML = game.name;
-                  document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = game.version;
+                  let name = game.name;
+                  let author = game.author;
+                  let version = game.version;
+                  entryfiles.map(n => {
+                    let json = require(n);
+                    if(json.type !== 1) return;
+                    if(json.application_id !== game.id) return;
+                    if(json.name) name = json.name;
+                    if(json.author) author = json.author;
+                    if(json.version) version = json.version;
+                  });
+                  document.getElementById("in").innerHTML = name;
+                  document.getElementById("ia").innerHTML = author;
+                  document.getElementById("iv").innerHTML = version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -1867,9 +1892,20 @@ async function init(){
             let alt = input.getAttribute("alt");
             if(alt.startsWith("game")){
               let game = games.find(g => g.id === alt.split("/")[1]);
-              document.getElementById("in").innerHTML = game.name;
-              document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              let name = game.name;
+              let author = game.author;
+              let version = game.version;
+              entryfiles.map(n => {
+                let json = require(n);
+                if(json.type !== 1) return;
+                if(json.application_id !== game.id) return;
+                if(json.name) name = json.name;
+                if(json.author) author = json.author;
+                if(json.version) version = json.version;
+              });
+              document.getElementById("in").innerHTML = name;
+              document.getElementById("ia").innerHTML = author;
+              document.getElementById("iv").innerHTML = version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2257,6 +2293,7 @@ async function init(){
           }catch(e){
             corrupted(path.join(ulaunchtester, "testersettings", "menuitems.json"));
           }
+          let entryfiles = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "entries"));
           let folders = menuitems.folders[fname];
           let items = games.filter((game) => {
             if(folders.includes(game.id)){
@@ -2264,19 +2301,32 @@ async function init(){
               return true
             }
           }).map((game) => {
+            let name = game.name;
+            let author = game.author;
+            let version = game.version;
+            let icon = path.join(__dirname, "ulaunch", "game", game.icon);
+            entryfiles.map(n => {
+              let json = require(n);
+              if(json.type !== 1) return;
+              if(json.application_id !== game.id) return;
+              if(json.icon) icon = json.icon;
+              if(json.name) name = json.name;
+              if(json.author) author = json.author;
+              if(json.version) version = json.version;
+            });
             n += 1;
             if(n == 0){
-              document.getElementById("in").innerHTML = game.name;
-              document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              document.getElementById("in").innerHTML = name;
+              document.getElementById("ia").innerHTML = author;
+              document.getElementById("iv").innerHTML = version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
               left = getWidth(98);
-              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${icon}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             } else {
               left += getWidth(276);
-              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${path.join(__dirname, "ulaunch", "game", game.icon)}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${icon}" alt="game/${game.id}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="game/${game.id}"/>`
             }
           });
           let hb = folders.map(file => {
@@ -2301,9 +2351,9 @@ async function init(){
               if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
               n += 1;
               if(n == 0){
-                document.getElementById("in").innerHTML = content.name.substring(0, 0x1FF);
-                document.getElementById("ia").innerHTML = content.author.substring(0, 0xFF);
-                document.getElementById("iv").innerHTML = content.version.substring(0, 0xF);
+                document.getElementById("in").innerHTML = content.name;
+                document.getElementById("ia").innerHTML = content.author;
+                document.getElementById("iv").innerHTML = content.version;
                 document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("visible", "hidden"))
                 document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                 document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]));
@@ -2311,7 +2361,7 @@ async function init(){
               } else {
                 left += getWidth(276);
               }
-              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${filename}"/>`;
+              return `<img width="${getWidth(256)}" height="${getHeight(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name}/${content.author}/${content.version}/${filename}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name}/${content.author}/${content.version}/${filename}"/>`;
             }
           });
           items = items.concat(hb);
@@ -2405,9 +2455,20 @@ async function init(){
                 let alt = input.getAttribute("alt");
                 if(alt.startsWith("game")){
                   let game = games.find(g => g.id === alt.split("/")[1]);
-                  document.getElementById("in").innerHTML = game.name;
-                  document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = game.version;
+                  let name = game.name;
+                  let author = game.author;
+                  let version = game.version;
+                  entryfiles.map(n => {
+                    let json = require(n);
+                    if(json.type !== 1) return;
+                    if(json.application_id !== game.id) return;
+                    if(json.name) name = json.name;
+                    if(json.author) author = json.author;
+                    if(json.version) version = json.version;
+                  });
+                  document.getElementById("in").innerHTML = name;
+                  document.getElementById("ia").innerHTML = author;
+                  document.getElementById("iv").innerHTML = version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
@@ -2652,13 +2713,24 @@ async function init(){
             let alt = input.getAttribute("alt");
             if(alt.startsWith("game")){
               let game = games.find(g => g.id === alt.split("/")[1]);
-              document.getElementById("in").innerHTML = game.name;
-              document.getElementById("ia").innerHTML = game.author;
-              document.getElementById("iv").innerHTML = game.version;
+              let name = game.name;
+              let author = game.author;
+              let version = game.version;
+              entryfiles.map(n => {
+                let json = require(n);
+                if(json.type !== 1) return;
+                if(json.application_id !== game.id) return;
+                if(json.name) name = json.name;
+                if(json.author) author = json.author;
+                if(json.version) version = json.version;
+              });
+              document.getElementById("in").innerHTML = name;
+              document.getElementById("ia").innerHTML = author;
+              document.getElementById("iv").innerHTML = version;
               document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
               document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
               document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
-            } else if(alt.startsWith("homebrew")){
+            } else if(alt.startsWith("folder")){
               alt = alt.split("/");
               document.getElementById("in").innerHTML = alt[1];
               document.getElementById("ia").innerHTML = alt[2];
@@ -2981,7 +3053,7 @@ async function init(){
             if(content.icon == "" || content.icon == null || content.icon == undefined || !fs.existsSync(content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))) || content.type !== 2) return "";
             left += getWidth(276);
             n += 1;
-            return `<img width="${getWidth(256)}" height="${getWidth(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name.substring(0, 0x1FF)}/${content.author.substring(0, 0xFF)}/${content.version.substring(0, 0xF)}/${path.basename(file)}"/>`;
+            return `<img width="${getWidth(256)}" height="${getWidth(256)}" style="position: absolute;top: ${top}; left: ${left}" src="${content.icon.replace("sdmc:", path.join(ulaunchtester, "sdmc"))}" alt="homebrew/${content.name}/${content.author}/${content.version}/${path.basename(file)}"/><input style="width:${getWidth(256)};height:${getHeight(256)};position: absolute;top: ${top}; left: ${left};z-index: 1;outline: none;border: none;background-color: transparent;pointer-events:auto;" type="button" id="${n}" alt="homebrew/${content.name}/${content.author}/${content.version}/${path.basename(file)}"/>`;
           });
           items = items.concat(hbi);
           items.push(`<img width="${getWidth(size.suspended.w)}" height="${getHeight(size.suspended.h)}" style="position: absolute;top: ${suspendedd}; left: ${getWidth(98-(size.suspended.w-256)/2)};pointer-events:none;display:none;" src="${defaulticon.suspended}" id="suspended"/>`)
@@ -3071,9 +3143,20 @@ async function init(){
                 let alt = input.getAttribute("alt");
                 if(alt.startsWith("game")){
                   let game = games.find(g => g.id === alt.split("/")[1]);
-                  document.getElementById("in").innerHTML = game.name;
-                  document.getElementById("ia").innerHTML = game.author;
-                  document.getElementById("iv").innerHTML = game.version;
+                  let name = game.name;
+                  let author = game.author;
+                  let version = game.version;
+                  entryfiles.map(n => {
+                    let json = require(n);
+                    if(json.type !== 1) return;
+                    if(json.application_id !== game.id) return;
+                    if(json.name) name = json.name;
+                    if(json.author) author = json.author;
+                    if(json.version) version = json.version;
+                  });
+                  document.getElementById("in").innerHTML = name;
+                  document.getElementById("ia").innerHTML = author;
+                  document.getElementById("iv").innerHTML = version;
                   document.getElementById("bi").setAttribute("style", document.getElementById("bi").getAttribute("style").replace("hidden", uijson["main_menu"]["banner_image"]["visible"]))
                   document.getElementById("bf").setAttribute("style", document.getElementById("bf").getAttribute("style").replace("visible", "hidden"));
                   document.getElementById("bh").setAttribute("style", document.getElementById("bh").getAttribute("style").replace("visible", "hidden"));
