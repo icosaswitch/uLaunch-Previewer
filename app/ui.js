@@ -928,7 +928,7 @@ async function init(){
       async function quickmenu(){
         res = true;
         let quick = false;
-        let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};" id="quickmenu">`;
+        let html = `<div style="background-color: #323232DC;z-index:99;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};" id="quickmenu">`;
         let MainItemSize = 300;
         let SubItemsSize = 150;
         let CommonAreaSize = 50;
@@ -4403,9 +4403,9 @@ async function ShowNotification(text, uijson, ms = 1500){
       }
     });
   }
-  let wh = getTextWH(getWidth(20), text);
-  let toastw = wh[0] + (wh[1] * getWidth(4));
-  let toasth = wh[1] * getHeight(3);
+  let wh = getTextWH(20, text);
+  let toastw = getWidth(wh[0]) + (getHeight(wh[1]) * 4);
+  let toasth = getHeight(wh[1]) * 3;
   $("#switchcontainer").append(`<input type="button" id="notification" style="position: absolute;left: ${(getHeight(1280) - toastw) / 2};top: ${getHeight(550)};width: ${toastw};text-align: center;color: ${uijson["toast_text_color"]};z-index: 2;height: ${toasth};font-size: ${getHeight(20)};padding: ${getHeight(10)} ${getWidth(32.5)};border: none;border-radius: ${getHeight(32.5)}px;background-color: ${uijson["toast_base_color"]};opacity:0;" value="${text}"/>`);
   $("#notification").fadeTo(350, 200/255, function(){
     setTimeout(() => {
@@ -4576,31 +4576,31 @@ function InitializeLang(lang, Languages){
 }
 
 async function createDialog(title, content, opts, hasCancel = false, icon){
-  let html = `<div style="background-color: #3232327F;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="dialog">`;
+  let html = `<div style="background-color: #3232327D;z-index:99;position:absolute;top:0;left:0;width:1280;height:720;" id="dialog">`;
   if(hasCancel) opts.push("Cancel");
   if(opts.length !== 0){
     let dw = (getWidth(20) * (opts.length - 1)) + getWidth(250);
     for(var i = 0; i < opts.length; i++){
-        let tw = getTextWH(getWidth(18), opts[i])[0];
+        let tw = getWidth(getTextWH(18, opts[i])[0]);
         dw += tw + getWidth(20);
     }
     if(dw > getWidth(1280)) dw = getWidth(1280);
     let icm = 30;
     let elemh = getHeight(60);
-    let tdw = getTextWH(getWidth(20), content)[0] + getWidth(157.5);
+    let tdw = getWidth(getTextWH(20, content)[0]) + getWidth(157.5);
     if(tdw > dw) dw = tdw;
-    tdw = getTextWH(getWidth(30), title)[0] + getWidth(157.5);
+    tdw = getWidth(getTextWH(30, title)[0]) + getWidth(157.5);
     if(tdw > dw) dw = tdw;
-    let ely = getTextWH(getWidth(20), content)[1] + getTextWH(getWidth(30), title)[1] + getHeight(140);
+    let ely = getHeight(getTextWH(20, content)[1]) + getHeight(getTextWH(30, title)[1]) + getHeight(140);
     if(icon){
       await new Promise(function(resolve, reject) {
         let img = new Image();
         img.onload = () => {
           let tely = getHeight(img.height) + getHeight(icm) + getHeight(25);
           if(tely > ely) ely = tely;
-          tdw = getTextWH(getWidth(20), content)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
+          tdw = getWidth(getTextWH(20, content)[0]) + getWidth(90) + getWidth(img.width) + getWidth(20);
           if(tdw > dw) dw = tdw;
-          tdw = getTextWH(getWidth(30), title)[0] + getWidth(90) + getWidth(img.width) + getWidth(20);
+          tdw = getWidth(getTextWH(30, title)[0]) + getWidth(90) + getWidth(img.width) + getWidth(20);
           if(tdw > dw) dw = tdw;
           resolve();
         }
@@ -4647,15 +4647,15 @@ async function createDialog(title, content, opts, hasCancel = false, icon){
     for(var i=0; i<opts.length; i++){
       let n = i;
       let txt = opts[n];
-      let tw = getTextWH(getWidth(18), txt)[0];
-      let th = getTextWH(getWidth(18), txt)[1];
+      let tw = getWidth(getTextWH(18, txt)[0]);
+      let th = getHeight(getTextWH(18, txt)[1]);
       let tx = elx + ((elemw - tw) / 2) + ((elemw + getWidth(20)) * i);
       let ty = ely + ((elemh - th) / 2);
       let rx = elx + ((elemw + getWidth(20)) * i);
       let ry = ely;
       let rr = (elemh / 2);
       let dclr = `#${nr}${ng}${nb}${(n == 0) ? "FF" : "00"}`;
-      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:${getHeight(18)};font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-30};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px ${getWidth(20)}px;" value="${txt}" id="${n}"/>`
+      html += `<input type="button" style="outline:none;border:none;background-color:${dclr};font-size:${getHeight(18)};font-family:'Font';border-radius:${rr}px;width:${elemw};height:${elemh};top:${bh-elemh-getHeight(30)};padding:0px 0px 0px 0px;position:relative;margin: 0px 0px 0px ${getWidth(20)}px;" value="${txt}" id="${n}"/>`
     }
     html += "</div>";
   };
