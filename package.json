@@ -79,7 +79,7 @@
       "category": "Utility"
     },
     "files": [
-      "!{dist,dev-app-update.yml,screenshot,package-lock.json,screenshot,README.md,.gitignore}"
+      "!{dist,dev-app-update.yml,.github,screenshot,package-lock.json,screenshot,README.md,.gitignore}"
     ],
     "compression": "maximum",
     "asar": true
