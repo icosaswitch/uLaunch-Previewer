@@ -1,6 +1,9 @@
 name: uLaunch Previewer Build
 
-on: [push]
+on: 
+  push:
+    branches: 
+      - master
 
 jobs:
   build-win:
