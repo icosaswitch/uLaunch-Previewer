@@ -12,7 +12,7 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:win
-      - run: rename dist/uLaunch-Previewer-*.exe uLaunch-Previewer.exe
+      - run: ren dist/uLaunch-Previewer-*.exe dist/uLaunch-Previewer.exe
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-Windows
@@ -27,7 +27,7 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:darwin
-      - run: mv dist/uLaunch-Previewer-*.dmg uLaunch-Previewer.dmg
+      - run: mv dist/uLaunch-Previewer-*.dmg dist/uLaunch-Previewer.dmg
       - uses: actions/upload-artifact@master
         with:
           name: uLaunch-Previewer-macOS
@@ -42,7 +42,7 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:linux
-      - run: mv dist/uLaunch-Previewer-*.deb uLaunch-Previewer.deb
+      - run: mv dist/uLaunch-Previewer-*.deb dist/uLaunch-Previewer.deb
       - run: mv dist/uLaunch-Previewer-*.AppImage uLaunch-Previewer.AppImage
       - uses: actions/upload-artifact@master
         with:
