@@ -183,6 +183,13 @@ $(function() {
     } if(e.which === 109){
       volm();
       e.preventDefault();
+    } if(e.which === 123){
+      if(getCurrentWindow().isDevToolsOpened()){
+        getCurrentWindow().webContents.closeDevTools();
+      } else {
+        getCurrentWindow().webContents.openDevTools({mode: "detach"});
+      }
+      e.preventDefault();
     }
     $(this).on('keyup', function() {
       delete keysdown[e.which];
