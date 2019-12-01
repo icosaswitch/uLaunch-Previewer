@@ -15,8 +15,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: v${{ github.ref }}
+          release_name: v${{ github.ref }}
+          body: '<h1 align="center">uLaunch-Previewer</h1>\n\n<h3>uLaunch Previewer is a project with support for OS X/Linux/Windows for testing uLaunch before installing it on your switch, or to preview uLaunch themes.</h3>\n\n<img src="screenshot/s1.png" width="350"/> <img src="screenshot/s2.png" width="350"/>\n<img src="screenshot/s3.png" width="350"/> <img src="screenshot/s4.png" width="350"/>\n\n### For configuration instructions, see the [wiki](https://github.com/IcosaSwitch/uLaunch-Previewer/wiki)\n\n## Download\n\n| Platform | File Download |\n| -------- | ---- |\n| Windows x64 | [`uLaunch-Previewer-${{ github.ref }}.exe`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v${{ github.ref }}/uLaunch-Previewer-${{ github.ref }}.exe) |\n| macOS | [`uLaunch-Previewer-${{ github.ref }}.dmg`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v${{ github.ref }}/uLaunch-Previewer-${{ github.ref }}.dmg) |\n| Linux x64 | [`uLaunch-Previewer-${{ github.ref }}.deb`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v${{ github.ref }}/uLaunch-Previewer-${{ github.ref }}.deb)<br>[`uLaunch-Previewer-${{ github.ref }}.AppImage`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v${{ github.ref }}/uLaunch-Previewer-${{ github.ref }}.AppImage) |\n\n## Credits\n\nXorTroll for uLaunch: https://github.com/XorTroll/uLaunch/\n'
           draft: false
           prerelease: false
   
