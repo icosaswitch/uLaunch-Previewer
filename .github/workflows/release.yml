@@ -25,15 +25,11 @@ jobs:
     name: Upload Windows Asset
     runs-on: windows-latest
     steps:
-      - name: Checkout code
       - uses: actions/checkout@v1
-      - name: Install Node
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: Install Dependencies
       - run: npm ci
-      - name: Build
       - run: npm run dist:win
       - name: Upload Release Asset
         id: upload-release-asset 
