@@ -11,9 +11,9 @@
 
 | Platform | File Download |
 | -------- | ---- |
-| Windows x64 | [`uLaunch-Previewer-0.1.2.exe`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.2/uLaunch-Previewer-0.1.2.exe) |
-| macOS | [`uLaunch-Previewer-0.1.2.dmg`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.2/uLaunch-Previewer-0.1.2.dmg) |
-| Linux x64 | [`uLaunch-Previewer-0.1.2.deb`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.2/uLaunch-Previewer-0.1.2.deb)<br>[`uLaunch-Previewer-0.1.2.AppImage`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.1.2/uLaunch-Previewer-0.1.2.AppImage) |
+| Windows x64 | [`uLaunch-Previewer-0.2.0.exe`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.2.0/uLaunch-Previewer-0.2.0.exe) |
+| macOS | [`uLaunch-Previewer-0.2.0.dmg`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.2.0/uLaunch-Previewer-0.2.0.dmg) |
+| Linux x64 | [`uLaunch-Previewer-0.2.0.deb`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.2.0/uLaunch-Previewer-0.2.0.deb)<br>[`uLaunch-Previewer-0.2.0.AppImage`](https://github.com/IcosaSwitch/uLaunch-Previewer/releases/download/v0.2.0/uLaunch-Previewer-0.2.0.AppImage) |
 
 ## Credits
 
