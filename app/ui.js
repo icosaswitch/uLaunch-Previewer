@@ -35,14 +35,14 @@ function getWidth(w){
     }
     w = parseFloat(w.replace("px", ""));
   }
-  return Math.round((w*1810)/windowSize.w);
+  return (w*1810)/windowSize.w;
 } function getOrigHeight(h){
   if(windowSize == undefined){while(true){if(windowSize !== undefined){break}}}
   if(typeof h == "string"){
     if(h.indexOf("%") !== -1) return h;
     h = parseFloat(h.replace("px", ""));
   }
-  return Math.round((h*800)/windowSize.h);
+  return (h*800)/windowSize.h;
 }
 let ulaunchtester = path.join(documents, "uLaunch-Previewer");
 $(function() {
