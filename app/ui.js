@@ -1,4 +1,5 @@
-const $ = require('jquery');
+let $,jQuery;
+$ = jQuery = require("jquery");
 const fs = require('fs');
 const ejs = require('ejs');
 const path = require('path');
@@ -6,7 +7,7 @@ const url = require('url');
 const {Howler} = require('howler');
 const platformFolder = require("platform-folders");
 const {ipcRenderer} = require("electron");
-const {getCurrentWindow} = require("electron").remote;
+const {getCurrentWindow, dialog} = require("electron").remote;
 let documents = platformFolder.getDocumentsFolder();
 const html2canvas = require("html2canvas");
 let ui = path.join(__dirname, "theme", "ui");
@@ -16,8 +17,10 @@ ipcRenderer.on("setSize", async (event, arg, data) => {
   windowSize = arg;
 });
 ipcRenderer.send("getSize", "");
+let maker = false;
 let emitter = require('events').EventEmitter;
 let switchem = new emitter();
+let makerem = new emitter();
 switchem.setMaxListeners(Infinity);
 let istyping = false;
 function getWidth(w){
@@ -110,7 +113,7 @@ $(function() {
   $.fn.getDefaultElement = function() {
     let div = this.get(0).cloneNode(true);
     div.id = "screenshot";
-    div.style = "width:1280;height:720;position:absolute;top:10;left:40;z-index:-2;";
+    div.style = "width:1280;height:720;position:absolute;top:10;left:50;z-index:-2;";
     document.body.appendChild(div);
     function transformAll(NodeList){
       NodeList.forEach((element) => {
@@ -161,6 +164,26 @@ $(function() {
   };
   let keysdown = {};
   $(document).keydown(function(e){
+    if(e.which === 123){
+      if(getCurrentWindow().isDevToolsOpened()){
+        getCurrentWindow().webContents.closeDevTools();
+      } else {
+        getCurrentWindow().webContents.openDevTools({mode: "detach"});
+      }
+      e.preventDefault();
+    } if(e.which === 38){
+      makerem.emit("up");
+      e.preventDefault();
+    } if(e.which === 40){
+      makerem.emit("down");
+      e.preventDefault();
+    } if(e.which === 37){
+      makerem.emit("left");
+      e.preventDefault();
+    } if(e.which === 39){
+      makerem.emit("right");
+      e.preventDefault();
+    }
     if(keysdown[e.which] || istyping) return;
     keysdown[e.which] = true;
     if(e.which === 80){
@@ -182,13 +205,6 @@ $(function() {
       e.preventDefault();
     } if(e.which === 109){
       volm();
-      e.preventDefault();
-    } if(e.which === 123){
-      if(getCurrentWindow().isDevToolsOpened()){
-        getCurrentWindow().webContents.closeDevTools();
-      } else {
-        getCurrentWindow().webContents.openDevTools({mode: "detach"});
-      }
       e.preventDefault();
     }
     $(this).on('keyup', function() {
@@ -390,6 +406,8 @@ let sound = undefined;
 let titlelaunch = undefined;
 let menutoggle = undefined;
 let testersettings;
+let timeinterval = null;
+let romfsui = undefined;
 
 async function init(){
   switchem.on("capture", () => {
@@ -472,6 +490,24 @@ async function init(){
       fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
     }
   });
+  switchem.on("home", () => {
+    if(maker) return;
+    setTimeout(() => {
+      if(sound){
+        sound.pause();
+        fadetimeout.pause();
+      }
+      maker = true;
+      $("#ulaunchscreen").hide();
+      $(document.head).append(`<style>@font-face {font-family: 'uLaunch';font-style: normal;src: url('data:font/ttf;base64,${fs.readFileSync(existsUI("Font.ttf", romfsui, romfsui)).toString("base64")}');}</style>`);
+      if($("#maker").get(0) == undefined){
+        $("#switchcontainer").append(`<div id="maker" style="background-color:#424242;font-family:'uLaunch';width:${getWidth(1280)};height:${getHeight(720)};color:#e1e1e1"></div>`);
+        makermenu();
+      } else {
+        $("#maker").show();
+      }
+    }, 1);
+  });
   let defaultui;
   if(currenttheme !== "default"){
     if(fs.existsSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", currenttheme))){
@@ -544,7 +580,7 @@ async function init(){
     defaultui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
   }
   let suspended;
-  let romfsui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
+  romfsui = path.join(__dirname, "ulaunch", "romFs", "default", "ui");
   let Languages = {
       ja: "Japanese",
       "en-US": "American English",
@@ -566,7 +602,7 @@ async function init(){
   };
   let lang = InitializeLang(testersettings.lang, Languages);
   let uijson = InitializeUIJson(require(existsUI("UI.json", defaultui, romfsui)));
-  $(document.head).append("<style>@font-face {font-family: 'Font';font-style: normal;src: url('"+existsUI("Font.ttf", defaultui, romfsui).replace(/\\/g, "/")+"');}</style>");
+  $(document.head).append(`<style>@font-face {font-family: 'Font';font-style: normal;src: url('data:font/ttf;base64,${fs.readFileSync(existsUI("Font.ttf", defaultui, romfsui)).toString("base64")}');}</style>`);
   let defaulticon = {
     albumicon: existsUI("AlbumIcon.png", defaultui, romfsui),
     background: existsUI("Background.png", defaultui, romfsui),
@@ -694,7 +730,7 @@ async function init(){
           if(res) return;
           res = true;
           let ress = false;
-          let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+          let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
           $("#ulaunchscreen").append(dialog);
           let inputs = $("#dialog :input");
           let selected = 0;
@@ -764,7 +800,6 @@ async function init(){
     return new Promise(async function(resolve, reject) {
       let multiselect = [];
       let res = false;
-      let interval = null;
       let logo = path.join(__dirname, "ulaunch", "romFs", "Logo.png");
       let gameimg = path.join(__dirname, "ulaunch", "game.png");
       let usericon = (user.usericon === "default") ? path.join(__dirname, "ulaunch", "User.png") : user.usericon;
@@ -790,7 +825,7 @@ async function init(){
         let minute = minutes[time.getMinutes()];
         let times = `${hour}:${minute}`;
         document.getElementById("time").innerHTML = times;
-        interval = setInterval(() => {
+        timeinterval = setInterval(() => {
           time = new Date();
           hour = hours[time.getHours()];
           minute = minutes[time.getMinutes()];
@@ -800,7 +835,7 @@ async function init(){
       }
       $("#theme").click(() => {
         if(res) return;
-        clearInterval(interval);
+        clearInterval(timeinterval);
         if(multiselect.filter(n => n == true)[0]){
           multiselect = multiselect.map(n => false);
           $("#multiselect").hide();
@@ -813,7 +848,7 @@ async function init(){
       });
       $("#setting").click(() => {
         if(res) return;
-        clearInterval(interval);
+        clearInterval(timeinterval);
         if(multiselect.filter(n => n == true)[0]){
           multiselect = multiselect.map(n => false);
           $("#multiselect").hide();
@@ -901,7 +936,7 @@ async function init(){
           if(ress) return;
           if(id == "2"){
             ress = true;
-            clearInterval(interval);
+            clearInterval(timeinterval);
             if(multiselect.filter(n => n == true)[0]){
               multiselect = multiselect.map(n => false);
               $("#multiselect").hide();
@@ -3769,23 +3804,143 @@ async function init(){
           }, 0);
         }
       }
-      function dblclick(id){
+      async function dblclick(id){
         if(res) return;
         let input = document.getElementById(id);
         let tpath = input.getAttribute("alt");
-        if(testersettings.currenttheme === "default" && tpath === "default"){
-          return ShowNotification(lang["theme_no_custom"], uijson);
-        } else if(testersettings.currenttheme === tpath){
-          return ShowNotification(lang["theme_active_this"], uijson);
+        if(tpath === "default"){
+          if(testersettings.currenttheme === "default" && tpath === "default"){
+            return ShowNotification(lang["theme_no_custom"], uijson);
+          } else {
+            res = true;
+            let ress = false;
+            let dialog = await createDialog(lang["theme_reset"], lang["theme_reset_conf"], [lang["yes"], lang["cancel"]]);
+            $("#ulaunchscreen").append(dialog);
+            let inputs = $("#dialog :input");
+            let selected = 0;
+            let max = inputs.length;
+            inputs.click((e) => {
+              click(e.currentTarget.id);
+            });
+            switchem.on("arrowright", () => {
+              click(selected+1);
+            });
+            switchem.on("lrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("rrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("arrowleft", () => {
+              click(selected-1);
+            });
+            switchem.on("lleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("rleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("a", () => {
+              return dblclick(selected);
+            });
+            inputs.dblclick((e) => {
+              return dblclick(e.currentTarget.id);
+            });
+            function click(id){
+              if(ress) return;
+              let input = $(`#dialog #${id}`).get(0);
+              let before = $(`#dialog #${selected}`).get(0);
+              if(input === undefined) return;
+              before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+              input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+              selected = parseInt(id);
+            }
+            function dblclick(id){
+              if(ress) return;
+              ress = true;
+              res = false;
+              $("#dialog").remove();
+              if(id == 0){
+                testersettings.currenttheme = tpath;
+                testersettings.isthemerestart = true;
+                fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+                getCurrentWindow().loadURL(url.format({
+                  pathname: path.join(__dirname, 'app.ejs'),
+                  protocol: 'file:',
+                  slashes: true
+                }));
+              } else {
+                return;
+              }
+            }
+          }
+        } else {
+          if(testersettings.currenttheme === tpath){
+            return ShowNotification(lang["theme_active_this"], uijson);
+          } else {
+            res = true;
+            let ress = false;
+            let dialog = await createDialog(lang["theme_set"], lang["theme_set_conf"], [lang["yes"], lang["cancel"]]);
+            $("#ulaunchscreen").append(dialog);
+            let inputs = $("#dialog :input");
+            let selected = 0;
+            let max = inputs.length;
+            inputs.click((e) => {
+              click(e.currentTarget.id);
+            });
+            switchem.on("arrowright", () => {
+              click(selected+1);
+            });
+            switchem.on("lrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("rrightstart", () => {
+              click(selected+1);
+            });
+            switchem.on("arrowleft", () => {
+              click(selected-1);
+            });
+            switchem.on("lleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("rleftstart", () => {
+              click(selected-1);
+            });
+            switchem.on("a", () => {
+              return dblclick(selected);
+            });
+            inputs.dblclick((e) => {
+              return dblclick(e.currentTarget.id);
+            });
+            function click(id){
+              if(ress) return;
+              let input = $(`#dialog #${id}`).get(0);
+              let before = $(`#dialog #${selected}`).get(0);
+              if(input === undefined) return;
+              before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
+              input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
+              selected = parseInt(id);
+            }
+            function dblclick(id){
+              if(ress) return;
+              ress = true;
+              res = false;
+              $("#dialog").remove();
+              if(id == 0){
+                testersettings.currenttheme = tpath;
+                testersettings.isthemerestart = true;
+                fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
+                getCurrentWindow().loadURL(url.format({
+                  pathname: path.join(__dirname, 'app.ejs'),
+                  protocol: 'file:',
+                  slashes: true
+                }));
+              } else {
+                return;
+              }
+            }
+          }
         }
-        testersettings.currenttheme = tpath;
-        testersettings.isthemerestart = true;
-        fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify(testersettings, null, 2), function(err){if(err) throw err;});
-        getCurrentWindow().loadURL(url.format({
-          pathname: path.join(__dirname, 'app.ejs'),
-          protocol: 'file:',
-          slashes: true
-        }));
       }
     });
   }
@@ -4418,9 +4573,17 @@ async function ShowNotification(text, uijson, ms = 1500){
 
 function existsUI(name, defaultui, romfsui){
   if(fs.existsSync(path.join(defaultui, name))){
-    return path.join(defaultui, name)
+    let Path = path.join(defaultui, name);
+    if(path.extname(Path) !== ".json" && path.extname(Path) !== ".ttf"){
+      Path = `data:image/png;base64,${fs.readFileSync(Path).toString("base64")}`;
+    }
+    return Path
   } else {
-    return path.join(romfsui, name)
+    let Path = path.join(romfsui, name);
+    if(path.extname(Path) !== ".json" && path.extname(Path) !== ".ttf"){
+      Path = `data:image/png;base64,${fs.readFileSync(Path).toString("base64")}`;
+    }
+    return Path
   }
 }
 
@@ -4711,179 +4874,179 @@ async function SetTextureColorMod(src, id, r, g, b){
 
 let ispower = true;
 function minus(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('minus');
 }
 function plus(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('plus');
 }
 function ltopstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('ltopstart');
 }
 function ltopstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('ltopstop');
 }
 function ltopleftstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('ltopleftstart');
 }
 function ltopleftstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('ltopleftstop');
 }
 function lleftstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lleftstart');
 }
 function lleftstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lleftstop');
 }
 function lleftbottomstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lleftbottomstart');
 }
 function lleftbottomstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lleftbottomstop');
 }
 function lbottomstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lbottomstart');
 }
 function lbottomstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lbottomstop');
 }
 function lbottomrightstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lbottomrightstart');
 }
 function lbottomrightstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lbottomrightstop');
 }
 function lrightstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lrightstart');
 }
 function lrightstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lrightstop');
 }
 function lrighttopstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lrighttopstart');
 }
 function lrighttopstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('lrighttopstop');
 }
 function arrowup(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('arrowup');
 }
 function arrowdown(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('arrowdown');
 }
 function arrowright(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('arrowright');
 }
 function arrowleft(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('arrowleft');
 }
 function capture(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('capture');
 }
 function l(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('l');
 }
 function rtopstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rtopstart');
 }
 function rtopstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rtopstop');
 }
 function rtopleftstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rtopleftstart');
 }
 function rtopleftstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rtopleftstop');
 }
 function rleftstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rleftstart');
 }
 function rleftstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rleftstop');
 }
 function rleftbottomstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rleftbottomstart');
 }
 function rleftbottomstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rleftbottomstop');
 }
 function rbottomstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rbottomstart');
 }
 function rbottomstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rbottomstop');
 }
 function rbottomrightstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rbottomrightstart');
 }
 function rbottomrightstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rbottomrightstop');
 }
 function rrightstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rrightstart');
 }
 function rrightstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rrightstop');
 }
 function rrighttopstart(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rrighttopstart');
 }
 function rrighttopstop(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('rrighttopstop');
 }
 function a(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('a');
 }
 function b(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('b');
 }
 function x(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('x');
 }
 function y(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('y');
 }
 function home(){
@@ -4891,7 +5054,7 @@ function home(){
   switchem.emit('home');
 }
 function r(){
-  if(!ispower) return
+  if(!ispower || maker) return
   switchem.emit('r');
 }
 function volp(){
@@ -4954,4 +5117,476 @@ async function power(){
 function corrupted(file){
   alert(`"${file.replace(/\\/g, "/")}" is in incorrect format or corrupted`);
   getCurrentWindow().close();
+}
+
+function makermenu(){
+  document.getElementById("maker").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "maker", "app.ejs"), "utf8"));
+  let themes = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "themes")).filter(n => n.indexOf("Manifest") !== -1);
+  themes = themes.map(n => {
+    return {
+      path: path.join(ulaunchtester, "sdmc", "ulaunch", "themes", n.replace(/\\/g, "/").split("sdmc/ulaunch/themes/")[1].split("/")[0]),
+      manifest: JSON.parse(fs.readFileSync(n, "utf8"))
+    }
+  });
+  themes.map((theme, n) => {
+    theme = theme.manifest
+    $("#themes").append(`<input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="${n}" value="${theme.name}"/>`);
+  });
+  $("#create").click(() => {
+    istyping = true;
+    $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:99;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><div style="background-color:#626262;border:none;border-radius:${getHeight(50)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(620)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};height:${getHeight(620)};text-align:center">Create New Theme</p><p style="position:absolute;top:${getHeight(120)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Name:</p><input type="text" style="position:absolute;left:${getWidth(150)};top:${getHeight(105)};font-family:'uLaunch';width:${getWidth(980)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default theme" id="name"/><p style="position:absolute;top:${getHeight(210)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Format Version:</p><input type="text" style="position:absolute;left:${getWidth(275)};top:${getHeight(195)};font-family:'uLaunch';width:${getWidth(855)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="1" id="formatver"/><p style="position:absolute;top:${getHeight(300)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Release:</p><input type="text" style="position:absolute;left:${getWidth(175)};top:${getHeight(285)};font-family:'uLaunch';width:${getWidth(955)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="1.0" id="release"/><p style="position:absolute;top:${getHeight(390)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Description:</p><input type="text" style="position:absolute;left:${getWidth(225)};top:${getHeight(375)};font-family:'uLaunch';width:${getWidth(905)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default uLaunch theme" id="description"/><p style="position:absolute;top:${getHeight(480)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Author:</p><input type="text" style="position:absolute;left:${getWidth(160)};top:${getHeight(465)};font-family:'uLaunch';width:${getWidth(970)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="XorTroll" id="author"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(50)}" id="createthemebtn" value="Create"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(600)}" id="cancel" value="Cancel"/></div></div>`);
+    $("#createthemebtn").click(() => {
+      let name = $("#name").val();
+      name = (!name) ? "Default theme" : name;
+      let format_version = $("#formatver").val();
+      format_version = (!format_version) ? 1 : (isNaN(format_version)) ? 1 : parseFloat(format_version);
+      let release = $("#release").val();
+      release = (!release) ? "1.0" : release;
+      let description = $("#description").val();
+      description = (!description) ? "Default uLaunch theme" : description;
+      let author = $("#author").val();
+      author = (!author) ? "XorTroll" : author;
+      let Manifest = {name,format_version,release,description,author};
+      fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", name));
+      fs.mkdirSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", name, "theme"));
+      fs.writeFileSync(path.join(ulaunchtester, "sdmc", "ulaunch", "themes", name, "theme", "Manifest.json"), JSON.stringify(Manifest, null, 2), function(err){if(err) throw err});
+      istyping = false;
+      $("#divcreate").remove();
+      makermenu();
+    });
+    $("#cancel").click(() => {
+      $("#divcreate").remove();
+    });
+  });
+  let inputs = $("#themes :input");
+  inputs.click((input) => {
+    let id = input.currentTarget.id;
+    let theme = themes[id].manifest;
+    let tfolder = themes[id].path;
+    let defaultui = path.join(tfolder, "ui");
+    if(!fs.existsSync(defaultui)){
+      fs.mkdirSync(defaultui);
+    }
+    let defaulticon = {
+      albumicon: existsUI("AlbumIcon.png", defaultui, romfsui),
+      background: existsUI("Background.png", defaultui, romfsui),
+      bannerfolder: existsUI("BannerFolder.png", defaultui, romfsui),
+      bannerhomebrew: existsUI("BannerHomebrew.png", defaultui, romfsui),
+      bannerinstalled: existsUI("BannerInstalled.png", defaultui, romfsui),
+      bannertheme: existsUI("BannerTheme.png", defaultui, romfsui),
+      batterychargingicon: existsUI("BatteryChargingIcon.png", defaultui, romfsui),
+      batterynormalicon: existsUI("BatteryNormalIcon.png", defaultui, romfsui),
+      connectionicon: existsUI("ConnectionIcon.png", defaultui, romfsui),
+      controllericon: existsUI("ControllerIcon.png", defaultui, romfsui),
+      cursor: existsUI("Cursor.png", defaultui, romfsui),
+      folder: existsUI("Folder.png", defaultui, romfsui),
+      hbmenu: existsUI("Hbmenu.png", defaultui, romfsui),
+      helpicon: existsUI("HelpIcon.png", defaultui, romfsui),
+      multiselect: existsUI("Multiselect.png", defaultui, romfsui),
+      noconnectionicon: existsUI("NoConnectionIcon.png", defaultui, romfsui),
+      powericon: existsUI("PowerIcon.png", defaultui, romfsui),
+      quickmenumain: existsUI("QuickMenuMain.png", defaultui, romfsui),
+      settingeditable: existsUI("SettingEditable.png", defaultui, romfsui),
+      settingnoeditable: existsUI("SettingNoEditable.png", defaultui, romfsui),
+      settingsicon: existsUI("SettingsIcon.png", defaultui, romfsui),
+      suspended: existsUI("Suspended.png", defaultui, romfsui),
+      themesicon: existsUI("ThemesIcon.png", defaultui, romfsui),
+      toggleclick: existsUI("ToggleClick.png", defaultui, romfsui),
+      topmenu: existsUI("TopMenu.png", defaultui, romfsui),
+      usericon: existsUI("UserIcon.png", defaultui, romfsui),
+      webicon: existsUI("WebIcon.png", defaultui, romfsui),
+    }
+    let size = {
+      albumicon: {w: 50,h: 50},
+      background: {w: 1280,h: 720},
+      bannerfolder: {w: 1280,h: 135},
+      bannerhomebrew: {w: 1280,h: 135},
+      bannerinstalled: {w: 1280,h: 135},
+      bannertheme: {w: 1280,h: 135},
+      batterychargingicon: {w: 30,h: 30},
+      batterynormalicon: {w: 30,h: 30},
+      connectionicon: {w: 50,h: 50},
+      controllericon: {w: 50,h: 50},
+      cursor: {w: 296,h: 296},
+      folder: {w: 256,h: 256},
+      hbmenu: {w: 256,h: 256},
+      helpicon: {w: 50,h: 50},
+      multiselect: {w: 296,h: 296},
+      noconnectionicon: {w: 50,h: 50},
+      powericon: {w: 50,h: 50},
+      quickmenumain: {w: 300,h: 300},
+      settingeditable: {w: 100,h: 100},
+      settingnoeditable: {w: 100,h: 100},
+      settingsicon: {w: 50,h: 50},
+      suspended: {w: 296,h: 296},
+      themesicon: {w: 50,h: 50},
+      toggleclick: {w: 240,h: 70},
+      topmenu: {w: 1200,h: 85},
+      usericon: {w: 50,h: 50},
+      webicon: {w: 50,h: 50},
+    };
+    document.getElementById("maker").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "maker", "theme.ejs"), "utf8"), {theme});
+    $("#edit").click(() => {
+      istyping = true;
+      $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:99;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><div style="background-color:#626262;border:none;border-radius:${getHeight(50)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(620)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};height:${getHeight(620)};text-align:center">Edit the Theme</p><p style="position:absolute;top:${getHeight(120)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Name:</p><input type="text" style="position:absolute;left:${getWidth(150)};top:${getHeight(105)};font-family:'uLaunch';width:${getWidth(980)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default theme" value="${(theme.name == "Default theme") ? "" : theme.name}" id="name"/><p style="position:absolute;top:${getHeight(210)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Format Version:</p><input type="text" style="position:absolute;left:${getWidth(275)};top:${getHeight(195)};font-family:'uLaunch';width:${getWidth(855)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="1" value="${(theme.format_version == 1) ? "" : theme.format_version}" id="formatver"/><p style="position:absolute;top:${getHeight(300)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Release:</p><input type="text" style="position:absolute;left:${getWidth(175)};top:${getHeight(285)};font-family:'uLaunch';width:${getWidth(955)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" value="${(theme.release == "1.0") ? "" : theme.release}" placeholder="1.0" id="release"/><p style="position:absolute;top:${getHeight(390)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Description:</p><input type="text" style="position:absolute;left:${getWidth(225)};top:${getHeight(375)};font-family:'uLaunch';width:${getWidth(905)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default uLaunch theme" value="${(theme.description == "Default uLaunch theme") ? "" : theme.description}" id="description"/><p style="position:absolute;top:${getHeight(480)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Author:</p><input type="text" style="position:absolute;left:${getWidth(160)};top:${getHeight(465)};font-family:'uLaunch';width:${getWidth(970)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="XorTroll" value="${(theme.author == "XorTroll") ? "" : theme.author}" id="author"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(50)}" id="editthemebtn" value="Edit"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(600)}" id="cancel" value="Cancel"/></div></div>`);
+      $("#editthemebtn").click(() => {
+        let name = $("#name").val();
+        name = (!name) ? "Default theme" : name;
+        let format_version = $("#formatver").val();
+        format_version = (!format_version) ? 1 : (isNaN(format_version)) ? 1 : parseFloat(format_version);
+        let release = $("#release").val();
+        release = (!release) ? "1.0" : release;
+        let description = $("#description").val();
+        description = (!description) ? "Default uLaunch theme" : description;
+        let author = $("#author").val();
+        author = (!author) ? "XorTroll" : author;
+        let Manifest = {name,format_version,release,description,author};
+        document.getElementById("themename").innerHTML = name;
+        if(!fs.existsSync(path.join(tfolder, "theme"))){
+          fs.mkdirSync(path.join(tfolder, "theme"));
+        }
+        theme = Manifest;
+        themes[id].manifest = Manifest;
+        fs.writeFileSync(path.join(tfolder, "theme", "Manifest.json"), JSON.stringify(Manifest, null, 2), function(err){if(err) throw err});
+        istyping = false;
+        $("#divcreate").remove();
+      });
+      $("#cancel").click(() => {
+        $("#divcreate").remove();
+      });
+    });
+    $("#delete").click(() => {
+      delete themes[id];
+      function deleterec(Path) {
+        if (fs.existsSync(Path)) {
+          fs.readdirSync(Path).forEach((file, index) => {
+            const curPath = path.join(Path, file);
+            if (fs.lstatSync(curPath).isDirectory()) {
+              deleterec(curPath);
+            } else {
+              fs.unlinkSync(curPath);
+            }
+          });
+          fs.rmdirSync(Path);
+        }
+      };
+      deleterec(tfolder);
+      makermenu();
+    });
+    $("#return").click(() => {
+      makermenu();
+    });
+    let inputs = $("#theme :input");
+    inputs.click((input) => {
+      let id = input.currentTarget.id;
+      let val = input.currentTarget.value;
+      if(id !== "bgm" && id !== "titlelaunch" && id !== "menutoggle"){
+        if(id !== "font"){
+          if(id !== "icon"){
+            let uijson = InitializeUIJson(require(existsUI("UI.json", defaultui, romfsui)));
+            if(id !== "ui"){
+              let dx = 0;
+              let dy = 0;
+              $("#maker").append(ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "maker", "ui.ejs"), "utf8"), {val,defaulticon,id,size,dx,dy}));
+              let defxy = getxy(id, InitializeUIJson(require(existsUI("UI.json", romfsui, romfsui))));
+              $("#default").get(0).innerHTML = `Default: Width: ${size[id].w} | Height: ${size[id].h}${defxy}`
+              let image = $("#image").get(0);
+              let aload = false;
+              image.onload = () => {
+                if(aload) return;
+                aload = true;
+                $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(195)+image.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an Image"/>${(defxy == "") ? "" : `<input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(10)};margin-bottom:${getHeight(5)}" id="position" value="Set the position"/>`}</div></center>`)
+                $("#select").click(() => {
+                  let file = dialog.showOpenDialogSync({filters:[{name:"*",extensions: ['png'] }],properties:['openFile']});
+                  if(file == undefined) return;
+                  file = file[0];
+                  let blob = `data:image/png;base64,${fs.readFileSync(file).toString("base64")}`;
+                  image.src = blob;
+                  let img = new Image();
+                  img.onload = () => {
+                    $("#current").get(0).innerHTML = `Current: Width: ${img.width} | Height: ${img.height}${getxy(id, uijson)}`;
+                    document.getElementById("button").style.top = getHeight(195)+$("#image").get(0).clientHeight+getHeight(20)
+                  };
+                  img.src = blob;
+                  fs.writeFileSync(path.join(tfolder, "ui", `${val}.png`), fs.readFileSync(file), function(err){if(err) throw err});
+                });
+                $("#position").click(() => {
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:110;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="${getxy(id, uijson).split(" | ").filter((v, n) => n !== 0).map(v => {if(v.indexOf("X") !== -1){return "X: "+getWidth(parseInt(v.split("X: ")[1]))}else{return "Y: "+getHeight(parseInt(v.split("Y: ")[1]))}}).join(" | ")}"/><img style="position:relative;top:${getHeight(parseFloat(getxy(id, uijson).split("Y: ")[1]))};left:${getWidth(parseFloat(getxy(id, uijson).split("X: ")[1].split(" ")[0]))};width:${getWidth(size[id].w)};height:${getHeight(size[id].h)}" src="${$("#image").get(0).src}" id="posimage"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#finish").click(() => {
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    json = setxy(id, json, x, y);
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    let text = $("#current").get(0).innerHTML.split(" | ");
+                    text[2] = `X: ${x}`;
+                    text[3] = `Y: ${y}`;
+                    $("#current").get(0).innerHTML = text.join(" | ");
+                    $("#pos").remove();
+                  });
+                });
+              }
+              let imagedef = $("#imagedef").get(0);
+              imagedef.onload = () => {
+                $("#current").get(0).innerHTML = `Current: Width: ${imagedef.width} | Height: ${imagedef.height}${getxy(id, uijson)}`;
+                $(imagedef).remove();
+              }
+              $("#ereturn").click(() => {
+                $("#elem").remove();
+              });
+            } else {
+              $("#maker").append(`<center id="uitheme"><div style="position:absolute;top:${getHeight(193)};left:0;height:${getHeight(472)};width:${getWidth(1280)};z-index:100;background-color:rgb(66,66,66);overflow-y:normal;overflow-x:hidden"><p style="font-size:${getWidth(40)};width:${getWidth(1280)};margin:0 0;text-align:center;">UI</p><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="suspended_final_alpha" value="Suspended Final Alpha"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="menu_focus_color" value="Menu Focus Color"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="menu_bg_color" value="Menu Background Color"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="text_color" value="Text Color"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="toast_text_color" value="Toast Text Color"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="toast_base_color" value="Toast Base Color"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="menu_folder_text" value="Menu Folder Text Pos"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="menu_folder_text_size" value="Menu Folder Text Size"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="startup_menu_info_text" value="Startup Menu Info Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="startup_menu_users_menu_item" value="Startup Menu Users Menu Item"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_logo_icon" value="Main Menu Logo Icon"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_user_icon" value="Main Menu User Icon"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_time_text" value="Main Menu Time Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_battery_text" value="Main Menu Battery Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_firmware_text" value="Main Menu Firmware Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_banner_name_text" value="Main Menu Banner Name Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_banner_author_text" value="Main Menu Banner Author Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_banner_version_text" value="Main Menu Banner Version Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="main_menu_items_menu" value="Main Menu Items Menu"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="themes_menu_themes_menu_item" value="Themes Menu Themes Menu Items"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="themes_menu_current_theme_text" value="Themes Menu Current Theme Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="themes_menu_current_theme_name_text" value="Themes Menu Current Theme Name Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="themes_menu_current_theme_author_text" value="Themes Menu Current Theme Author Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="themes_menu_current_theme_version_text" value="Themes Menu Current Theme Version Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="themes_menu_current_theme_icon" value="Themes Menu Current Theme Icon"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="languages_menu_info_text" value="Languages Menu Info Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="languages_menu_languages_menu_item" value="Languages Menu Languages Menu Item"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="settings_menu_info_text" value="Settings Menu Info Text"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="settings_menu_settings_menu_item" value="Settings Menu Settings Menu Item"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="returnback" value="Return Back"/></div></center>`);
+              $("#returnback").click(() => {
+                $("#uitheme").remove();
+              });
+              let inputs = $("#uitheme :input");
+              inputs.click((input) => {
+                let id = input.currentTarget.id;
+                let val = input.currentTarget.value;
+                if(id == "returnback") return;
+                if(id == "suspended_final_alpha"){
+                  let end = false;
+                  $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:110;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" style="background-color: transparent;border:none;outline:none;width:${getWidth(1280)};height:${getHeight(720)};z-index:111;position:absolute;top:0;left:0" id="areturn"/><div style="background-color:#626262;z-index:112;border:none;border-radius:${getHeight(25)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(225)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center">Suspended Final Alpha</p><input type="range" min="0" max="255" value="${uijson["suspended_final_alpha"]}" class="slider" oninput="makerem.emit('alpha', this.value);" id="alpha"><p style="position:absolute;top:${getHeight(155)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center;opacity:${uijson["suspended_final_alpha"]/255}" id="alphaval">${uijson["suspended_final_alpha"]}</p></div></div>`);
+                  makerem.on("alpha", (val) => {
+                    if(end) return;
+                    let alphaval = $("#alphaval").get(0);
+                    alphaval.innerHTML = val;
+                    alphaval.style.opacity = parseInt(val)/255;
+                    set(val);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let alphaval = $("#alphaval").get(0);
+                    let val = parseInt(alphaval.innerHTML)-1;
+                    alphaval.innerHTML = val;
+                    alphaval.style.opacity = parseInt(val)/255;
+                    $("#alpha").val(val);
+                    set(val);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let alphaval = $("#alphaval").get(0);
+                    let val = parseInt(alphaval.innerHTML)+1;
+                    alphaval.innerHTML = val;
+                    alphaval.style.opacity = parseInt(val)/255;
+                    $("#alpha").val(val);
+                    set(val);
+                  });
+                  function set(val){
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    json.suspended_final_alpha = parseInt(val);
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                  }
+                  $("#areturn").click(() => {
+                    if(end) return;
+                    end = true;
+                    $("#divcreate").remove();
+                  });
+                }
+              });
+            }
+          } else {
+            console.log("icon");
+          }
+        } else {
+          let font = fs.readFileSync(existsUI("Font.ttf", defaultui, romfsui)).toString("base64");
+          $("#maker").append(ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "maker", "font.ejs"), "utf8"), {font}));
+          $("#ereturn").click(() => {
+            $("#elem").remove();
+          });
+          $("#select").click(() => {
+            let file = dialog.showOpenDialogSync({filters:[{name: "*",extensions: ['ttf']}],properties:['openFile']});
+            if(file == undefined) return;
+            file = file[0];
+            fs.writeFileSync(path.join(tfolder, "ui", `Font.ttf`), fs.readFileSync(file), function(err){if(err) throw err});
+            $("#preview").get(0).innerHTML = `@font-face {font-family: 'Preview';font-style: normal;src: url('data:font/ttf;base64,${fs.readFileSync(existsUI("Font.ttf", defaultui, romfsui)).toString("base64")}');}`
+          });
+        }
+      } else {
+        console.log("sound");
+      }
+    });
+  });
+  $("#return").click(() => {
+    if(sound){
+      sound.play();
+      fadetimeout.resume();
+    }
+    maker = false;
+    $("#maker").hide();
+    $("#ulaunchscreen").show();
+  });
+  switchem.on("home", () => {
+    if(!maker) return;
+    if(sound){
+      sound.play();
+      fadetimeout.resume();
+    }
+    maker = false;
+    $("#maker").hide();
+    $("#ulaunchscreen").show();
+  });
+}
+
+function getxy(elem, uijson){
+  if(elem === "bannerfolder"){
+    return ` | X: ${uijson["main_menu"]["banner_image"]["x"]} | Y: ${uijson["main_menu"]["banner_image"]["y"]}`;
+  } else if(elem === "bannerhomebrew"){
+    return ` | X: ${uijson["main_menu"]["banner_image"]["x"]} | Y: ${uijson["main_menu"]["banner_image"]["y"]}`;
+  } else if(elem === "bannerinstalled"){
+    return ` | X: ${uijson["main_menu"]["banner_image"]["x"]} | Y: ${uijson["main_menu"]["banner_image"]["y"]}`;
+  } else if(elem === "bannertheme"){
+    return ` | X: ${uijson["themes_menu"]["banner_image"]["x"]} | Y: ${uijson["themes_menu"]["banner_image"]["y"]}`;
+  } else if(elem === "batterychargingicon"){
+    return ` | X: ${uijson["main_menu"]["battery_icon"]["x"]} | Y: ${uijson["main_menu"]["battery_icon"]["y"]}`;
+  } else if(elem === "batterynormalicon"){
+    return ` | X: ${uijson["main_menu"]["battery_icon"]["x"]} | Y: ${uijson["main_menu"]["battery_icon"]["y"]}`;
+  } else if(elem === "connectionicon"){
+    return ` | X: ${uijson["main_menu"]["connection_icon"]["x"]} | Y: ${uijson["main_menu"]["connection_icon"]["y"]}`;
+  } else if(elem === "controllericon"){
+    return ` | X: ${uijson["main_menu"]["controller_icon"]["x"]} | Y: ${uijson["main_menu"]["controller_icon"]["y"]}`;
+  } else if(elem === "noconnectionicon"){
+    return ` | X: ${uijson["main_menu"]["connection_icon"]["x"]} | Y: ${uijson["main_menu"]["connection_icon"]["y"]}`;
+  } else if(elem === "settingsicon"){
+    return ` | X: ${uijson["main_menu"]["settings_icon"]["x"]} | Y: ${uijson["main_menu"]["settings_icon"]["y"]}`;
+  } else if(elem === "themesicon"){
+    return ` | X: ${uijson["main_menu"]["themes_icon"]["x"]} | Y: ${uijson["main_menu"]["themes_icon"]["y"]}`;
+  } else if(elem === "toggleclick"){
+    return ` | X: ${uijson["main_menu"]["menu_toggle_button"]["x"]} | Y: ${uijson["main_menu"]["menu_toggle_button"]["y"]}`;
+  } else if(elem === "topmenu"){
+    return ` | X: ${uijson["main_menu"]["top_menu_bg"]["x"]} | Y: ${uijson["main_menu"]["top_menu_bg"]["y"]}`;
+  } else {
+    return "";
+  }
+}
+
+function setxy(elem, uijson, x, y){
+  if(elem === "bannerfolder"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["banner_image"] == undefined){
+      uijson["main_menu"]["banner_image"] = {};
+    } uijson["main_menu"]["banner_image"] = {x,y}
+  } else if(elem === "bannerhomebrew"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["banner_image"] == undefined){
+      uijson["main_menu"]["banner_image"] = {};
+    } uijson["main_menu"]["banner_image"] = {x,y}
+  } else if(elem === "bannerinstalled"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["banner_image"] == undefined){
+      uijson["main_menu"]["banner_image"] = {};
+    } uijson["main_menu"]["banner_image"] = {x,y}
+  } else if(elem === "bannertheme"){
+    if(uijson["themes_menu"] == undefined){
+      uijson["themes_menu"] = {};
+    } if(uijson["themes_menu"]["banner_image"] == undefined){
+      uijson["themes_menu"]["banner_image"] = {};
+    } uijson["themes_menu"]["banner_image"] = {x,y}
+  } else if(elem === "batterychargingicon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["battery_icon"] == undefined){
+      uijson["main_menu"]["battery_icon"] = {};
+    } uijson["main_menu"]["battery_icon"] = {x,y}
+  } else if(elem === "batterynormalicon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["battery_icon"] == undefined){
+      uijson["main_menu"]["battery_icon"] = {};
+    } uijson["main_menu"]["battery_icon"] = {x,y}
+  } else if(elem === "connectionicon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["connection_icon"] == undefined){
+      uijson["main_menu"]["connection_icon"] = {};
+    } uijson["main_menu"]["connection_icon"] = {x,y}
+  } else if(elem === "controllericon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["controller_icon"] == undefined){
+      uijson["main_menu"]["controller_icon"] = {};
+    } uijson["main_menu"]["controller_icon"] = {x,y}
+  } else if(elem === "noconnectionicon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["connection_icon"] == undefined){
+      uijson["main_menu"]["connection_icon"] = {};
+    } uijson["main_menu"]["connection_icon"] = {x,y}
+  } else if(elem === "settingsicon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["settings_icon"] == undefined){
+      uijson["main_menu"]["settings_icon"] = {};
+    } uijson["main_menu"]["settings_icon"] = {x,y}
+  } else if(elem === "themesicon"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["themes_icon"] == undefined){
+      uijson["main_menu"]["themes_icon"] = {};
+    } uijson["main_menu"]["themes_icon"] = {x,y}
+  } else if(elem === "toggleclick"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["menu_toggle_button"] == undefined){
+      uijson["main_menu"]["menu_toggle_button"] = {};
+    } uijson["main_menu"]["menu_toggle_button"] = {x,y}
+  } else if(elem === "topmenu"){
+    if(uijson["main_menu"] == undefined){
+      uijson["main_menu"] = {};
+    } if(uijson["main_menu"]["top_menu_bg"] == undefined){
+      uijson["main_menu"]["top_menu_bg"] = {};
+    } uijson["main_menu"]["top_menu_bg"] = {x,y}
+  }
+  return uijson;
 }

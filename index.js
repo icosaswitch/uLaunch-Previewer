@@ -6,8 +6,6 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 
 let frame;
 
-app.disableHardwareAcceleration();
-
 app.on("ready", async () => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   let w = 1810,

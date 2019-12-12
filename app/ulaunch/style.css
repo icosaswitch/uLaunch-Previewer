@@ -31,3 +31,34 @@ input {
 p {
   user-select:none;
 }
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  position:absolute;
+  top: <%- getHeight(125) %>;
+  left: 50%;
+  border-radius: 10px;
+  transform: translate(-50%);
+  width: <%- getWidth(1100) %>;
+  height: <%- getHeight(10) %>;
+  background: #a1a1a1;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 10px;
+  width: <%- getWidth(15) %>px;
+  height: <%- getHeight(45) %>px;
+  background: #b1b1b1;
+  cursor: pointer;
+}
