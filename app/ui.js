@@ -67,7 +67,7 @@ $(function() {
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "users.json"))){
     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "users.json"), JSON.stringify([{"username": "Default User", "usericon": "default", "password": false}], null, 2), function(err){if(err) throw err;});
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"))){
-    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"volume":1,"currenttheme":"default","lang":"en-US","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.0.0","consolename":"uLaunchPreviewer","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False","joyconleft":"#00c3e3","joyconright":"#ff4554"}, null, 2), function(err){if(err) throw err;});
+    fs.writeFileSync(path.join(ulaunchtester, "testersettings", "ulaunch.json"), JSON.stringify({"skipstartup":false,"isthemerestart":false,"volume":1,"currenttheme":"default","lang":"en-US","connected":false,"charging":false,"time":"auto","battery":"100%","firmware":"9.1.0","consolename":"uLaunchPreviewer","viewer_enabled":"False","flog_enabled":"False","console_info_upload":"False","auto_titles_dl":"False","auto_update":"False","wireless_lan":"False","usb_30":"True","bluetooth":"False","nfc":"False","joyconleft":"#00c3e3","joyconright":"#ff4554"}, null, 2), function(err){if(err) throw err;});
   } if(!fs.existsSync(path.join(ulaunchtester, "testersettings", "menuitems.json"))){
     fs.writeFileSync(path.join(ulaunchtester, "testersettings", "menuitems.json"), JSON.stringify({"folders":{},"hb":[]}, null, 2), function(err){if(err) throw err;});
   } if(!fs.existsSync(path.join(ulaunchtester, "screenshot"))){
@@ -5313,7 +5313,8 @@ function makermenu(){
                 });
                 $("#position").click(() => {
                   let end = false;
-                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:110;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="${getxy(id, uijson).split(" | ").filter((v, n) => n !== 0).map(v => {if(v.indexOf("X") !== -1){return "X: "+getWidth(parseInt(v.split("X: ")[1]))}else{return "Y: "+getHeight(parseInt(v.split("Y: ")[1]))}}).join(" | ")}"/><img style="position:relative;top:${getHeight(parseFloat(getxy(id, uijson).split("Y: ")[1]))};left:${getWidth(parseFloat(getxy(id, uijson).split("X: ")[1].split(" ")[0]))};width:${getWidth(size[id].w)};height:${getHeight(size[id].h)}" src="${$("#image").get(0).src}" id="posimage"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/></div>`)
+                  let visible = getv(id, uijson);
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:110;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="${getxy(id, uijson).split(" | ").filter((v, n) => n !== 0).map(v => {if(v.indexOf("X") !== -1){return "X: "+getWidth(parseInt(v.split("X: ")[1]))}else{return "Y: "+getHeight(parseInt(v.split("Y: ")[1]))}}).join(" | ")}"/><img style="position:relative;top:${getHeight(parseFloat(getxy(id, uijson).split("Y: ")[1]))};left:${getWidth(parseFloat(getxy(id, uijson).split("X: ")[1].split(" ")[0]))};width:${getWidth(size[id].w)};height:${getHeight(size[id].h)}" src="${$("#image").get(0).src}" id="posimage"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
                   let posimage = document.getElementById("posimage");
                   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
                   posimage.onmousedown = (e) => {
@@ -5363,6 +5364,15 @@ function makermenu(){
                     posimage.style.left = (x+getWidth(1)) + "px";
                     $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
                   });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
                   $("#finish").click(() => {
                     if(end) return;
                     end = true;
@@ -5370,7 +5380,7 @@ function makermenu(){
                     if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
                     let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
                     let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
-                    json = setxy(id, json, x, y);
+                    json = setxy(id, json, x, y, visible);
                     fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
                     let text = $("#current").get(0).innerHTML.split(" | ");
                     text[2] = `X: ${x}`;
@@ -5516,7 +5526,7 @@ function makermenu(){
                 } else if(id == "menu_folder_text_size"){
                   let end = false;
                   let size = uijson["menu_folder_text_size"];
-                  $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:110;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" style="background-color: transparent;border:none;outline:none;width:${getWidth(1280)};height:${getHeight(720)};z-index:111;position:absolute;top:0;left:0" id="areturn"/><div style="background-color:#626262;z-index:112;border:none;border-radius:${getHeight(25)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(225)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center">Menu Folder Text Size</p><p style="position:absolute;top:${getHeight(105)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center;opacity:${uijson["suspended_final_alpha"]/255}" id="textsize">${uijson["menu_folder_text_size"]}</p><center><div style="position:absolute;top:${getHeight(160)};width:${getWidth(1180)}"><input type="button" style="width:${getWidth(30)};height:${getHeight(30)};color:#e1e1e1;background-color:#727272;border:none;border-radius:${getHeight(5)}px;font-family:'uLaunch';outline:none;font-size:15;text-align:center;cursor:pointer;" value="-1" id="msize"><input type="button" style="width:${getWidth(30)};height:${getHeight(30)};color:#e1e1e1;background-color:#727272;border:none;outline:none;border-radius:${getHeight(5)}px;font-family:'uLaunch';font-size:15;text-align:center;margin-left:${getWidth(10)}px;cursor:pointer;" value="+1" id="psize"></div></center></div></div>`);
+                  $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:110;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" style="background-color: transparent;border:none;outline:none;width:${getWidth(1280)};height:${getHeight(720)};z-index:111;position:absolute;top:0;left:0" id="areturn"/><div style="background-color:#626262;z-index:112;border:none;border-radius:${getHeight(25)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(225)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center">Menu Folder Text Size</p><p style="position:absolute;top:${getHeight(105)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center;" id="textsize">${uijson["menu_folder_text_size"]}</p><center><div style="position:absolute;top:${getHeight(160)};width:${getWidth(1180)}"><input type="button" style="width:${getWidth(30)};height:${getHeight(30)};color:#e1e1e1;background-color:#727272;border:none;border-radius:${getHeight(5)}px;font-family:'uLaunch';outline:none;font-size:15;text-align:center;cursor:pointer;" value="-1" id="msize"><input type="button" style="width:${getWidth(30)};height:${getHeight(30)};color:#e1e1e1;background-color:#727272;border:none;outline:none;border-radius:${getHeight(5)}px;font-family:'uLaunch';font-size:15;text-align:center;margin-left:${getWidth(10)}px;cursor:pointer;" value="+1" id="psize"></div></center></div></div>`);
                   $("#msize").click(() => {
                     if(end) return;
                     if(size == 1) return;
@@ -5554,6 +5564,1578 @@ function makermenu(){
                     if(end) return;
                     end = true;
                     $("#divcreate").remove();
+                  });
+                } else if(id == "startup_menu_info_text"){
+                  let end = false;
+                  let visible = uijson["startup_menu"]["info_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["startup_menu"]["info_text"]["x"]} | Y: ${uijson["startup_menu"]["info_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["startup_menu"]["info_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["startup_menu"]["info_text"]["x"])};font-size: ${getWidth(25)}" id="posimage">${lang["startup_welcome_info"]}<br>${lang["startup_control_info"]}</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.startup_menu  == undefined) json.startup_menu = {};
+                    if(json.startup_menu.info_text  == undefined) json.startup_menu.info_text = {};
+                    json.startup_menu.info_text.x = x
+                    json.startup_menu.info_text.y = y
+                    json.startup_menu.info_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "startup_menu_users_menu_item"){
+                  let end = false;
+                  let visible = uijson["startup_menu"]["users_menu_item"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["startup_menu"]["users_menu_item"]["x"]} | Y: ${uijson["startup_menu"]["users_menu_item"]["y"]}"/><div style="position: relative;top: ${getHeight(uijson["startup_menu"]["users_menu_item"]["y"])}; left: ${getWidth(uijson["startup_menu"]["users_menu_item"]["x"])};width: ${getWidth(880)};height:${getHeight(500)};overflow-x: hidden;overflow-y: auto;margin: 0px 0px;padding: 0px" type="button" id="posimage"><input type="button" style="position:absolute;top:0;left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_focus_color"]};"/><input type="button" style="position:absolute;top:${getHeight(100)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(200)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(300)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(400)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.startup_menu  == undefined) json.startup_menu = {};
+                    if(json.startup_menu.users_menu_item  == undefined) json.startup_menu.users_menu_item = {};
+                    json.startup_menu.users_menu_item.x = x
+                    json.startup_menu.users_menu_item.y = y
+                    json.startup_menu.users_menu_item.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_logo_icon"){
+                  let end = false;
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["logo_icon"]["x"]} | Y: ${uijson["main_menu"]["logo_icon"]["y"]}"/><img width="${getWidth(60)}" height="${getHeight(60)}" style="position: absolute;top: ${getHeight(uijson["main_menu"]["logo_icon"]["y"] )}; left: ${getWidth(uijson["main_menu"]["logo_icon"]["x"] )};" src="${path.join(__dirname, "ulaunch", "romFs", "Logo.png")}" id="posimage"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.logo_icon  == undefined) json.main_menu.logo_icon = {};
+                    json.main_menu.logo_icon.x = x
+                    json.main_menu.logo_icon.y = y
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_user_icon"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["user_icon"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["user_icon"]["x"]} | Y: ${uijson["main_menu"]["user_icon"]["y"]}"/><img width="${getWidth(50)}" height="${getHeight(50)}" style="position: absolute;top: ${getHeight(uijson["main_menu"]["user_icon"]["y"] )}; left: ${getWidth(uijson["main_menu"]["user_icon"]["x"] )};" src="${path.join(__dirname, "ulaunch", "User.png")}" id="posimage"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.user_icon  == undefined) json.main_menu.user_icon = {};
+                    json.main_menu.user_icon.x = x
+                    json.main_menu.user_icon.y = y
+                    json.main_menu.user_icon.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_time_text"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["time_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["time_text"]["x"]} | Y: ${uijson["main_menu"]["time_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["main_menu"]["time_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["main_menu"]["time_text"]["x"])};font-size: 1.5em" id="posimage">00:00</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.time_text  == undefined) json.main_menu.time_text = {};
+                    json.main_menu.time_text.x = x
+                    json.main_menu.time_text.y = y
+                    json.main_menu.time_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_battery_text"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["battery_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["battery_text"]["x"]} | Y: ${uijson["main_menu"]["battery_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["main_menu"]["battery_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["main_menu"]["battery_text"]["x"])};font-size: 1.5em" id="posimage">100%</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.battery_text  == undefined) json.main_menu.battery_text = {};
+                    json.main_menu.battery_text.x = x
+                    json.main_menu.battery_text.y = y
+                    json.main_menu.battery_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_firmware_text"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["firmware_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["firmware_text"]["x"]} | Y: ${uijson["main_menu"]["firmware_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["main_menu"]["firmware_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["main_menu"]["firmware_text"]["x"])};font-size: 1.5em" id="posimage">9.1.0</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.firmware_text  == undefined) json.main_menu.firmware_text = {};
+                    json.main_menu.firmware_text.x = x
+                    json.main_menu.firmware_text.y = y
+                    json.main_menu.firmware_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_banner_name_text"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["banner_name_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["banner_name_text"]["x"]} | Y: ${uijson["main_menu"]["banner_name_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["main_menu"]["banner_name_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["main_menu"]["banner_name_text"]["x"])};font-size: ${getWidth(30)}" id="posimage">Name</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.banner_name_text  == undefined) json.main_menu.banner_name_text = {};
+                    json.main_menu.banner_name_text.x = x
+                    json.main_menu.banner_name_text.y = y
+                    json.main_menu.banner_name_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_banner_author_text"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["banner_author_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["banner_author_text"]["x"]} | Y: ${uijson["main_menu"]["banner_author_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["main_menu"]["banner_author_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["main_menu"]["banner_author_text"]["x"])};font-size: ${getWidth(20)}" id="posimage">Author</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.banner_author_text  == undefined) json.main_menu.banner_author_text = {};
+                    json.main_menu.banner_author_text.x = x
+                    json.main_menu.banner_author_text.y = y
+                    json.main_menu.banner_author_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_banner_version_text"){
+                  let end = false;
+                  let visible = uijson["main_menu"]["banner_version_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["main_menu"]["banner_version_text"]["x"]} | Y: ${uijson["main_menu"]["banner_version_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["main_menu"]["banner_version_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["main_menu"]["banner_version_text"]["x"])};font-size: ${getWidth(20)}" id="posimage">Version</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.banner_name_text  == undefined) json.main_menu.banner_name_text = {};
+                    json.main_menu.banner_name_text.x = x
+                    json.main_menu.banner_name_text.y = y
+                    json.main_menu.banner_name_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "main_menu_items_menu"){
+                  let end = false;
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="Y: ${uijson["main_menu"]["items_menu"]["y"]}"/><img style="position:relative;width:${getWidth(1280)};height:${getHeight(296)};top:${getHeight(uijson["main_menu"]["items_menu"]["y"]-20)};left:0;" id="posimage" src="${path.join(__dirname, "ulaunch", "maker", "itemsmenu.png")}"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2))+getHeight(20))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(y)-1+20}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(y)+1+20}`);
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")))+20;
+                    if(json.main_menu  == undefined) json.main_menu = {};
+                    if(json.main_menu.items_menu  == undefined) json.main_menu.items_menu = {};
+                    json.main_menu.items_menu.y = y
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "themes_menu_themes_menu_item"){
+                  let end = false;
+                  let visible = uijson["themes_menu"]["themes_menu_item"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["themes_menu"]["themes_menu_item"]["x"]} | Y: ${uijson["themes_menu"]["themes_menu_item"]["y"]}"/><div style="position: relative;top: ${getHeight(uijson["themes_menu"]["themes_menu_item"]["y"])}; left: ${getWidth(uijson["themes_menu"]["themes_menu_item"]["x"])};width: ${getWidth(880)};height:${getHeight(500)};overflow-x: hidden;overflow-y: auto;margin: 0px 0px;padding: 0px" type="button" id="posimage"><input type="button" style="position:absolute;top:0;left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_focus_color"]};"/><input type="button" style="position:absolute;top:${getHeight(100)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(200)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(300)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(400)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.themes_menu  == undefined) json.themes_menu = {};
+                    if(json.themes_menu.themes_menu_item  == undefined) json.themes_menu.themes_menu_item = {};
+                    json.themes_menu.themes_menu_item.x = x
+                    json.themes_menu.themes_menu_item.y = y
+                    json.themes_menu.themes_menu_item.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "themes_menu_current_theme_text"){
+                  let end = false;
+                  let visible = uijson["themes_menu"]["current_theme_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["themes_menu"]["current_theme_text"]["x"]} | Y: ${uijson["themes_menu"]["current_theme_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["themes_menu"]["current_theme_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["themes_menu"]["current_theme_text"]["x"])};font-size: ${getWidth(30)}" id="posimage">${lang["theme_no_custom"]}</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.themes_menu  == undefined) json.themes_menu = {};
+                    if(json.themes_menu.current_theme_text  == undefined) json.themes_menu.current_theme_text = {};
+                    json.themes_menu.current_theme_text.x = x
+                    json.themes_menu.current_theme_text.y = y
+                    json.themes_menu.current_theme_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "themes_menu_current_theme_name_text"){
+                  let end = false;
+                  let visible = uijson["themes_menu"]["current_theme_name_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["themes_menu"]["current_theme_name_text"]["x"]} | Y: ${uijson["themes_menu"]["current_theme_name_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["themes_menu"]["current_theme_name_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["themes_menu"]["current_theme_name_text"]["x"])};font-size: ${getWidth(30)}" id="posimage">Name</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.themes_menu  == undefined) json.themes_menu = {};
+                    if(json.themes_menu.current_theme_text  == undefined) json.themes_menu.current_theme_text = {};
+                    json.themes_menu.current_theme_text.x = x
+                    json.themes_menu.current_theme_text.y = y
+                    json.themes_menu.current_theme_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "themes_menu_current_theme_version_text"){
+                  let end = false;
+                  let visible = uijson["themes_menu"]["current_theme_version_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["themes_menu"]["current_theme_version_text"]["x"]} | Y: ${uijson["themes_menu"]["current_theme_version_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["themes_menu"]["current_theme_version_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["themes_menu"]["current_theme_version_text"]["x"])};font-size: ${getWidth(20)}" id="posimage">Version</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.themes_menu  == undefined) json.themes_menu = {};
+                    if(json.themes_menu.current_theme_name_text  == undefined) json.themes_menu.current_theme_name_text = {};
+                    json.themes_menu.current_theme_name_text.x = x
+                    json.themes_menu.current_theme_name_text.y = y
+                    json.themes_menu.current_theme_name_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "themes_menu_current_theme_author_text"){
+                  let end = false;
+                  let visible = uijson["themes_menu"]["current_theme_author_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["themes_menu"]["current_theme_author_text"]["x"]} | Y: ${uijson["themes_menu"]["current_theme_author_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["themes_menu"]["current_theme_author_text"]["y"])};margin:0;padding:0;left:${getWidth(uijson["themes_menu"]["current_theme_author_text"]["x"])};font-size: ${getWidth(20)}" id="posimage">Author</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.themes_menu  == undefined) json.themes_menu = {};
+                    if(json.themes_menu.current_theme_author_text  == undefined) json.themes_menu.current_theme_author_text = {};
+                    json.themes_menu.current_theme_author_text.x = x
+                    json.themes_menu.current_theme_author_text.y = y
+                    json.themes_menu.current_theme_author_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "themes_menu_current_theme_icon"){
+                  let end = false;
+                  let visible = uijson["themes_menu"]["current_theme_icon"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["themes_menu"]["current_theme_icon"]["x"]} | Y: ${uijson["themes_menu"]["current_theme_icon"]["y"]}"/><img style="position:relative;top:${getHeight(uijson["themes_menu"]["current_theme_icon"]["y"])};left:${getWidth(uijson["themes_menu"]["current_theme_icon"]["x"])};" width="${getWidth(100)}" height="${getHeight(100)}" id="posimage" src="${path.join(__dirname, "ulaunch", "User.png")}"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.themes_menu  == undefined) json.themes_menu = {};
+                    if(json.themes_menu.current_theme_icon  == undefined) json.themes_menu.current_theme_icon = {};
+                    json.themes_menu.current_theme_icon.x = x
+                    json.themes_menu.current_theme_icon.y = y
+                    json.themes_menu.current_theme_icon.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "languages_menu_info_text"){
+                  let end = false;
+                  let visible = uijson["languages_menu"]["info_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="Y: ${uijson["languages_menu"]["info_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["languages_menu"]["info_text"]["y"])};margin:0;padding:0;left:50%;transform:translate(-50%);text-align:center;width:${getWidth(1280)};font-size: ${getWidth(25)}" id="posimage">${lang["lang_info_text"]}</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(y)+1}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.languages_menu  == undefined) json.languages_menu = {};
+                    if(json.languages_menu.info_text  == undefined) json.languages_menu.info_text = {};
+                    json.languages_menu.info_text.y = y
+                    json.languages_menu.info_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "languages_menu_languages_menu_item"){
+                  let end = false;
+                  let visible = uijson["languages_menu"]["languages_menu_item"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["languages_menu"]["languages_menu_item"]["x"]} | Y: ${uijson["languages_menu"]["languages_menu_item"]["y"]}"/><div style="position: relative;top: ${getHeight(uijson["languages_menu"]["languages_menu_item"]["y"])}; left: ${getWidth(uijson["languages_menu"]["languages_menu_item"]["x"])};width: ${getWidth(880)};height:${getHeight(400)};overflow-x: hidden;overflow-y: auto;margin: 0px 0px;padding: 0px" type="button" id="posimage"><input type="button" style="position:absolute;top:0;left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_focus_color"]};"/><input type="button" style="position:absolute;top:${getHeight(100)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(200)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(300)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.languages_menu  == undefined) json.languages_menu = {};
+                    if(json.languages_menu.languages_menu_item  == undefined) json.languages_menu.languages_menu_item = {};
+                    json.languages_menu.languages_menu_item.x = x
+                    json.languages_menu.languages_menu_item.y = y
+                    json.languages_menu.languages_menu_item.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "settings_menu_info_text"){
+                  let end = false;
+                  let visible = uijson["settings_menu"]["info_text"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="Y: ${uijson["settings_menu"]["info_text"]["y"]}"/><p style="position:relative;top:${getHeight(uijson["settings_menu"]["info_text"]["y"])};margin:0;padding:0;left:50%;transform:translate(-50%);text-align:center;width:${getWidth(1280)};font-size: ${getWidth(25)}" id="posimage">${lang["set_info_text"]}</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `Y: ${getOrigHeight(y)+1}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.settings_menu  == undefined) json.settings_menu = {};
+                    if(json.settings_menu.info_text  == undefined) json.settings_menu.info_text = {};
+                    json.settings_menu.info_text.y = y
+                    json.settings_menu.info_text.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "settings_menu_settings_menu_item"){
+                  let end = false;
+                  let visible = uijson["settings_menu"]["settings_menu_item"]["visible"] == "visible";
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["settings_menu"]["settings_menu_item"]["x"]} | Y: ${uijson["settings_menu"]["settings_menu_item"]["y"]}"/><div style="position: relative;top: ${getHeight(uijson["settings_menu"]["settings_menu_item"]["y"])}; left: ${getWidth(uijson["settings_menu"]["settings_menu_item"]["x"])};width: ${getWidth(880)};height:${getHeight(400)};overflow-x: hidden;overflow-y: auto;margin: 0px 0px;padding: 0px" type="button" id="posimage"><input type="button" style="position:absolute;top:0;left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_focus_color"]};"/><input type="button" style="position:absolute;top:${getHeight(100)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(200)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/><input type="button" style="position:absolute;top:${getHeight(300)};left:0;z-index: 0;width: ${getWidth(880)};height:${getHeight(100)};outline:none;border: none;background-color:${uijson["menu_bg_color"]};"/></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="visible" value="Visible: ${visible}"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#visible").click(() => {
+                    if(visible){
+                      visible = false;
+                      $("#visible").get(0).value = "Visible: false"
+                    } else {
+                      visible = true;
+                      $("#visible").get(0).value = "Visible: true"
+                    }
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    if(json.settings_menu  == undefined) json.settings_menu = {};
+                    if(json.settings_menu.settings_menu_item  == undefined) json.settings_menu.settings_menu_item = {};
+                    json.settings_menu.settings_menu_item.x = x
+                    json.settings_menu.settings_menu_item.y = y
+                    json.settings_menu.settings_menu_item.visible = visible
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
                   });
                 }
                 function getcolorui(ui, name){
@@ -5720,85 +7302,117 @@ function getxy(elem, uijson){
   }
 }
 
-function setxy(elem, uijson, x, y){
+function getv(elem, uijson){
+  if(elem === "bannerfolder"){
+    return uijson["main_menu"]["banner_image"]["visible"] == "visible";
+  } else if(elem === "bannerhomebrew"){
+    return uijson["main_menu"]["banner_image"]["visible"] == "visible";
+  } else if(elem === "bannerinstalled"){
+    return uijson["main_menu"]["banner_image"]["visible"] == "visible";
+  } else if(elem === "bannertheme"){
+    return uijson["themes_menu"]["banner_image"]["visible"] == "visible";
+  } else if(elem === "batterychargingicon"){
+    return uijson["main_menu"]["battery_icon"]["visible"] == "visible";
+  } else if(elem === "batterynormalicon"){
+    return uijson["main_menu"]["battery_icon"]["visible"] == "visible";
+  } else if(elem === "connectionicon"){
+    return uijson["main_menu"]["connection_icon"]["visible"] == "visible";
+  } else if(elem === "controllericon"){
+    return uijson["main_menu"]["controller_icon"]["visible"] == "visible";
+  } else if(elem === "noconnectionicon"){
+    return uijson["main_menu"]["connection_icon"]["visible"] == "visible";
+  } else if(elem === "settingsicon"){
+    return uijson["main_menu"]["settings_icon"]["visible"] == "visible";
+  } else if(elem === "themesicon"){
+    return uijson["main_menu"]["themes_icon"]["visible"] == "visible";
+  } else if(elem === "toggleclick"){
+    return uijson["main_menu"]["menu_toggle_button"]["visible"] == "visible";
+  } else if(elem === "topmenu"){
+    return uijson["main_menu"]["top_menu_bg"]["visible"] == "visible";
+  } else {
+    return "";
+  }
+}
+
+function setxy(elem, uijson, x, y, visible){
   if(elem === "bannerfolder"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["banner_image"] == undefined){
       uijson["main_menu"]["banner_image"] = {};
-    } uijson["main_menu"]["banner_image"] = {x,y}
+    } uijson["main_menu"]["banner_image"] = {x,y,visible}
   } else if(elem === "bannerhomebrew"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["banner_image"] == undefined){
       uijson["main_menu"]["banner_image"] = {};
-    } uijson["main_menu"]["banner_image"] = {x,y}
+    } uijson["main_menu"]["banner_image"] = {x,y,visible}
   } else if(elem === "bannerinstalled"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["banner_image"] == undefined){
       uijson["main_menu"]["banner_image"] = {};
-    } uijson["main_menu"]["banner_image"] = {x,y}
+    } uijson["main_menu"]["banner_image"] = {x,y,visible}
   } else if(elem === "bannertheme"){
     if(uijson["themes_menu"] == undefined){
       uijson["themes_menu"] = {};
     } if(uijson["themes_menu"]["banner_image"] == undefined){
       uijson["themes_menu"]["banner_image"] = {};
-    } uijson["themes_menu"]["banner_image"] = {x,y}
+    } uijson["themes_menu"]["banner_image"] = {x,y,visible}
   } else if(elem === "batterychargingicon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["battery_icon"] == undefined){
       uijson["main_menu"]["battery_icon"] = {};
-    } uijson["main_menu"]["battery_icon"] = {x,y}
+    } uijson["main_menu"]["battery_icon"] = {x,y,visible}
   } else if(elem === "batterynormalicon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["battery_icon"] == undefined){
       uijson["main_menu"]["battery_icon"] = {};
-    } uijson["main_menu"]["battery_icon"] = {x,y}
+    } uijson["main_menu"]["battery_icon"] = {x,y,visible}
   } else if(elem === "connectionicon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["connection_icon"] == undefined){
       uijson["main_menu"]["connection_icon"] = {};
-    } uijson["main_menu"]["connection_icon"] = {x,y}
+    } uijson["main_menu"]["connection_icon"] = {x,y,visible}
   } else if(elem === "controllericon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["controller_icon"] == undefined){
       uijson["main_menu"]["controller_icon"] = {};
-    } uijson["main_menu"]["controller_icon"] = {x,y}
+    } uijson["main_menu"]["controller_icon"] = {x,y,visible}
   } else if(elem === "noconnectionicon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["connection_icon"] == undefined){
       uijson["main_menu"]["connection_icon"] = {};
-    } uijson["main_menu"]["connection_icon"] = {x,y}
+    } uijson["main_menu"]["connection_icon"] = {x,y,visible}
   } else if(elem === "settingsicon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["settings_icon"] == undefined){
       uijson["main_menu"]["settings_icon"] = {};
-    } uijson["main_menu"]["settings_icon"] = {x,y}
+    } uijson["main_menu"]["settings_icon"] = {x,y,visible}
   } else if(elem === "themesicon"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["themes_icon"] == undefined){
       uijson["main_menu"]["themes_icon"] = {};
-    } uijson["main_menu"]["themes_icon"] = {x,y}
+    } uijson["main_menu"]["themes_icon"] = {x,y,visible}
   } else if(elem === "toggleclick"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["menu_toggle_button"] == undefined){
       uijson["main_menu"]["menu_toggle_button"] = {};
-    } uijson["main_menu"]["menu_toggle_button"] = {x,y}
+    } uijson["main_menu"]["menu_toggle_button"] = {x,y,visible}
   } else if(elem === "topmenu"){
     if(uijson["main_menu"] == undefined){
       uijson["main_menu"] = {};
     } if(uijson["main_menu"]["top_menu_bg"] == undefined){
       uijson["main_menu"]["top_menu_bg"] = {};
-    } uijson["main_menu"]["top_menu_bg"] = {x,y}
+    } uijson["main_menu"]["top_menu_bg"] = {x,y,visible}
   }
   return uijson;
 }
