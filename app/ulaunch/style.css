@@ -56,9 +56,105 @@ p {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  border-radius: 10px;
+  border-radius: <%- getHeight(10) %>px;
   width: <%- getWidth(15) %>px;
   height: <%- getHeight(45) %>px;
   background: #b1b1b1;
+  cursor: pointer;
+}
+
+.r {
+  -webkit-appearance: none;
+  appearance: none;
+  position:absolute;
+  top: <%- getHeight(125) %>;
+  left: 47%;
+  transform: translate(-53%);
+  border-radius: 10px;
+  width: <%- getWidth(600) %>;
+  height: <%- getHeight(20) %>;
+  background: #a1a1a1;
+  outline: none;
+}
+
+.r::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: <%- getHeight(10) %>px;
+  width: <%- getWidth(40) %>px;
+  height: <%- getHeight(40) %>px;
+  background: #e1e1e1;
+  cursor: pointer;
+}
+
+.g {
+  -webkit-appearance: none;
+  appearance: none;
+  position:absolute;
+  top: <%- getHeight(175) %>;
+  left: 47%;
+  transform: translate(-53%);
+  border-radius: 10px;
+  width: <%- getWidth(600) %>;
+  height: <%- getHeight(20) %>;
+  background: #a1a1a1;
+  outline: none;
+}
+
+.g::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: <%- getHeight(10) %>px;
+  width: <%- getWidth(40) %>px;
+  height: <%- getHeight(40) %>px;
+  background: #e1e1e1;
+  cursor: pointer;
+}
+
+.b {
+  -webkit-appearance: none;
+  appearance: none;
+  position:absolute;
+  top: <%- getHeight(225) %>;
+  left: 47%;
+  transform: translate(-53%);
+  border-radius: 10px;
+  width: <%- getWidth(600) %>;
+  height: <%- getHeight(20) %>;
+  background: #a1a1a1;
+  outline: none;
+}
+
+.b::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: <%- getHeight(10) %>px;
+  width: <%- getWidth(40) %>px;
+  height: <%- getHeight(40) %>px;
+  background: #e1e1e1;
+  cursor: pointer;
+}
+
+.a {
+  -webkit-appearance: none;
+  appearance: none;
+  position:absolute;
+  top: <%- getHeight(275) %>;
+  left: 47%;
+  transform: translate(-53%);
+  border-radius: 10px;
+  width: <%- getWidth(600) %>;
+  height: <%- getHeight(20) %>;
+  background: #a1a1a1;
+  outline: none;
+}
+
+.a::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: <%- getHeight(10) %>px;
+  width: <%- getWidth(40) %>px;
+  height: <%- getHeight(40) %>px;
+  background: #e1e1e1;
   cursor: pointer;
 }

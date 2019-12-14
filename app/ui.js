@@ -5430,6 +5430,103 @@ function makermenu(){
                     end = true;
                     $("#divcreate").remove();
                   });
+                } else if(id == "menu_focus_color"){
+                  getcolorui("menu_focus_color", "Menu Focus Color");
+                } else if(id == "menu_bg_color"){
+                  getcolorui("menu_bg_color", "Menu Background Color");
+                } else if(id == "text_color"){
+                  getcolorui("text_color", "Text Color");
+                } else if(id == "toast_text_color"){
+                  getcolorui("toast_text_color", "Toast Text Color");
+                } else if(id == "toast_base_color"){
+                  getcolorui("toast_base_color", "Toast Base Color");
+                }
+                function getcolorui(ui, name){
+                  let end = false;
+                  let color = uijson[ui];
+                  let r = parseInt(color.substring(1, 3), 16);
+                  let g = parseInt(color.substring(3, 5), 16);
+                  let b = parseInt(color.substring(5, 7), 16);
+                  let a = parseInt(color.substring(7, 9), 16);
+                  $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:110;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" style="background-color: transparent;border:none;outline:none;width:${getWidth(1280)};height:${getHeight(720)};z-index:111;position:absolute;top:0;left:0" id="areturn"/><div style="background-color:${color};z-index:112;border:none;border-radius:${getHeight(25)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(780)};height:${getWidth(355)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(780)};text-align:center" id="tcolor">${name}</p><input type="range" min="0" max="255" value="${r}" class="r" oninput="makerem.emit('r', this);" id="ri"><p style="position:absolute;top:${getHeight(120)};left:88%;transform:translate(-12%);font-size:${getWidth(30)};margin:0 0;text-align:center" id="rtxt">${r}</p><input type="range" min="0" max="255" value="${g}" class="g" oninput="makerem.emit('g', this);" id="gi"><p style="position:absolute;top:${getHeight(170)};left:88%;transform:translate(-12%);font-size:${getWidth(30)};margin:0 0;text-align:center" id="gtxt">${g}</p><input type="range" min="0" max="255" value="${b}" class="b" oninput="makerem.emit('b', this);" id="bi"><p style="position:absolute;top:${getHeight(220)};left:88%;transform:translate(-12%);font-size:${getWidth(30)};margin:0 0;text-align:center" id="btxt">${b}</p><input type="range" min="0" max="255" value="${a}" class="a" oninput="makerem.emit('a', this);" id="ai"><p style="position:absolute;top:${getHeight(270)};left:88%;transform:translate(-12%);font-size:${getWidth(30)};margin:0 0;text-align:center" id="atxt">${a}</p></div></div>`);
+                  $("#ri").get(0).style.background = 'linear-gradient(to right, #ff0000 0%, #ff0000 ' + getperc(r) + '%, #a1a1a1 ' + getperc(r) + '%, #a1a1a1 100%)';
+                  $("#gi").get(0).style.background = 'linear-gradient(to right, #00ff00 0%, #00ff00 ' + getperc(g) + '%, #a1a1a1 ' + getperc(g) + '%, #a1a1a1 100%)';
+                  $("#bi").get(0).style.background = 'linear-gradient(to right, #0000ff 0%, #0000ff ' + getperc(b) + '%, #a1a1a1 ' + getperc(b) + '%, #a1a1a1 100%)';
+                  tcolor();
+                  function getperc(n){
+                    n = parseInt(n);
+                    return (n*100)/255
+                  }
+                  function dth(number){
+                    if(number < 0){
+                      number = 0xFFFFFFFF + number + 1;
+                    }
+                    number = number.toString(16);
+                    if(number.length == 1){
+                      number = "0"+number;
+                    }
+                    return number;
+                  }
+                  function tcolor(){
+                    let lum = 16-parseInt((Math.floor((r+b+g)/3)/255)*16)+((255-a)/255)*16;
+                    if(lum > 16) lum = 16;
+                    lum = parseInt(lum);
+                    lum = dth(lum);
+                    if(lum == "10") lum = "f";
+                    if(lum != "10") lum = lum.substring(1);
+                    $("#rtxt").get(0).style.color = `#${lum}${lum}${lum}`;
+                    $("#gtxt").get(0).style.color = `#${lum}${lum}${lum}`;
+                    $("#btxt").get(0).style.color = `#${lum}${lum}${lum}`;
+                    $("#atxt").get(0).style.color = `#${lum}${lum}${lum}`;
+                    $("#tcolor").get(0).style.color = `#${lum}${lum}${lum}`;
+                  }
+                  makerem.on("r", (elem) => {
+                    if(end) return;
+                    elem.style.background = 'linear-gradient(to right, #ff0000 0%, #ff0000 ' + getperc(elem.value) + '%, #a1a1a1 ' + getperc(elem.value) + '%, #a1a1a1 100%)';
+                    r = parseInt(elem.value);
+                    $("#rtxt").get(0).innerHTML = elem.value;
+                    $("#createtheme").get(0).style.background = `#${dth(r)}${dth(g)}${dth(b)}${dth(a)}`;
+                    tcolor();
+                    set();
+                  });
+                  makerem.on("g", (elem) => {
+                    if(end) return;
+                    elem.style.background = 'linear-gradient(to right, #00ff00 0%, #00ff00 ' + getperc(elem.value) + '%, #a1a1a1 ' + getperc(elem.value) + '%, #a1a1a1 100%)';
+                    g = parseInt(elem.value);
+                    $("#gtxt").get(0).innerHTML = elem.value;
+                    $("#createtheme").get(0).style.background = `#${dth(r)}${dth(g)}${dth(b)}${dth(a)}`;
+                    tcolor();
+                    set();
+                  });
+                  makerem.on("b", (elem) => {
+                    if(end) return;
+                    elem.style.background = 'linear-gradient(to right, #0000ff 0%, #0000ff ' + getperc(elem.value) + '%, #a1a1a1 ' + getperc(elem.value) + '%, #a1a1a1 100%)';
+                    b = parseInt(elem.value);
+                    $("#btxt").get(0).innerHTML = elem.value;
+                    $("#createtheme").get(0).style.background = `#${dth(r)}${dth(g)}${dth(b)}${dth(a)}`;
+                    tcolor();
+                    set();
+                  });
+                  makerem.on("a", (elem) => {
+                    if(end) return;
+                    a = parseInt(elem.value);
+                    $("#atxt").get(0).innerHTML = elem.value;
+                    $("#createtheme").get(0).style.background = `#${dth(r)}${dth(g)}${dth(b)}${dth(a)}`;
+                    tcolor();
+                    set();
+                  });
+                  $("#areturn").click(() => {
+                    if(end) return;
+                    end = true;
+                    $("#divcreate").remove();
+                  });
+                  function set(){
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    json[ui] = `#${dth(r)}${dth(g)}${dth(b)}${dth(a)}`;
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                  }
                 }
               });
             }
