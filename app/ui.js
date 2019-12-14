@@ -408,6 +408,7 @@ let menutoggle = undefined;
 let testersettings;
 let timeinterval = null;
 let romfsui = undefined;
+let lang = undefined;
 
 async function init(){
   switchem.on("capture", () => {
@@ -600,7 +601,7 @@ async function init(){
       "zn-Hans": "Chinese (simplified)",
       "zn-Hant": "Chinese (traditional)"
   };
-  let lang = InitializeLang(testersettings.lang, Languages);
+  lang = InitializeLang(testersettings.lang, Languages);
   let uijson = InitializeUIJson(require(existsUI("UI.json", defaultui, romfsui)));
   $(document.head).append(`<style>@font-face {font-family: 'Font';font-style: normal;src: url('data:font/ttf;base64,${fs.readFileSync(existsUI("Font.ttf", defaultui, romfsui)).toString("base64")}');}</style>`);
   let defaulticon = {
@@ -5121,7 +5122,7 @@ function corrupted(file){
 
 function makermenu(){
   document.getElementById("maker").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "maker", "app.ejs"), "utf8"));
-  let themes = getFiles(path.join(ulaunchtester, "sdmc", "ulaunch", "themes")).filter(n => n.indexOf("Manifest") !== -1);
+  let themes = getFiles(path.join(documents, "uLaunch-Previewer", "sdmc", "ulaunch", "themes")).filter(n => n.indexOf("Manifest") !== -1);
   themes = themes.map(n => {
     return {
       path: path.join(ulaunchtester, "sdmc", "ulaunch", "themes", n.replace(/\\/g, "/").split("sdmc/ulaunch/themes/")[1].split("/")[0]),
@@ -5130,7 +5131,7 @@ function makermenu(){
   });
   themes.map((theme, n) => {
     theme = theme.manifest
-    $("#themes").append(`<input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="${n}" value="${theme.name}"/>`);
+    $("#mthemes").append(`<input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(5)};margin-bottom:${getHeight(5)}" id="${n}" value="${theme.name}"/>`);
   });
   $("#create").click(() => {
     istyping = true;
@@ -5158,7 +5159,7 @@ function makermenu(){
       $("#divcreate").remove();
     });
   });
-  let inputs = $("#themes :input");
+  let inputs = $("#mthemes :input");
   inputs.click((input) => {
     let id = input.currentTarget.id;
     let theme = themes[id].manifest;
@@ -5228,7 +5229,7 @@ function makermenu(){
     document.getElementById("maker").innerHTML = ejs.render(fs.readFileSync(path.join(__dirname, "ulaunch", "maker", "theme.ejs"), "utf8"), {theme});
     $("#edit").click(() => {
       istyping = true;
-      $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:99;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><div style="background-color:#626262;border:none;border-radius:${getHeight(50)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(620)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};height:${getHeight(620)};text-align:center">Edit the Theme</p><p style="position:absolute;top:${getHeight(120)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Name:</p><input type="text" style="position:absolute;left:${getWidth(150)};top:${getHeight(105)};font-family:'uLaunch';width:${getWidth(980)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default theme" value="${(theme.name == "Default theme") ? "" : theme.name}" id="name"/><p style="position:absolute;top:${getHeight(210)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Format Version:</p><input type="text" style="position:absolute;left:${getWidth(275)};top:${getHeight(195)};font-family:'uLaunch';width:${getWidth(855)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="1" value="${(theme.format_version == 1) ? "" : theme.format_version}" id="formatver"/><p style="position:absolute;top:${getHeight(300)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Release:</p><input type="text" style="position:absolute;left:${getWidth(175)};top:${getHeight(285)};font-family:'uLaunch';width:${getWidth(955)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" value="${(theme.release == "1.0") ? "" : theme.release}" placeholder="1.0" id="release"/><p style="position:absolute;top:${getHeight(390)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Description:</p><input type="text" style="position:absolute;left:${getWidth(225)};top:${getHeight(375)};font-family:'uLaunch';width:${getWidth(905)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default uLaunch theme" value="${(theme.description == "Default uLaunch theme") ? "" : theme.description}" id="description"/><p style="position:absolute;top:${getHeight(480)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Author:</p><input type="text" style="position:absolute;left:${getWidth(160)};top:${getHeight(465)};font-family:'uLaunch';width:${getWidth(970)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="XorTroll" value="${(theme.author == "XorTroll") ? "" : theme.author}" id="author"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(50)}" id="editthemebtn" value="Edit"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(600)}" id="cancel" value="Cancel"/></div></div>`);
+      $("#maker").append(`<div id="divedit" style="background-color: #3232328F;z-index:200;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><div style="background-color:#626262;border:none;border-radius:${getHeight(50)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(620)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};height:${getHeight(620)};text-align:center">Edit the Theme</p><p style="position:absolute;top:${getHeight(120)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Name:</p><input type="text" style="position:absolute;left:${getWidth(150)};top:${getHeight(105)};font-family:'uLaunch';width:${getWidth(980)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default theme" value="${(theme.name == "Default theme") ? "" : theme.name}" id="name"/><p style="position:absolute;top:${getHeight(210)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Format Version:</p><input type="text" style="position:absolute;left:${getWidth(275)};top:${getHeight(195)};font-family:'uLaunch';width:${getWidth(855)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="1" value="${(theme.format_version == 1) ? "" : theme.format_version}" id="formatver"/><p style="position:absolute;top:${getHeight(300)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Release:</p><input type="text" style="position:absolute;left:${getWidth(175)};top:${getHeight(285)};font-family:'uLaunch';width:${getWidth(955)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" value="${(theme.release == "1.0") ? "" : theme.release}" placeholder="1.0" id="release"/><p style="position:absolute;top:${getHeight(390)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Description:</p><input type="text" style="position:absolute;left:${getWidth(225)};top:${getHeight(375)};font-family:'uLaunch';width:${getWidth(905)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="Default uLaunch theme" value="${(theme.description == "Default uLaunch theme") ? "" : theme.description}" id="description"/><p style="position:absolute;top:${getHeight(480)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Author:</p><input type="text" style="position:absolute;left:${getWidth(160)};top:${getHeight(465)};font-family:'uLaunch';width:${getWidth(970)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="XorTroll" value="${(theme.author == "XorTroll") ? "" : theme.author}" id="author"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(50)}" id="editthemebtn" value="Edit"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(555)};left:${getWidth(600)}" id="cancel" value="Cancel"/></div></div>`);
       $("#editthemebtn").click(() => {
         let name = $("#name").val();
         name = (!name) ? "Default theme" : name;
@@ -5249,10 +5250,10 @@ function makermenu(){
         themes[id].manifest = Manifest;
         fs.writeFileSync(path.join(tfolder, "theme", "Manifest.json"), JSON.stringify(Manifest, null, 2), function(err){if(err) throw err});
         istyping = false;
-        $("#divcreate").remove();
+        $("#divedit").remove();
       });
       $("#cancel").click(() => {
-        $("#divcreate").remove();
+        $("#divedit").remove();
       });
     });
     $("#delete").click(() => {
@@ -5311,6 +5312,7 @@ function makermenu(){
                   fs.writeFileSync(path.join(tfolder, "ui", `${val}.png`), fs.readFileSync(file), function(err){if(err) throw err});
                 });
                 $("#position").click(() => {
+                  let end = false;
                   $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:110;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="${getxy(id, uijson).split(" | ").filter((v, n) => n !== 0).map(v => {if(v.indexOf("X") !== -1){return "X: "+getWidth(parseInt(v.split("X: ")[1]))}else{return "Y: "+getHeight(parseInt(v.split("Y: ")[1]))}}).join(" | ")}"/><img style="position:relative;top:${getHeight(parseFloat(getxy(id, uijson).split("Y: ")[1]))};left:${getWidth(parseFloat(getxy(id, uijson).split("X: ")[1].split(" ")[0]))};width:${getWidth(size[id].w)};height:${getHeight(size[id].h)}" src="${$("#image").get(0).src}" id="posimage"><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/></div>`)
                   let posimage = document.getElementById("posimage");
                   let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -5334,30 +5336,36 @@ function makermenu(){
                     };
                   }
                   makerem.on("up", () => {
+                    if(end) return;
                     let y = Math.round(posimage.style.top.replace("px", ""));
                     let x = Math.round(posimage.style.left.replace("px", ""));
                     posimage.style.top = (y-getHeight(1)) + "px";
                     $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
                   });
                   makerem.on("down", () => {
+                    if(end) return;
                     let y = Math.round(posimage.style.top.replace("px", ""));
                     let x = Math.round(posimage.style.left.replace("px", ""));
                     posimage.style.top = (y+getHeight(1)) + "px";
                     $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
                   });
                   makerem.on("left", () => {
+                    if(end) return;
                     let y = Math.round(posimage.style.top.replace("px", ""));
                     let x = Math.round(posimage.style.left.replace("px", ""));
                     posimage.style.left = (x-getWidth(1)) + "px";
                     $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
                   });
                   makerem.on("right", () => {
+                    if(end) return;
                     let y = Math.round(posimage.style.top.replace("px", ""));
                     let x = Math.round(posimage.style.left.replace("px", ""));
                     posimage.style.left = (x+getWidth(1)) + "px";
                     $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
                   });
                   $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
                     let json = {};
                     if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
                     let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
@@ -5440,6 +5448,113 @@ function makermenu(){
                   getcolorui("toast_text_color", "Toast Text Color");
                 } else if(id == "toast_base_color"){
                   getcolorui("toast_base_color", "Toast Base Color");
+                } else if(id == "menu_folder_text"){
+                  let end = false;
+                  $("#maker").append(`<div id="pos" style="background-color: #424242;z-index:150;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" id="postext" style="background-color:#525252;z-index:115;color:#e1e1e1;font-family:'uLaunch';font-size: ${getWidth(20)};padding: ${getHeight(5)}px ${getWidth(10)}px 0px ${getWidth(10)}px;border: ${getHeight(2)}px #323232;border-bottom-left-radius:${getHeight(10)}px;border-bottom-right-radius:${getHeight(10)}px;position:absolute;top:0;left:50%;transform:translate(-50%)" value="X: ${uijson["menu_folder_text_x"]} | Y: ${uijson["menu_folder_text_y"]}"/><input type="button" style="position:absolute;top:0;left:0;width:${getWidth(256)};height:${getHeight(256)};outline:none;border:none;background-color:#727272;padding:0;"/><p style="position:relative;top:${getHeight(uijson["menu_folder_text_y"])};margin:0;padding:0;left:${getWidth(uijson["menu_folder_text_x"])};font-size: ${getWidth(uijson["menu_folder_text_size"])}" id="posimage">Folder</p><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;right:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;z-index: 115;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="finish" value="Finish"/></div>`)
+                  let posimage = document.getElementById("posimage");
+                  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                  posimage.onmousedown = (e) => {
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    e.preventDefault();
+                    document.onmouseup = () => {
+                      document.onmouseup = null;
+                      document.onmousemove = null;
+                    };
+                    document.onmousemove = (e) => {
+                      e.preventDefault();
+                      pos1 = pos3 - e.clientX;
+                      pos2 = pos4 - e.clientY;
+                      pos3 = e.clientX;
+                      pos4 = e.clientY;
+                      posimage.style.top = Math.round((posimage.offsetTop - pos2)) + "px";
+                      posimage.style.left = Math.round((posimage.offsetLeft - pos1)) + "px";
+                      $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(Math.round((posimage.offsetLeft - pos1)))} | Y: ${getOrigHeight(Math.round((posimage.offsetTop - pos2)))}`);
+                    };
+                  }
+                  makerem.on("up", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y-getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)-1}`);
+                  });
+                  makerem.on("down", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.top = (y+getHeight(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)} | Y: ${getOrigHeight(y)+1}`);
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x-getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)-1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    let y = Math.round(posimage.style.top.replace("px", ""));
+                    let x = Math.round(posimage.style.left.replace("px", ""));
+                    posimage.style.left = (x+getWidth(1)) + "px";
+                    $("#postext").get(0).setAttribute("value", `X: ${getOrigWidth(x)+1} | Y: ${getOrigHeight(y)}`);
+                  });
+                  $("#finish").click(() => {
+                    if(end) return;
+                    end = true;
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    let x = getOrigWidth(Math.round(posimage.style.left.replace("px", "")));
+                    let y = getOrigHeight(Math.round(posimage.style.top.replace("px", "")));
+                    json.menu_folder_text_x = x;
+                    json.menu_folder_text_y = y;
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                    $("#pos").remove();
+                  });
+                } else if(id == "menu_folder_text_size"){
+                  let end = false;
+                  let size = uijson["menu_folder_text_size"];
+                  $("#maker").append(`<div id="divcreate" style="background-color: #3232328F;z-index:110;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><input type="button" style="background-color: transparent;border:none;outline:none;width:${getWidth(1280)};height:${getHeight(720)};z-index:111;position:absolute;top:0;left:0" id="areturn"/><div style="background-color:#626262;z-index:112;border:none;border-radius:${getHeight(25)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(225)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center">Menu Folder Text Size</p><p style="position:absolute;top:${getHeight(105)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};text-align:center;opacity:${uijson["suspended_final_alpha"]/255}" id="textsize">${uijson["menu_folder_text_size"]}</p><center><div style="position:absolute;top:${getHeight(160)};width:${getWidth(1180)}"><input type="button" style="width:${getWidth(30)};height:${getHeight(30)};color:#e1e1e1;background-color:#727272;border:none;border-radius:${getHeight(5)}px;font-family:'uLaunch';outline:none;font-size:15;text-align:center;cursor:pointer;" value="-1" id="msize"><input type="button" style="width:${getWidth(30)};height:${getHeight(30)};color:#e1e1e1;background-color:#727272;border:none;outline:none;border-radius:${getHeight(5)}px;font-family:'uLaunch';font-size:15;text-align:center;margin-left:${getWidth(10)}px;cursor:pointer;" value="+1" id="psize"></div></center></div></div>`);
+                  $("#msize").click(() => {
+                    if(end) return;
+                    if(size == 1) return;
+                    size -= 1;
+                    $("#textsize").get(0).innerHTML = size;
+                    set();
+                  });
+                  $("#psize").click(() => {
+                    if(end) return;
+                    size += 1;
+                    $("#textsize").get(0).innerHTML = size;
+                    set();
+                  });
+                  makerem.on("left", () => {
+                    if(end) return;
+                    if(size == 1) return;
+                    size -= 1;
+                    $("#textsize").get(0).innerHTML = size;
+                    set();
+                  });
+                  makerem.on("right", () => {
+                    if(end) return;
+                    size += 1;
+                    $("#textsize").get(0).innerHTML = size;
+                    set();
+                  });
+                  function set(val){
+                    let json = {};
+                    if(fs.existsSync(path.join(tfolder, "ui", "UI.json"))) json = JSON.parse(fs.readFileSync(path.join(tfolder, "ui", "UI.json"), "utf8"));
+                    json.menu_folder_text_size = size;
+                    fs.writeFileSync(path.join(tfolder, "ui", "UI.json"), JSON.stringify(json, null, 2), (err)=>{if(err) throw err});
+                    uijson = InitializeUIJson(json);
+                  }
+                  $("#areturn").click(() => {
+                    if(end) return;
+                    end = true;
+                    $("#divcreate").remove();
+                  });
                 }
                 function getcolorui(ui, name){
                   let end = false;
