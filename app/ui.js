@@ -5296,7 +5296,7 @@ function makermenu(){
               image.onload = () => {
                 if(aload) return;
                 aload = true;
-                $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(195)+image.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an Image"/>${(defxy == "") ? "" : `<input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(10)};margin-bottom:${getHeight(5)}" id="position" value="Set the position"/>`}</div></center>`)
+                $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(195)+image.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an Image"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(10)};margin-bottom:${getHeight(5)}" id="restore" value="Restore Image"/>${(defxy == "") ? "" : `<input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-left:${getWidth(10)};margin-bottom:${getHeight(5)}" id="position" value="Set the position"/>`}</div></center>`)
                 $("#select").click(() => {
                   let file = dialog.showOpenDialogSync({filters:[{name:"*",extensions: ['png'] }],properties:['openFile']});
                   if(file == undefined) return;
@@ -5310,6 +5310,19 @@ function makermenu(){
                   };
                   img.src = blob;
                   fs.writeFileSync(path.join(tfolder, "ui", `${val}.png`), fs.readFileSync(file), function(err){if(err) throw err});
+                });
+                $("#restore").click(() => {
+                  if(fs.existsSync(path.join(tfolder, "ui", `${val}.png`))){
+                    fs.unlinkSync(path.join(tfolder, "ui", `${val}.png`));
+                    let blob = existsUI(`${val}.png`, romfsui, romfsui);
+                    let img = new Image();
+                    img.onload = () => {
+                      $("#current").get(0).innerHTML = `Current: Width: ${img.width} | Height: ${img.height}${getxy(id, uijson)}`;
+                      document.getElementById("button").style.top = getHeight(195)+$("#image").get(0).clientHeight+getHeight(20)
+                    };
+                    img.src = blob;
+                    image.src = blob
+                  }
                 });
                 $("#position").click(() => {
                   let end = false;
@@ -7228,7 +7241,29 @@ function makermenu(){
               });
             }
           } else {
-            console.log("icon");
+            let icon = `<p style="position:absolute;top:0;width:${getWidth(1280)};text-align:center;font-size:${getWidth(25)}">You don't seem to have an icon for your theme</p>`;
+            if(fs.existsSync(path.join(tfolder, "theme", "Icon.png"))){
+              icon = `<img width="${getWidth(100)}" height="${getHeight(100)}" style="position:absolute;top:0;left:50%;transform:translate(-50%)" src="data:image/png;base64,${fs.readFileSync(path.join(tfolder, "theme", "Icon.png")).toString("base64")}">`
+            }
+            $("#maker").append(`<div id="elem" style="background-color: #424242;z-index:99;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><div id="elemm" style="background-color: #424242;position:absolute;top:50%;left:50%;z-index:100;transform:translate(-50%, -50%);overflow-y:normal;overflow-x:hidden;width:${getWidth(1260)};height:${getHeight(700)};"><p style="position:absolute;top:${getHeight(30)};left:50%;transform:translate(-50%);z-index:101;font-size:${getWidth(50)};width:${getWidth(1260)};margin:0 0;text-align:center;">Icon</p><div style="position:absolute;top:${getHeight(105)};width:${getWidth(1280)};height:${getWidth(100)};left:${getWidth(-10)}" id="icondiv">${icon}</div></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="ereturn" value="Return"/></div>`);
+            $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(105)+icondiv.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an Icon File"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)};margin-left:${getWidth(10)}" id="deleteicon" value="Delete Icon"/></div></center>`)
+            $("#select").click(() => {
+              let file = dialog.showOpenDialogSync({filters:[{name:"*",extensions: ['png'] }],properties:['openFile']});
+              if(file == undefined) return;
+              file = file[0];
+              let blob = `data:image/png;base64,${fs.readFileSync(file).toString("base64")}`;
+              $("#icondiv").get(0).innerHTML = `<img width="${getWidth(100)}" height="${getHeight(100)}" style="position:absolute;top:0;left:50%;transform:translate(-50%)" src="${blob}">`
+              fs.writeFileSync(path.join(tfolder, "theme", `Icon.png`), fs.readFileSync(file), function(err){if(err) throw err});
+            });
+            $("#deleteicon").click(() => {
+              if(fs.existsSync(path.join(tfolder, "theme", "Icon.png"))){
+                fs.unlinkSync(path.join(tfolder, "theme", "Icon.png"));
+                $("#icondiv").get(0).innerHTML = `<p style="position:absolute;top:0;width:${getWidth(1280)};text-align:center;font-size:${getWidth(25)}">You don't seem to have an icon for your theme</p>`;
+              }
+            });
+            $("#ereturn").click(() => {
+              $("#elem").remove();
+            });
           }
         } else {
           let font = fs.readFileSync(existsUI("Font.ttf", defaultui, romfsui)).toString("base64");
