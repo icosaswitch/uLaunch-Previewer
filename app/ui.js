@@ -7245,7 +7245,130 @@ function makermenu(){
           });
         }
       } else {
-        console.log("sound");
+        if(val == "BGM"){
+          let bgm = path.join(tfolder, "sound", "BGM.mp3");
+          let bgmblob = "";
+          if(fs.existsSync(bgm)){
+            bgmblob = `data:audio/mpeg;base64,${fs.readFileSync(bgm).toString("base64")}`
+          }
+          $("#maker").append(`<div id="elem" style="background-color: #424242;z-index:99;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><div id="elemm" style="background-color: #424242;position:absolute;top:50%;left:50%;z-index:100;transform:translate(-50%, -50%);overflow-y:normal;overflow-x:hidden;width:${getWidth(1260)};height:${getHeight(700)};"><p style="position:absolute;top:${getHeight(30)};left:50%;transform:translate(-50%);z-index:101;font-size:${getWidth(50)};width:${getWidth(1260)};margin:0 0;text-align:center;">BGM</p><audio controls="" autoplay="" name="audio" id="audio" style="position:absolute;outline:none;top:${getHeight(105)};left:50%;transform:translate(-50%)"><source id="audiosrc" src="${bgmblob}""></audio></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="ereturn" value="Return"/></div>`);
+          let audio = $("#audio").get(0);
+          $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(105)+audio.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an MP3 File"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)};margin-left:${getWidth(10)}" id="deletebgm" value="Delete BGM"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)};margin-left:${getWidth(10)}" id="bgmjson" value="BGM Json"/></div></center>`)
+          $("#select").click(() => {
+            if(!fs.existsSync(path.join(tfolder, "sound"))) fs.mkdirSync(path.join(tfolder, "sound"));
+            let file = dialog.showOpenDialogSync({filters:[{name:"*",extensions: ['mp3'] }],properties:['openFile']});
+            if(file == undefined) return;
+            file = file[0];
+            let blob = `data:audio/mpeg;base64,${fs.readFileSync(file).toString("base64")}`;
+            $("#audiosrc").get(0).src = blob;
+            $("#audio").get(0).load();
+            fs.writeFileSync(path.join(tfolder, "sound", `BGM.mp3`), fs.readFileSync(file), function(err){if(err) throw err});
+          });
+          $("#deletebgm").click(() => {
+            if(fs.existsSync(path.join(tfolder, "sound", "BGM.mp3"))){
+              fs.unlinkSync(path.join(tfolder, "sound", "BGM.mp3"));
+              $("#audiosrc").get(0).src = "";
+              $("#audio").get(0).load();
+            }
+          });
+          $("#bgmjson").click(() => {
+            istyping = true;
+            let defbgm = require(path.join(__dirname, "ulaunch", "romFs", "default", "sound", "BGM.json"));
+            let bgmjson = defbgm;
+            if(fs.existsSync(path.join(tfolder, "sound", "BGM.json"))) bgmjson = JSON.parse(fs.readFileSync(path.join(tfolder, "sound", "BGM.json")));
+            if(bgmjson.loop === undefined){
+              bgmjson.loop = defbgm.loop;
+            } if(bgmjson.fade_in_ms === undefined){
+              bgmjson.fade_in_ms = defbgm.fade_in_ms;
+            } if(bgmjson.fade_out_ms === undefined){
+              bgmjson.fade_out_ms = defbgm.fade_out_ms;
+            }
+            $("#maker").append(`<div id="divedit" style="background-color: #3232328F;z-index:200;position:absolute;top:0;left:0;width:${getWidth(1280)};height:${getHeight(720)};"><div style="background-color:#626262;border:none;border-radius:${getHeight(50)}px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:${getWidth(1180)};height:${getWidth(420)}" id="createtheme"><p style="position:absolute;top:${getHeight(40)};left:0;font-size:${getWidth(40)};margin:0 0;width:${getWidth(1180)};height:${getHeight(620)};text-align:center">Edit BGM Json</p><p style="position:absolute;top:${getHeight(120)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Fade In:</p><input type="text" style="position:absolute;left:${getWidth(170)};top:${getHeight(105)};font-family:'uLaunch';width:${getWidth(960)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="${defbgm.fade_in_ms} (in milliseconds)" value="${(bgmjson.fade_in_ms == defbgm.fade_in_ms) ? "" : bgmjson.fade_in_ms}" id="fadein"/><p style="position:absolute;top:${getHeight(210)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Fade Out:</p><input type="text" style="position:absolute;left:${getWidth(197)};top:${getHeight(195)};font-family:'uLaunch';width:${getWidth(933)};padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" placeholder="${defbgm.fade_out_ms} (in milliseconds)" value="${(bgmjson.fade_out_ms == defbgm.fade_out_ms) ? "" : bgmjson.fade_out_ms}" id="fadeout"/><p style="position:absolute;top:${getHeight(300)};left:${getWidth(50)};font-size:${getWidth(30)};margin:0 0;">Loop:</p><input type="button" style="position:absolute;left:${getWidth(150)};top:${getHeight(285)};font-family:'uLaunch';width:${getWidth(980)};cursor:pointer;padding:${getWidth(10)};padding-top:${getHeight(15)};height:${getHeight(60)};border-radius:${getHeight(15)}px;border:none;outline:none;font-size:${getWidth(25)};background-color:#828282;color:#e1e1e1" value="${bgmjson.loop}" id="loopbgm"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(365)};left:${getWidth(50)}" id="editbgmbtn" value="Edit"/><input type="button" style="width:${getWidth(530)};height:${getHeight(35)};border:none;outline:none;border-radius:${getHeight(10)}px;font-family:'uLaunch';font-size:${getWidth(20)};padding-top:${getHeight(7)};cursor:pointer;background-color:#828282;color:#f5f6fa;position:absolute;top:${getHeight(365)};left:${getWidth(600)}" id="cancel" value="Cancel"/></div></div>`);
+            $("#loopbgm").click(() => {
+              let val = $("#loopbgm").get(0).value;
+              if(val == "true"){
+                $("#loopbgm").get(0).value = "false";
+              } else {
+                $("#loopbgm").get(0).value = "true";
+              }
+            });
+            $("#editbgmbtn").click(() => {
+              let fade_in_ms = $("#fadein").val().match(/\d+/)[0];
+              let fade_out_ms = $("#fadeout").val().match(/\d+/)[0];
+              let loop = $("#loopbgm").val() == "true";
+              if(fade_in_ms == undefined) fade_in_ms = defbgm.fade_in_ms;
+              if(fade_out_ms == undefined) fade_out_ms = defbgm.fade_out_ms;
+              let json = {fade_in_ms,fade_out_ms,loop};
+              if(!fs.existsSync(path.join(tfolder, "sound"))) fs.mkdirSync(path.join(tfolder, "sound"));
+              fs.writeFileSync(path.join(tfolder, "sound", `BGM.json`), JSON.stringify(json, null, 2), function(err){if(err) throw err});
+              $("#divedit").remove();
+            });
+            $("#cancel").click(() => {
+              $("#divedit").remove();
+            });
+          });
+          $("#ereturn").click(() => {
+            $("#elem").remove();
+          });
+        } else if(val == "TitleLaunch"){
+          let bgm = path.join(tfolder, "sound", "TitleLaunch.wav");
+          let bgmblob = "";
+          if(fs.existsSync(bgm)){
+            bgmblob = `data:audio/wav;base64,${fs.readFileSync(bgm).toString("base64")}`
+          }
+          $("#maker").append(`<div id="elem" style="background-color: #424242;z-index:99;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><div id="elemm" style="background-color: #424242;position:absolute;top:50%;left:50%;z-index:100;transform:translate(-50%, -50%);overflow-y:normal;overflow-x:hidden;width:${getWidth(1260)};height:${getHeight(700)};"><p style="position:absolute;top:${getHeight(30)};left:50%;transform:translate(-50%);z-index:101;font-size:${getWidth(50)};width:${getWidth(1260)};margin:0 0;text-align:center;">TitleLaunch</p><audio controls="" autoplay="" name="audio" id="audio" style="position:absolute;outline:none;top:${getHeight(105)};left:50%;transform:translate(-50%)"><source id="audiosrc" src="${bgmblob}""></audio></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="ereturn" value="Return"/></div>`);
+          let audio = $("#audio").get(0);
+          $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(105)+audio.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an WAV File"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)};margin-left:${getWidth(10)}" id="deletebgm" value="Delete TitleLaunch"/></div></center>`)
+          $("#select").click(() => {
+            if(!fs.existsSync(path.join(tfolder, "sound"))) fs.mkdirSync(path.join(tfolder, "sound"));
+            let file = dialog.showOpenDialogSync({filters:[{name:"*",extensions: ['wav'] }],properties:['openFile']});
+            if(file == undefined) return;
+            file = file[0];
+            let blob = `data:audio/wav;base64,${fs.readFileSync(file).toString("base64")}`;
+            $("#audiosrc").get(0).src = blob;
+            $("#audio").get(0).load();
+            fs.writeFileSync(path.join(tfolder, "sound", `TitleLaunch.wav`), fs.readFileSync(file), function(err){if(err) throw err});
+          });
+          $("#deletebgm").click(() => {
+            if(fs.existsSync(path.join(tfolder, "sound", "TitleLaunch.wav"))){
+              fs.unlinkSync(path.join(tfolder, "sound", "TitleLaunch.wav"));
+              $("#audiosrc").get(0).src = "";
+              $("#audio").get(0).load();
+            }
+          });
+          $("#ereturn").click(() => {
+            $("#elem").remove();
+          });
+        } else if(val == "MenuToggle"){
+          let bgm = path.join(tfolder, "sound", "MenuToggle.wav");
+          let bgmblob = "";
+          if(fs.existsSync(bgm)){
+            bgmblob = `data:audio/wav;base64,${fs.readFileSync(bgm).toString("base64")}`
+          }
+          $("#maker").append(`<div id="elem" style="background-color: #424242;z-index:99;position:absolute;top:0;left:0;overflow:hidden;width:${getWidth(1280)};height:${getHeight(720)};"><div id="elemm" style="background-color: #424242;position:absolute;top:50%;left:50%;z-index:100;transform:translate(-50%, -50%);overflow-y:normal;overflow-x:hidden;width:${getWidth(1260)};height:${getHeight(700)};"><p style="position:absolute;top:${getHeight(30)};left:50%;transform:translate(-50%);z-index:101;font-size:${getWidth(50)};width:${getWidth(1260)};margin:0 0;text-align:center;">MenuToggle</p><audio controls="" autoplay="" name="audio" id="audio" style="position:absolute;outline:none;top:${getHeight(105)};left:50%;transform:translate(-50%)"><source id="audiosrc" src="${bgmblob}""></audio></div><input type="button" style="position:absolute;bottom:${getHeight(5)};z-index:101;left:${getWidth(5)};background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};" id="ereturn" value="Return"/></div>`);
+          let audio = $("#audio").get(0);
+          $("#elemm").append(`<center><div style="position:absolute;top:${getHeight(105)+audio.clientHeight+getHeight(20)};left:${getWidth(-10)};width:${getWidth(1280)};overflow-y:normal;overflow-x:hidden" id="button"><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)}" id="select" value="Select an WAV File"/><input type="button" style="background-color: #828282;cursor: pointer;border: none;border-radius: ${getHeight(10)}px;color: #f5f6fa;outline: none;text-align:center;padding: ${getHeight(10)}px ${getWidth(10)}px;font-weight:bold;font-size: ${getWidth(20)};margin-bottom:${getHeight(5)};margin-left:${getWidth(10)}" id="deletebgm" value="Delete MenuToggle"/></div></center>`)
+          $("#select").click(() => {
+            if(!fs.existsSync(path.join(tfolder, "sound"))) fs.mkdirSync(path.join(tfolder, "sound"));
+            let file = dialog.showOpenDialogSync({filters:[{name:"*",extensions: ['wav'] }],properties:['openFile']});
+            if(file == undefined) return;
+            file = file[0];
+            let blob = `data:audio/wav;base64,${fs.readFileSync(file).toString("base64")}`;
+            $("#audiosrc").get(0).src = blob;
+            $("#audio").get(0).load();
+            fs.writeFileSync(path.join(tfolder, "sound", `MenuToggle.wav`), fs.readFileSync(file), function(err){if(err) throw err});
+          });
+          $("#deletebgm").click(() => {
+            if(fs.existsSync(path.join(tfolder, "sound", "MenuToggle.wav"))){
+              fs.unlinkSync(path.join(tfolder, "sound", "MenuToggle.wav"));
+              $("#audiosrc").get(0).src = "";
+              $("#audio").get(0).load();
+            }
+          });
+          $("#ereturn").click(() => {
+            $("#elem").remove();
+          });
+        }
       }
     });
   });
