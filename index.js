@@ -7,8 +7,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 let frame;
 
 app.on("ready", async () => {
-  const { width } = screen.getPrimaryDisplay().workAreaSize;
-  const height = Math.round((width/16)*9)
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   let w = 1810,
   h = 800;
 
@@ -21,6 +20,10 @@ app.on("ready", async () => {
   ipcMain.on("getSize", async (event, arg, data) => {
     event.sender.send('setSize', {w,h});
   });
+
+  ipcMain.on("getDocuments", async (event, arg, data) => {
+    event.sender.send('setDocuments', app.getPath('documents'));
+  })
 
   frame = new BrowserWindow({
     width: w,

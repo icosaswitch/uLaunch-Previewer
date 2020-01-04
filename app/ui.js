@@ -5,10 +5,13 @@ const ejs = require('ejs');
 const path = require('path');
 const url = require('url');
 const {Howler} = require('howler');
-const platformFolder = require("platform-folders");
 const {ipcRenderer} = require("electron");
 const {getCurrentWindow, dialog} = require("electron").remote;
-let documents = platformFolder.getDocumentsFolder();
+let documents;
+ipcRenderer.on("setDocuments", async (event, arg, data) => {
+  documents = arg;
+});
+ipcRenderer.send("getDocuments", "");
 const html2canvas = require("html2canvas");
 let ui = path.join(__dirname, "theme", "ui");
 let manifest;
@@ -47,8 +50,9 @@ function getWidth(w){
   }
   return (h*800)/windowSize.h;
 }
-let ulaunchtester = path.join(documents, "uLaunch-Previewer");
+let ulaunchtester;
 $(function() {
+  ulaunchtester = path.join(documents, "uLaunch-Previewer");
   if(!fs.existsSync(ulaunchtester)){
     fs.mkdirSync(ulaunchtester);
   }
@@ -381,6 +385,227 @@ $(function() {
   $('#b').disableSelection();
   $('#y').disableSelection();
   $('#x').disableSelection();
+  let gamepad = {};
+  window.addEventListener("gamepadconnected", function(e) {
+    if(e.gamepad.id.toLowerCase().indexOf("xbox") == -1) return;
+    let pressed = [];
+    const joystick = new Set();
+    gamepad[e.gamepad.index] = setInterval(() => {
+      let gp = navigator.getGamepads()[e.gamepad.index];
+      for(var bu=0; bu<gp.buttons.length; bu++){
+        if(gp.buttons[bu].pressed){
+          if(!pressed.includes(bu)){
+            if(bu == 0){
+              a();
+            } else if(bu == 1){
+              b();
+            } else if(bu == 2){
+              x();
+            } else if(bu == 3){
+              y();
+            } else if(bu == 4){
+              l();
+            } else if(bu == 5){
+              r();
+            } else if(bu == 8){
+              capture();
+            } else if(bu == 9){
+              home();
+            } else if(bu == 12){
+              arrowup();
+            } else if(bu == 13){
+              arrowdown();
+            } else if(bu == 14){
+              arrowleft();
+            } else if(bu == 15){
+              arrowright();
+            }
+          }
+          pressed = pressed.concat([bu]);
+        } else {
+          pressed = pressed.filter(p => p !== bu);
+        }
+      }
+      let axes = gp.axes;
+      document.getElementById("ljoybutton").setAttribute("style", `position:relative;top:${getHeight(axes[1]*20+20)};left:${getWidth(axes[0]*20-20)}`);
+      document.getElementById("rjoybutton").setAttribute("style", `position:relative;top:${getHeight(axes[3]*20+20)};left:${getWidth(axes[2]*20-20)}`);
+      if(axes[0] == 1){
+        if(!joystick.has("lright")){
+          lrightstart();
+          joystick.add("lright");
+        }
+      } else {
+        if(joystick.has("lright")){
+          lrightstop();
+          joystick.delete("lright");
+        }
+      } if(axes[0] == -1){
+        if(!joystick.has("lleft")){
+          lleftstart();
+          joystick.add("lleft");
+        }
+      } else {
+        if(joystick.has("lleft")){
+          lleftstop();
+          joystick.delete("lleft");
+        }
+      } if(axes[1] == 1){
+        if(!joystick.has("ldown")){
+          lbottomstart();
+          joystick.add("ldown");
+        }
+      } else {
+        if(joystick.has("ldown")){
+          lbottomstop();
+          joystick.delete("ldown");
+        }
+      } if(axes[1] == -1){
+        if(!joystick.has("lup")){
+          ltopstart();
+          joystick.add("lup");
+        }
+      } else {
+        if(joystick.has("lup")){
+          ltopstop();
+          joystick.delete("lup");
+        }
+      } if(axes[2] == 1){
+        if(!joystick.has("rright")){
+          rrightstart();
+          joystick.add("rright");
+        }
+      } else {
+        if(joystick.has("rright")){
+          rrightstop();
+          joystick.delete("rright");
+        }
+      } if(axes[2] == -1){
+        if(!joystick.has("rleft")){
+          rleftstart();
+          joystick.add("rleft");
+        }
+      } else {
+        if(joystick.has("rleft")){
+          rleftstop();
+          joystick.delete("rleft");
+        }
+      } if(axes[3] == 1){
+        if(!joystick.has("rdown")){
+          rbottomstart();
+          joystick.add("rdown");
+        }
+      } else {
+        if(joystick.has("rdown")){
+          rbottomstop();
+          joystick.delete("rdown");
+        }
+      } if(axes[3] == -1){
+        if(!joystick.has("rup")){
+          rtopstart();
+          joystick.add("rup");
+        }
+      } else {
+        if(joystick.has("rup")){
+          rtopstop();
+          joystick.delete("rup");
+        }
+      } if(axes[1] > 0.5 && axes[0] > 0.5){
+        if(!joystick.has("lbottomright")){
+          lbottomrightstart();
+          joystick.add("lbottomright");
+        }
+      } else {
+        if(joystick.has("lbottomright")){
+          lbottomrightstop();
+          joystick.delete("lbottomright");
+        }
+      } if(axes[1] > 0.5 && axes[0] < -0.5){
+        if(!joystick.has("lleftbottom")){
+          lleftbottomstart();
+          joystick.add("lleftbottom");
+        }
+      } else {
+        if(joystick.has("lleftbottom")){
+          lleftbottomstop();
+          joystick.delete("lleftbottom");
+        }
+      } if(axes[1] < -0.5 && axes[0] < -0.5){
+        if(!joystick.has("ltopleft")){
+          ltopleftstart();
+          joystick.add("ltopleft");
+        }
+      } else {
+        if(joystick.has("ltopleft")){
+          ltopleftstop();
+          joystick.delete("ltopleft");
+        }
+      } if(axes[1] < -0.5 && axes[0] > 0.5){
+        if(!joystick.has("lrighttop")){
+          lrighttopstart();
+          joystick.add("lrighttop");
+        }
+      } else {
+        if(joystick.has("lrighttop")){
+          lrighttopstop();
+          joystick.delete("lrighttop");
+        }
+      } if(axes[3] > 0.5 && axes[2] > 0.5){
+        if(!joystick.has("rbottomright")){
+          rbottomrightstart();
+          joystick.add("rbottomright");
+        }
+      } else {
+        if(joystick.has("rbottomright")){
+          rbottomrightstop();
+          joystick.delete("rbottomright");
+        }
+      } if(axes[3] > 0.5 && axes[2] < -0.5){
+        if(!joystick.has("rleftbottom")){
+          rleftbottomstart();
+          joystick.add("rleftbottom");
+        }
+      } else {
+        if(joystick.has("rleftbottom")){
+          rleftbottomstop();
+          joystick.delete("rleftbottom");
+        }
+      } if(axes[3] < -0.5 && axes[2] < -0.5){
+        if(!joystick.has("rtopleft")){
+          rtopleftstart();
+          joystick.add("rtopleft");
+        }
+      } else {
+        if(joystick.has("rtopleft")){
+          rtopleftstop();
+          joystick.delete("rtopleft");
+        }
+      } if(axes[3] < -0.5 && axes[2] > 0.5){
+        if(!joystick.has("rrighttop")){
+          rrighttopstart();
+          joystick.add("rrighttop");
+        }
+      } else {
+        if(joystick.has("rrighttop")){
+          rrighttopstop();
+          joystick.delete("rrighttop");
+        }
+      }
+    }, 10);
+    var gp = navigator.getGamepads()[e.gamepad.index];
+    console.log(
+      "Gamepad connected at index %d: %s. %d buttons, %d axes.",
+      gp.index, gp.id, gp.buttons.length, gp.axes.length
+    );
+  });
+  window.addEventListener("gamepaddisconnected", function(e) {
+    clearInterval(gamepad[e.gamepad.index])
+    delete gamepad[e.gamepad.index];
+    var gp = e.gamepad;
+    console.log(
+      "Gamepad disconnected at index %d: %s.",
+      gp.index, gp.id
+    );
+  });
   init();
 })
 
