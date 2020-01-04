@@ -7,7 +7,8 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = true;
 let frame;
 
 app.on("ready", async () => {
-  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  const { width } = screen.getPrimaryDisplay().workAreaSize;
+  const height = Math.round((width/16)*9)
   let w = 1810,
   h = 800;
 
