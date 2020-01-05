@@ -408,9 +408,9 @@ $(function() {
             } else if(bu == 5){
               r();
             } else if(bu == 8){
-              capture();
+              minus();
             } else if(bu == 9){
-              home();
+              plus();
             } else if(bu == 12){
               arrowup();
             } else if(bu == 13){
@@ -590,7 +590,7 @@ $(function() {
           joystick.delete("rrighttop");
         }
       }
-    }, 10);
+    }, 1);
     var gp = navigator.getGamepads()[e.gamepad.index];
     console.log(
       "Gamepad connected at index %d: %s. %d buttons, %d axes.",
@@ -956,7 +956,7 @@ async function init(){
           if(res) return;
           res = true;
           let ress = false;
-          let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+          let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
           $("#ulaunchscreen").append(dialog);
           let inputs = $("#dialog :input");
           let selected = 0;
@@ -1095,7 +1095,7 @@ async function init(){
         if(res) return;
         res = true;
         let ress = false;
-        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
         $("#ulaunchscreen").append(dialog);
         let inputs = $("#dialog :input");
         let selected = 0;
@@ -1228,7 +1228,7 @@ async function init(){
         html += "</div>";
         $("#ulaunchscreen").append(html);
         let selected = 0;
-        await SetTextureColorMod(item_map[0][1], "img0", 150, 150, 255);
+        SetTextureColorMod(item_map[0][1], "img0", 150, 150, 255);
         function ComputePositionForDirection(direction){
           let x = MainItemX;
           let y = MainItemY;
@@ -1272,7 +1272,6 @@ async function init(){
         }
         async function select(direction){
           if(quick) return;
-          await SetTextureColorMod(item_map[selected][1], `img${selected}`, 255, 255, 255);
           switch(direction){
             case 'up':
               selected = 0;
@@ -1301,7 +1300,13 @@ async function init(){
             default:
               break;
           }
-          await SetTextureColorMod(item_map[selected][1], `img${selected}`, 150, 150, 200);
+          for(var i=0; i<8; i++){
+            if(i != selected){
+              SetTextureColorMod(item_map[i][1], `img${i}`, 255, 255, 255);
+            } else {
+              SetTextureColorMod(item_map[i][1], `img${i}`, 150, 150, 200);
+            }
+          }
         }
         switchem.on("ltopstart", () => {
           select("up");
@@ -2210,6 +2215,7 @@ async function init(){
           async function dblclick(id){
             if(ress || res) return;
             let alt = document.getElementById(id).getAttribute("alt");
+            let iid = id;
             if(document.getElementById(id).getAttribute("alt") === suspended){
               res = true;
               if(sound){
@@ -2241,7 +2247,6 @@ async function init(){
                 }, 1000);
               });
             } else {
-              let iid = id;
               if(alt.startsWith("folder")){
                 ress = true;
                 folderitems(alt.split("/")[2]);
@@ -2777,31 +2782,31 @@ async function init(){
                 let dialog = await createDialog(lang["menu_multiselect"], lang["menu_move_from_folder"], [lang["yes"], lang["no"]]);
                 $("#ulaunchscreen").append(dialog);
                 let inputs = $("#dialog :input");
-                selected = 0;
+                let dselected = 0;
                 let max = inputs.length;
                 inputs.click((e) => {
                   click(e.currentTarget.id);
                 });
                 switchem.on("arrowright", () => {
-                  click(selected+1);
+                  click(dselected+1);
                 });
                 switchem.on("lrightstart", () => {
-                  click(selected+1);
+                  click(dselected+1);
                 });
                 switchem.on("rrightstart", () => {
-                  click(selected+1);
+                  click(dselected+1);
                 });
                 switchem.on("arrowleft", () => {
-                  click(selected-1);
+                  click(dselected-1);
                 });
                 switchem.on("lleftstart", () => {
-                  click(selected-1);
+                  click(dselected-1);
                 });
                 switchem.on("rleftstart", () => {
-                  click(selected-1);
+                  click(dselected-1);
                 });
                 switchem.on("a", () => {
-                  dblclick(selected);
+                  dblclick(dselected);
                 });
                 inputs.dblclick((e) => {
                   dblclick(e.currentTarget.id);
@@ -2809,11 +2814,11 @@ async function init(){
                 function click(id){
                   if(resss) return;
                   let input = $(`#dialog #${id}`).get(0);
-                  let before = $(`#dialog #${selected}`).get(0);
+                  let before = $(`#dialog #${dselected}`).get(0);
                   if(input === undefined) return;
                   before.setAttribute("style", before.getAttribute("style").replace("#B4B4C8FF", "#B4B4C800"));
                   input.setAttribute("style", input.getAttribute("style").replace("#B4B4C800", "#B4B4C8FF"));
-                  selected = parseInt(id);
+                  dselected = parseInt(id);
                 }
                 function dblclick(id){
                   if(resss) return;
@@ -2840,7 +2845,7 @@ async function init(){
                     $("#multiselect").hide();
                     document.getElementById("multiselect").innerHTML = "";
                     resss = true;
-                    selected = 0;
+                    dselected = 0;
                     ress = true;
                     res = false;
                     if(multiselect.filter(n => n == true)[0]){
@@ -3926,7 +3931,7 @@ async function init(){
         if(res) return;
         res = true;
         let ress = false;
-        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
         $("#ulaunchscreen").append(dialog);
         let inputs = $("#dialog :input");
         let selected = 0;
@@ -4183,7 +4188,7 @@ async function init(){
         if(res) return;
         res = true;
         let ress = false;
-        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
         $("#ulaunchscreen").append(dialog);
         let inputs = $("#dialog :input");
         let selected = 0;
@@ -4579,7 +4584,7 @@ async function init(){
         if(res) return;
         res = true;
         let ress = false;
-        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
+        let dialog = await createDialog(lang["ulaunch_about"], `uLaunch v0.2.1<br><br>${lang["ulaunch_desc"]}:<br>https://github.com/XorTroll/uLaunch`, [lang["ok"]], false, path.join(__dirname, "ulaunch", "romFs", "LogoLarge.png"));
         $("#ulaunchscreen").append(dialog);
         let inputs = $("#dialog :input");
         let selected = 0;
@@ -5060,42 +5065,39 @@ function visibility(visible){
   }
 }
 
-async function SetTextureColorMod(src, id, r, g, b){
-  await new Promise(function(resolve, reject) {
-    let img = new Image();
-    img.onload = () => {
-      var can = document.createElement("canvas");
-      can.width = img.width;
-      can.height = img.height;
-      var ctx = can.getContext('2d');
-      ctx.scale(can.width / img.width, can.height / img.height);
-      ctx.drawImage(img, 0, 0);
+function SetTextureColorMod(src, id, r, g, b){
+  let img = new Image();
+  img.onload = () => {
+    var can = document.createElement("canvas");
+    can.width = img.width;
+    can.height = img.height;
+    var ctx = can.getContext('2d');
+    ctx.scale(can.width / img.width, can.height / img.height);
+    ctx.drawImage(img, 0, 0);
 
-      var imageData = ctx.getImageData(0,0,can.width, can.height);
-      var pixels = imageData.data;
-      var numPixels = pixels.length;
+    var imageData = ctx.getImageData(0,0,can.width, can.height);
+    var pixels = imageData.data;
+    var numPixels = pixels.length;
 
-      ctx.clearRect(0, 0, can.width, can.height);
+    ctx.clearRect(0, 0, can.width, can.height);
 
-      for (var i = 0; i < numPixels; i++) {
-          pixels[i*4] = pixels[i*4]*(r/255);
-          pixels[i*4+1] = pixels[i*4+1]*(g/255);
-          pixels[i*4+2] = pixels[i*4+2]*(b/255);
-      }
-      ctx.putImageData(imageData, 0, 0);
-      if(id !== undefined){
-        document.getElementById(id).setAttribute("src", can.toDataURL());
-      } else {
-        img = document.createElement("img");
-        img.width = can.width;
-        img.height = can.height;
-        img.src = can.toDataURL();
-        document.body.appendChild(img);
-      }
-      resolve();
+    for (var i = 0; i < numPixels; i++) {
+        pixels[i*4] = pixels[i*4]*(r/255);
+        pixels[i*4+1] = pixels[i*4+1]*(g/255);
+        pixels[i*4+2] = pixels[i*4+2]*(b/255);
     }
-    img.src = src;
-  });
+    ctx.putImageData(imageData, 0, 0);
+    if(id !== undefined){
+      document.getElementById(id).setAttribute("src", can.toDataURL());
+    } else {
+      img = document.createElement("img");
+      img.width = can.width;
+      img.height = can.height;
+      img.src = can.toDataURL();
+      document.body.appendChild(img);
+    }
+  }
+  img.src = src;
 }
 
 let ispower = true;
