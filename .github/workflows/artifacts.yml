@@ -15,6 +15,8 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: move dist/uLaunch-Previewer-*.exe dist/uLaunch-Previewer.exe
       - uses: actions/upload-artifact@master
         with:
@@ -30,6 +32,8 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:darwin
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: mv dist/uLaunch-Previewer-*.dmg dist/uLaunch-Previewer.dmg
       - uses: actions/upload-artifact@master
         with:
@@ -45,6 +49,8 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm run dist:linux
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - run: mv dist/uLaunch-Previewer-*.deb dist/uLaunch-Previewer.deb
       - run: mv dist/uLaunch-Previewer-*.AppImage dist/uLaunch-Previewer.AppImage
       - uses: actions/upload-artifact@master
