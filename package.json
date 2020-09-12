@@ -19,7 +19,7 @@
     "html2canvas": "^1.0.0-rc.5",
     "https-proxy-agent": "^3.0.1",
     "jquery": "^3.5.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "path": "^0.12.7",
     "url": "^0.11.0"
   },
